@@ -85,3 +85,19 @@ My answer:The coding style
 ## My 30-Day Commitment
 
 For the next 30 days, I will focus on building practical AI skills by completing small daily exercises, documenting what I learn, and creating portfolio-ready projects.
+
+## First Project Direction
+
+The first AI project I am interested in building is a Holiday Trip Planner.
+
+The app idea:
+
+A user enters their travel dates, destination, budget, travel style, and preferences. The AI assistant then generates a personalized itinerary with suggested activities, food options, travel notes, and daily plans.
+
+Why this project is useful:
+
+- It teaches prompt design
+- It can later use APIs such as maps or weather
+- It can become an AI agent that plans step-by-step
+- It can be deployed as a simple web app
+- It is easy for other people to understand and try
