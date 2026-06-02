@@ -88,7 +88,7 @@ Suggested file:
 
 ## Task 5: Add Vienna 14-day sanitized itinerary
 
-Status: Not started
+Status: Complete
 
 Goal:
 Create a sanitized Vienna 14-day itinerary dataset for future planner testing.
