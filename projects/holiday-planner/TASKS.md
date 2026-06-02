@@ -154,7 +154,7 @@ Suggested file:
 
 ## Task 8: Manually test the bot with Day 2
 
-Status: Not started
+Status: Completed
 
 Goal:
 Test whether the bot can retrieve and explain Day 2 from the Austria itinerary dataset.
@@ -173,11 +173,13 @@ Suggested file:
 
 - test-output/day-2-today-plan-test.md
 
+✅ **Completed on Day 6**: Created comprehensive Day 2 test output that includes all required elements, follows BOT_SPEC.md format, and uses only data from austria-13-day-sanitized.md.
+
 ---
 
 ## Task 9: Create trip day mapping rule
 
-Status: Not started
+Status: Completed
 
 Goal:
 Define how the bot should know which itinerary day is "today."
@@ -192,3 +194,5 @@ Acceptance Criteria:
 Suggested file:
 
 - TRIP_DAY_MAPPING.md
+
+✅ **Completed on Day 6**: Created TRIP_DAY_MAPPING.md documenting both approaches, recommending manual day specification for MVP, and providing error handling and future enhancement paths.
