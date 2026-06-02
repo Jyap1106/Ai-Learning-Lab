@@ -2,7 +2,7 @@
 
 ## What I worked on today
 
-Today I started cleaning and structuring my Vienna 14-day itinerary dataset.
+Today I started cleaning and structuring my Austria 13-day itinerary dataset.
 
 The goal is to prepare the data for future use in the Holiday Planner project.
 
@@ -46,7 +46,7 @@ Before uploading itinerary data, I should remove:
 
 File:
 
-- projects/holiday-planner/sample-data/vienna-14-day-sanitized.md
+- projects/holiday-planner/sample-data/austria-13-day-sanitized.md
 
 ## Reflection
 
