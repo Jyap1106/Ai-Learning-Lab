@@ -8,9 +8,17 @@ This repository documents my journey to become an AI-powered builder who underst
 
 The current active project is:
 
-- Holiday Planner
+- Holiday Planner: Austria Trip Companion Bot
 
-The goal is to build a simple AI-assisted holiday planning system using sanitized itinerary datasets first, then later explore RAG, Vercel deployment, APIs, and agent workflows.
+The goal is to turn a sanitized Austria itinerary dataset into a simple AI bot that can answer trip-day questions such as:
+
+- What is today's plan?
+- What should I prepare before leaving?
+- What food options are planned today?
+- What transport should I use?
+- What should I verify live?
+
+The bot should retrieve information from the Austria itinerary dataset first before answering.
 
 ## Parked Projects
 
