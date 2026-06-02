@@ -2,16 +2,26 @@
 
 ## Repository Purpose
 
-This repository documents my journey to become an AI-powered automation builder, with a focus on:
+This repository documents my journey to become an AI-powered builder who understands tokens, repositories, AI tools, datasets, RAG, agents, automation, and deployment.
 
-- Talent Acquisition automation
-- AI productivity
-- Token and cost control
-- Second brain systems
-- Product manager thinking
-- Side-hustle automation ideas
+## Current Active Project
 
-Finance modelling and trading-related ideas are currently parked for later and should not be treated as active work.
+The current active project is:
+
+- Holiday Planner
+
+The goal is to build a simple AI-assisted holiday planning system using existing itinerary datasets first, then later explore RAG, Vercel deployment, and APIs.
+
+## Parked Projects
+
+These projects are parked for now:
+
+- Talent Acquisition automation lab
+- Finance modeller
+- Corporate language autocorrect
+- Daily habit tracker
+
+Do not treat parked projects as active unless I explicitly ask.
 
 ## How AI Assistants Should Work
 
@@ -40,46 +50,29 @@ The user can:
 
 The user is still learning:
 
-- GitHub repository structure
+- Repository structure
 - Token and context management
 - How to control AI coding agents
-- How to build automation workflows safely
-- How to create reusable project documentation
-
-## Main Active Learning Priorities
-
-1. Understand tokens, repositories, AI tools, and cost control
-2. Build Talent Acquisition automation workflows
-3. Create a second brain / personal knowledge base
-4. Explore AI side-hustle ideas
-5. Build product manager thinking and documentation skills
-
-## Parked For Later
-
-These topics are interesting but not active right now:
-
-- Finance modeller
-- Trading bot
-- CFD automation
-- Live trading systems
-
-Do not suggest live trading automation. If finance is discussed later, keep it limited to education, simulation, paper trading, journaling, or risk calculators.
+- Dataset preparation
+- RAG
+- Cost-safe API usage
+- Product documentation
 
 ## Safety Rules
 
 - Never store API keys in the repository.
-- Never use real candidate personal data for experiments.
-- Prefer fake or anonymized data.
-- Use dry-run mode before any automation sends, updates, or deletes anything.
-- For coding tasks, explain the plan before making changes.
+- Never upload private booking details, passport details, payment details, or personal travel information.
+- Prefer sample, fake, or sanitized itinerary data.
 - Do not add paid APIs unless requested.
+- Do not build broad features unless they are listed in TASKS.md.
+- Use dry-run workflows before automation.
 
 ## Preferred Workflow
 
 Use this workflow:
 
 1. Understand the goal.
-2. Read the relevant README or PRD.
+2. Read the relevant project README or PRD.
 3. Break the work into small tasks.
 4. Complete one task at a time.
 5. Explain what changed.
