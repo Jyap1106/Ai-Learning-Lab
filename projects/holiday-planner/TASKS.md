@@ -83,3 +83,24 @@ Acceptance Criteria:
 Suggested file:
 
 - DATASET_GUIDE.md
+
+- ---
+
+## Task 5: Add Vienna 14-day sanitized itinerary
+
+Status: Not started
+
+Goal:
+Create a sanitized Vienna 14-day itinerary dataset for future planner testing.
+
+Acceptance Criteria:
+
+- Use no private booking information
+- Remove names, emails, phone numbers, booking codes, and payment details
+- Include destination, duration, travel style, activities, food ideas, transport notes, and general tips
+- Structure the itinerary by day
+- Keep the format consistent with DATASET_GUIDE.md
+
+Suggested file:
+
+- sample-data/vienna-14-day-sanitized.md
