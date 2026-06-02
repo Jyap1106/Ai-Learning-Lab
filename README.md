@@ -41,17 +41,16 @@ I am learning to become someone who can create useful AI-powered tools for busin
 
 ### Active Focus
 
-1. Talent Acquisition automation lab
+1. Holiday Planner
 2. Second brain / personal knowledge base
 3. Automation builder
-4. Corporate language autocorrect
-5. Holiday trip planner
 
 ### Parked For Later
 
-1. Finance modeller
-2. Trading journal / paper trading tracker
-3. Risk calculator
+1. Talent Acquisition automation lab
+2. Finance modeller
+3. Corporate language autocorrect
+4. Daily habit tracker
 
 ## My Understanding of the AI Builder Stack
 
