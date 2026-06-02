@@ -73,7 +73,8 @@ My answer:
 
 ### 4. How could this dataset help a future RAG assistant?
 
-My answer: By retrieving past data from my provided data in the projects/holiday-planner/TASKS.md file
+My answer:
+It can help a future RAG assistant by retrieving relevant itinerary information from the sanitized itinerary dataset, such as destination-specific activities, food ideas, transport notes, day themes, and general travel tips.
 
 ### 5. What type of itinerary should I test next?
 
