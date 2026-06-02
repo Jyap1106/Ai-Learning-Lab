@@ -1,69 +1,104 @@
-# GitHub Copilot Instructions
+# GitHub Copilot Instructions for AI Learning Lab
 
-## Repository Context
+This file provides instructions for GitHub Copilot and other AI assistants working on this repository.
 
-This repository is an AI Learning Lab.
+## Repository Purpose
 
-The current active project is:
+This repository documents a 30-day journey to become an AI-powered builder. It contains learning projects, datasets, prompts, and test outputs focused on AI applications, RAG, agents, and automation.
 
-- Holiday Planner: Austria Trip Companion Bot
+**Read AGENTS.md first before working on any task.**
 
-The goal is to turn a sanitized Austria itinerary dataset into a simple AI bot that can answer trip-day questions such as:
+## Current Active Project
 
+**Holiday Planner: Austria Trip Companion Bot**
+
+The bot answers trip-day questions using a sanitized Austria itinerary dataset as the source of truth.
+
+Example questions:
 - What is today's plan?
 - What should I prepare before leaving?
 - What food options are planned today?
 - What transport should I use?
 - What should I verify live?
 
-## Source of Truth
+## How AI Assistants Should Work
 
-For the Holiday Planner project, use these files first:
+1. Read AGENTS.md first.
+2. Read the root README.md.
+3. Read only the project folder relevant to the task.
+4. Summarize your understanding before suggesting changes.
+5. Ask before editing files (unless the user explicitly requests action).
+6. Do not scan the whole repository unless necessary.
+7. Do not rewrite unrelated files.
+8. Prefer small, controlled changes.
+9. Keep explanations beginner-friendly.
+10. Prioritize token-saving and cost-safe workflows.
 
+## Files Copilot Should Read
+
+When working on Holiday Planner:
 - AGENTS.md
 - README.md
 - projects/holiday-planner/README.md
 - projects/holiday-planner/PRD.md
-- projects/holiday-planner/TASKS.md
 - projects/holiday-planner/BOT_SPEC.md
+- projects/holiday-planner/TASKS.md
+- projects/holiday-planner/prompts/today-plan-bot.md
 - projects/holiday-planner/sample-data/austria-13-day-sanitized.md
 
-## Working Rules
+## Files Copilot May Create or Edit
 
-Before making changes:
+- .github/copilot-instructions.md
+- .github/ISSUE_TEMPLATE/copilot-task.md
+- projects/holiday-planner/TASKS.md
+- projects/holiday-planner/TRIP_DAY_MAPPING.md
+- projects/holiday-planner/test-output/*.md
+- notes/day-*.md
 
-1. Read AGENTS.md.
-2. Read the relevant project README, PRD, and TASKS files.
-3. Summarize the intended change.
-4. Edit only the files requested by the issue or prompt.
-5. Do not rewrite unrelated files.
-6. Do not rename files unless explicitly requested.
-7. Do not add paid APIs unless explicitly requested.
-8. Do not add real private travel data.
-9. Do not invent opening hours, prices, or live transport information.
-10. Keep changes small and reviewable.
+## Files Copilot Must NOT Edit
 
-## Preferred Change Style
+- projects/holiday-planner/sample-data/austria-13-day-sanitized.md
+- projects/holiday-planner/sample-data/DATA_CLEANING_LOG.md
+- LICENSE
+- .gitignore
 
-Use small, focused pull requests.
+## Safety Rules
 
-Good change:
+- Never store API keys in the repository.
+- Never upload private booking details, passport details, payment details, or personal travel information.
+- Prefer sample, fake, or sanitized itinerary data.
+- Do not add paid APIs unless explicitly requested.
+- Do not build broad features unless they are listed in TASKS.md.
+- Use dry-run workflows before automation.
 
-- Update PRD.md for Trip Companion Bot direction
-- Add BOT_SPEC.md
-- Add a test-output file for Day 2 bot response
+## Quality Standards
 
-Bad change:
+- Use descriptive commit messages.
+- Keep changes focused and minimal.
+- Test manually before submitting.
+- Document assumptions clearly.
+- Preserve existing formatting and structure.
 
-- Rewrite the whole project
-- Add app code, APIs, database, and UI in one task
-- Modify dataset, prompts, README, and tasks without being asked
+## Working with the Holiday Planner
 
-## Output Expectations
+When creating test outputs or prompts:
+- Use the Austria itinerary dataset as the sole source of truth.
+- Do not invent opening hours, prices, or live transport details.
+- If information is not in the dataset, say so.
+- Tell users to verify live information before traveling.
+- Keep responses concise and practical.
+- Use the structured output format defined in BOT_SPEC.md.
 
-When completing an issue, Copilot should:
+## For Parked Projects
 
-1. Explain what files were changed.
-2. Explain why the changes were made.
-3. Mention any files that were intentionally not touched.
-4. Ask for review if assumptions were made.
+Do not work on:
+- Talent Acquisition automation lab
+- Finance modeller
+- Corporate language autocorrect
+- Daily habit tracker
+
+Unless explicitly requested.
+
+## Questions?
+
+Refer to AGENTS.md, the project README, or task definitions in TASKS.md before proceeding.

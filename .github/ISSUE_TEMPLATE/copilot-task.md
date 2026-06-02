@@ -1,47 +1,81 @@
 ---
 name: Copilot Task
-about: A controlled task for GitHub Copilot agent
-title: "[Copilot Task] "
+about: Define a controlled task for GitHub Copilot or AI coding agents
+title: "[COPILOT TASK] "
 labels: copilot-task
 assignees: ''
+
 ---
+
+## Task Title
+
+[Clear, concise title for the Copilot task]
 
 ## Goal
 
-Describe the task in one sentence.
+[What should Copilot accomplish? One sentence summary.]
 
-## Files Copilot Should Read
+## Context
 
-- AGENTS.md
-- README.md
-- projects/holiday-planner/README.md
-- projects/holiday-planner/PRD.md
-- projects/holiday-planner/TASKS.md
+[Which project or area? Reference AGENTS.md if applicable.]
 
-## Files Copilot May Edit
+- **Project**: [e.g., Holiday Planner: Austria Trip Companion Bot]
+- **Related files**: [List relevant files to read]
+- **Acceptance criteria**: [List specific requirements]
 
-- 
+## Files Copilot Should Read First
 
-## Files Copilot Must Not Edit
+- [ ] AGENTS.md
+- [ ] README.md
+- [ ] Project-specific README
+- [ ] Other: [specify]
 
-- projects/holiday-planner/sample-data/austria-13-day-sanitized.md
-- .gitignore
-- LICENSE
+## Files Copilot May Create or Edit
 
-## Acceptance Criteria
+- [ ] File 1
+- [ ] File 2
+- [ ] File 3
 
-- [ ] 
-- [ ] 
-- [ ] 
+## Files Copilot Must NOT Edit
+
+- [ ] File 1
+- [ ] File 2
 
 ## Constraints
 
-- Do not rewrite unrelated files.
-- Do not add paid APIs.
-- Do not use private travel data.
-- Do not invent opening hours, prices, or live transport information.
-- Keep the change small.
+[Any safety rules, limitations, or special instructions?]
+
+- Do not add APIs unless explicitly requested
+- Do not invent data
+- Use only provided datasets
+- Other: [specify]
+
+## Expected Output
+
+[Describe what success looks like]
+
+## Deliverables
+
+- [ ] Task 1 completed
+- [ ] Task 2 completed
+- [ ] Task 3 completed
 
 ## Notes
 
-Ask for clarification if the task is ambiguous.
+[Any additional context or assumptions]
+
+---
+
+## For Copilot After Assignment
+
+Before starting work:
+
+1. Read AGENTS.md first.
+2. Read the project README and relevant documentation.
+3. Summarize your understanding in a comment on this issue.
+4. Ask before editing files.
+5. Keep changes small and focused.
+6. After completing work, summarize:
+   - Files changed
+   - Files intentionally not touched
+   - Assumptions made
