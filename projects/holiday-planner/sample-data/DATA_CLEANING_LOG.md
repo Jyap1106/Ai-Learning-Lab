@@ -1,6 +1,8 @@
 # Data Cleaning Log
 
-## Dataset File
+## Dataset
+
+File:
 
 - austria-13-day-sanitized.md
 
@@ -45,3 +47,5 @@
 ## Notes
 
 This dataset was cleaned for learning and future Holiday Planner testing. It covers a 13-day Austria multi-city route including Vienna, Salzburg, Obertraun / Hallstatt, Innsbruck, and return to Vienna.
+
+The dataset is not meant to be treated as verified live travel information. Opening hours, prices, transport schedules, attraction availability, and weather-sensitive activities should be checked again before real travel.
