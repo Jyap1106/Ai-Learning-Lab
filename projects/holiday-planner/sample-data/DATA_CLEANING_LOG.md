@@ -1,49 +1,47 @@
 # Data Cleaning Log
 
-## Dataset
+## Dataset File
 
-File:
-
-- vienna-14-day-sanitized.md
+- austria-13-day-sanitized.md
 
 ## Cleaning Date
 
-[Add date]
+2026-06-02
 
 ## Private Information Removed
 
-- [ ] Passport details
-- [ ] Booking reference numbers
-- [ ] Flight booking codes
-- [ ] Hotel confirmation numbers
-- [ ] Full traveler names
-- [ ] Phone numbers
-- [ ] Emails
-- [ ] Payment details
-- [ ] Private personal notes
+- [x] Passport details
+- [x] Booking reference numbers
+- [x] Flight booking codes
+- [x] Hotel confirmation numbers
+- [x] Full traveler names
+- [x] Phone numbers
+- [x] Emails
+- [x] Payment details
+- [x] Private personal notes
 
 ## Data Kept
 
-- [ ] Destination
-- [ ] Trip duration
-- [ ] Activities
-- [ ] Food places
-- [ ] Area names
-- [ ] Transport notes
-- [ ] Budget range
-- [ ] General travel tips
-- [ ] Personal ratings without private details
+- [x] Destination
+- [x] Trip duration
+- [x] Activities
+- [x] Food places
+- [x] Area names
+- [x] Transport notes
+- [x] Budget range
+- [x] General travel tips
+- [x] Personal ratings without private details
 
 ## Formatting Completed
 
-- [ ] Added dataset metadata
-- [ ] Structured by day
-- [ ] Added Morning / Afternoon / Evening sections
-- [ ] Added Food section
-- [ ] Added Transport section
-- [ ] Added Notes section
-- [ ] Added General Tips section
+- [x] Added dataset metadata
+- [x] Structured by day
+- [x] Added Morning / Afternoon / Evening sections
+- [x] Added Food section
+- [x] Added Transport section
+- [x] Added Notes section
+- [x] Added General Tips section
 
 ## Notes
 
-[Write anything important about how the data was cleaned.]
+This dataset was cleaned for learning and future Holiday Planner testing. It covers a 13-day Austria multi-city route including Vienna, Salzburg, Obertraun / Hallstatt, Innsbruck, and return to Vienna.
