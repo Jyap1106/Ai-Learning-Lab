@@ -8,9 +8,10 @@ This repository documents my journey to become an AI-powered automation builder,
 - AI productivity
 - Token and cost control
 - Second brain systems
-- Finance modelling
 - Product manager thinking
 - Side-hustle automation ideas
+
+Finance modelling and trading-related ideas are currently parked for later and should not be treated as active Day 2 work.
 
 ## How AI Assistants Should Work
 
@@ -35,7 +36,7 @@ The user can:
 - Use Vercel-style deployment workflows
 - Create simple product designs in Visily
 - Use ChatGPT, Claude, Cursor, or similar tools for building
-- Understand that repositories help agents, but wants to learn how
+- Understand that repositories help agents, but wants to learn how to use them better
 
 The user is still learning:
 
@@ -45,23 +46,33 @@ The user is still learning:
 - How to build automation workflows safely
 - How to create reusable project documentation
 
-## Main Learning Priorities
+## Main Active Learning Priorities
 
 1. Understand tokens, repositories, AI tools, and cost control
 2. Build Talent Acquisition automation workflows
 3. Create a second brain / personal knowledge base
 4. Explore AI side-hustle ideas
-5. Learn finance modelling and paper-trading simulations
-6. Build product manager thinking and documentation skills
+5. Build product manager thinking and documentation skills
+
+## Parked For Later
+
+These topics are interesting but not active right now:
+
+- Finance modeller
+- Trading bot
+- CFD automation
+- Live trading systems
+
+Do not suggest live trading automation. If finance is discussed later, keep it limited to education, simulation, paper trading, journaling, or risk calculators.
 
 ## Safety Rules
 
 - Never store API keys in the repository.
 - Never use real candidate personal data for experiments.
 - Prefer fake or anonymized data.
-- Avoid live trading automation.
 - Use dry-run mode before any automation sends, updates, or deletes anything.
 - For coding tasks, explain the plan before making changes.
+- Do not add paid APIs unless requested.
 
 ## Preferred Workflow
 
