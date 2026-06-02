@@ -1,39 +1,65 @@
-# TA Automation Lab
+# PRD: TA Automation Lab
 
-## Project Purpose
+## Product Summary
 
-This project explores how AI can help Talent Acquisition professionals reduce repetitive work, improve communication, and create better hiring workflows.
+TA Automation Lab is a collection of AI-assisted workflows that help Talent Acquisition professionals reduce repetitive work and improve hiring communication.
 
-## Problems to Explore
+## Target User
 
-Talent Acquisition work often includes repeated tasks such as:
+Talent Acquisition partners, recruiters, recruitment coordinators, and hiring teams.
 
-- Writing candidate summaries
-- Improving job descriptions
-- Creating interview questions
-- Drafting outreach messages
-- Generating hiring manager briefs
-- Organizing candidate notes
-- Creating talent market research summaries
+## Main Problem
 
-## Why This Project Matters
+Recruiters often spend too much time preparing candidate summaries, rewriting job descriptions, drafting outreach messages, creating interview questions, and preparing hiring manager updates.
 
-This project is useful because it connects directly to my current work as a Talent Acquisition partner. Instead of learning AI through random apps, I want to learn AI by improving real workflows that I understand.
+## First Use Case
 
-## Important Privacy Rule
+The first workflow will be a candidate summary generator using fake candidate data.
 
-This project will only use fake or anonymized candidate data.
+## User Story
 
-No real candidate names, contact details, resumes, salary details, company-sensitive information, or private hiring notes should be added to this repository.
+As a Talent Acquisition partner, I want to paste a candidate profile and job description so that I can quickly generate a structured candidate summary for hiring manager review.
 
-## First Workflows to Build
+## Inputs
 
-1. Candidate summary generator
-2. Job description improver
-3. Candidate outreach message generator
-4. Interview question generator
-5. Hiring manager briefing template
+The workflow may use:
 
-## Current Status
+- Candidate profile
+- Job description
+- Recruiter notes
+- Interview notes
+- Role requirements
 
-Planning stage.
+## Outputs
+
+The workflow should produce:
+
+- Candidate summary
+- Skills match
+- Relevant experience
+- Potential concerns
+- Suggested interview questions
+- Hiring manager briefing paragraph
+
+## Constraints
+
+- Use fake or anonymized data only
+- Do not send messages automatically
+- Do not connect to real ATS systems yet
+- Do not use paid APIs until cost controls are understood
+- Start with manual prompts before automation
+- The AI should not invent missing candidate information
+
+## Success Criteria
+
+This project is successful if it can turn a messy candidate profile into a clear, structured summary that a recruiter can review quickly.
+
+## Future Possibilities
+
+Later, this project could expand into:
+
+- A spreadsheet-based workflow
+- A Google Docs workflow
+- A no-code automation using n8n
+- A simple web app
+- A private internal recruiter copilot
