@@ -11,7 +11,7 @@ This repository documents my journey to become an AI-powered automation builder,
 - Product manager thinking
 - Side-hustle automation ideas
 
-Finance modelling and trading-related ideas are currently parked for later and should not be treated as active Day 2 work.
+Finance modelling and trading-related ideas are currently parked for later and should not be treated as active work.
 
 ## How AI Assistants Should Work
 
