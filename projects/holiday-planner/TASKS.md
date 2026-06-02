@@ -2,7 +2,7 @@
 
 ## Task 1: Create sample itinerary data
 
-Status: Not started
+Status: Completed
 
 Goal:
 Create a small sanitized itinerary example that can be used for testing.
@@ -27,7 +27,7 @@ Do not edit:
 
 ## Task 2: Create itinerary planner prompt
 
-Status: Not started
+Status: Completed
 
 Goal:
 Create a reusable prompt that turns user preferences and itinerary examples into a day-by-day travel plan.
@@ -68,7 +68,7 @@ Suggested file:
 
 ## Task 4: Create dataset guide
 
-Status: Not started
+Status: Completed
 
 Goal:
 Document how itinerary data should be cleaned and stored.
