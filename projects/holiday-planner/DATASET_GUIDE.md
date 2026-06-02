@@ -71,3 +71,14 @@ Notes:
 - Tip 1
 - Tip 2
 - Tip 3
+
+## Future RAG Preparation
+
+For future RAG usage, each itinerary should be:
+
+- Clear
+- Structured
+- Split by destination and duration
+- Free of private information
+- Written in a consistent format
+- Named clearly, such as `tokyo-2-day-sample.md` or `bangkok-4d3n.md`
