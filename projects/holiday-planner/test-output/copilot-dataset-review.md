@@ -10,9 +10,11 @@
 
 ## Prompt Used
 
+## Prompt Used
+
 Read only this file:
 
-projects/holiday-planner/sample-data/vienna-14-day-sanitized.md
+projects/holiday-planner/sample-data/austria-13-day-sanitized.md
 
 Do not use outside knowledge.
 
@@ -26,7 +28,9 @@ Answer these questions:
 
 ## Copilot Outcome
 
-[Paste or summarize what Copilot told you here.]
+Copilot was able to identify the main itinerary themes, including Vienna cultural sightseeing, Salzburg city exploration, Hallstatt / Obertraun nature routes, Innsbruck mountain and city-card activities, and return-to-Vienna museum and food planning.
+
+Copilot also understood that the dataset can support future itinerary generation, shorter trip extraction, food/cafe recommendations, and RAG-style retrieval.
 
 ## What This Proves
 
