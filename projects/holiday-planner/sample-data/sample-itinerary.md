@@ -1,9 +1,9 @@
-# Tokyo - 5 Days 4 Nights
+# Tokyo - 2 Day Sample
 
 ## Trip Summary
 
 Destination: Tokyo, Japan  
-Duration: 5 days 4 nights  
+Duration: 2 day sample
 Travel Style: Food, shopping, city exploration  
 Budget: Medium  
 Group Type: Couple or friends  
