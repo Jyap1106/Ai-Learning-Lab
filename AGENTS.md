@@ -10,7 +10,7 @@ The current active project is:
 
 - Holiday Planner
 
-The goal is to build a simple AI-assisted holiday planning system using existing itinerary datasets first, then later explore RAG, Vercel deployment, and APIs.
+The goal is to build a simple AI-assisted holiday planning system using sanitized itinerary datasets first, then later explore RAG, Vercel deployment, APIs, and agent workflows.
 
 ## Parked Projects
 
@@ -52,9 +52,9 @@ The user is still learning:
 
 - Repository structure
 - Token and context management
-- How to control AI coding agents
 - Dataset preparation
 - RAG
+- How to control AI coding agents
 - Cost-safe API usage
 - Product documentation
 
