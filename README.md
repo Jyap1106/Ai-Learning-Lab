@@ -39,11 +39,19 @@ I am learning to become someone who can create useful AI-powered tools for busin
 
 ## AI Ideas I Want to Build
 
-1. Daily Habit Trackers app 
-2. Finance modeller 
+### Active Focus
+
+1. Talent Acquisition automation lab
+2. Second brain / personal knowledge base
 3. Automation builder
 4. Corporate language autocorrect
 5. Holiday trip planner
+
+### Parked For Later
+
+1. Finance modeller
+2. Trading journal / paper trading tracker
+3. Risk calculator
 
 ## My Understanding of the AI Builder Stack
 
