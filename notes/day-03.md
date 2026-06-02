@@ -75,6 +75,44 @@ Acceptance criteria:
 - Include current role, years of experience, skills, location, and notes
 - Do not edit README.md or PRD.md
 
+## Good prompting examples
+
+## Bad Prompt Example
+Improve my TA automation project.
+
+## Good prompting examples
+Read AGENTS.md and projects/ta-automation-lab/TASKS.md.
+
+Complete Task 1 only.
+
+Create:
+- projects/ta-automation-lab/sample-data/fake-candidates.md
+
+Do not edit:
+- README.md
+- PRD.md
+- TASKS.md
+
+Use fake data only.
+
+## Bad Prompt Example 2
+Build the whole recruiter app.
+
+## Good Prompting Examples 2 
+Create a frontend-only prototype for the candidate summary workflow.
+
+Use fake data only.
+No backend.
+No login.
+No API.
+No database.
+Include only:
+- candidate input area
+- generated summary preview
+- skills match section
+- concerns section
+- interview questions section
+
 ## Reflection
 
 ### 1. What usually causes me to waste tokens?
