@@ -13,36 +13,34 @@
 
 ## Quick Summary
 
-Day 2 is a full-day exploration of Vienna's imperial palaces and major museums. You'll visit Schönbrunn Palace and its expansive gardens, the world-class Upper Belvedere museum, and end with an evening visit to the stunning Karlskirche. The day flows south and west from Schönbrunn through the city's museum district. This is a moderately active day with several timed-entry attractions.
+Day 2 is a day focusing on Vienna's major palaces and museums. You'll visit Schönbrunn Palace and its gardens, the Upper Belvedere museum, and end with a visit to Karlskirche. The day involves travel between several significant attractions across Vienna.
 
 ## Main Highlights
 
-- **Schönbrunn Palace and Gardens** - Austria's most visited palace with 1,441 rooms and beautiful manicured gardens
-- **Upper Belvedere Museum** - One of Vienna's finest art collections, featuring Austrian paintings and sculptures
-- **Wien Museum** - Quick museum visit to understand Vienna's history and culture
-- **Karlskirche** - Baroque masterpiece at Karlsplatz with optional paid terrace access for city views
+- **Schönbrunn Palace and Gardens** - Palace and gardens
+- **Upper Belvedere Museum** - Museum with art collections
+- **Wien Museum** - Vienna museum visit
+- **Karlskirche** - Church at Karlsplatz
 
 ## Suggested Timeline
 
-**Morning (8:00 - 11:00)**
-- Breakfast near your accommodation, train station, or in the Schönbrunn area
-- Travel to Schönbrunn Palace (U-Bahn to Schönbrunn station)
-- Begin exploring Schönbrunn Palace and gardens
+**Morning**
+- Breakfast near your accommodation, station, or activity area
+- Travel to Schönbrunn Palace
+- Visit Schönbrunn Palace and gardens
 
-**Afternoon (11:00 - 17:00)**
-- Continue at Schönbrunn if needed, or move on to next activity
-- Lunch near Schönbrunn or in the Hietzing neighbourhood
-- Travel to Upper Belvedere museum (tram via Karlsplatz)
-- Explore Upper Belvedere (plan 1.5-2 hours minimum)
-- Tea time near Belvedere or at Karlsplatz area (Cafe Goldegg, Ahrnst Bakery, or Cafe Museum recommended)
-- Quick visit to Wien Museum (free permanent exhibition, can be 30-45 minutes)
+**Afternoon**
+- Lunch near Schönbrunn or Hietzing
+- Travel to Upper Belvedere
+- Visit Upper Belvedere museum
+- Tea time near Belvedere or Karlsplatz area
+- Quick visit to Wien Museum
 
-**Evening (17:00 - 21:00)**
-- Travel to Karlskirche (short walk or U-Bahn from Karlsplatz area)
-- Visit Karlskirche exterior and, if interested, pay for interior or terrace access
-- Attend evening Mass if available (check timing)
-- Dinner around Wieden district or Karlsplatz area
-- Return to accommodation by U-Bahn or tram
+**Evening**
+- Travel to Karlskirche
+- Visit Karlskirche
+- Dinner around Wieden or Karlsplatz area
+- Return to accommodation
 
 ## Food Ideas
 
@@ -50,136 +48,127 @@ Day 2 is a full-day exploration of Vienna's imperial palaces and major museums. 
 - Bakery near your accommodation
 - Station bakery
 - Cafe near palace area
-- Recommended order: coffee, pastry, or croissant
 
 **Lunch Options:**
 - Simple Austrian lunch near Schönbrunn or Hietzing
-- Recommended order: schnitzel, goulash, or soup
 
 **Tea Time Options:**
 - **Cafe Goldegg** (near Belvedere)
-- **Ahrnst Bakery** (Vienna-wide chain)
+- **Ahrnst Bakery**
 - **Cafe Museum** (at Karlsplatz)
-- Recommended order: Wiener Melange (Vienna's signature coffee drink), Gugelhupf (bundt cake), or Apfelstrudel (apple strudel)
+- Recommended order: Wiener Melange, Gugelhupf, or Apfelstrudel
 
 **Dinner Options:**
 - Restaurant around Wieden or Karlsplatz
-- Recommended order: Wiener Melange (beverage), Gugelhupf, Apfelstrudel, soup, schnitzel, or goulash
-- Austrian cuisine is hearty and filling
+- Recommended order: soup, schnitzel, or goulash
 
 ## Transport Notes
 
-- **Use Vienna City Card or local transport card** for all public transport
-- **Route**: U-Bahn and tram connections via Karlsplatz
-- **U-Bahn to Schönbrunn**: Schönbrunn station on the U4 line
-- **Tram to Belvedere**: Take tram via Karlsplatz (several lines converge here)
+- **Use Vienna City Card or local transport card** for public transport
+- **Route**: Use U-Bahn and tram via Karlsplatz
+- **Travel to Schönbrunn**: Use U-Bahn to Schönbrunn station
+- **Tram to Belvedere**: Use tram via Karlsplatz
 - **Minimize unnecessary transfers** - plan your route to avoid backtracking
-- **Walking**: Some legs (Belvedere to Karlsplatz to Karlskirche) are walkable if you enjoy strolling
+- **Walking**: Some sections between attractions are walkable
 
-**Example Route:**
+**Route flow:**
 1. Accommodation → U-Bahn → Schönbrunn Palace
 2. Schönbrunn → tram via Karlsplatz → Upper Belvedere
-3. Upper Belvedere → short walk → Wien Museum (nearby)
-4. Wien Museum area → short walk → Karlsplatz
-5. Karlsplatz → short walk → Karlskirche
+3. Upper Belvedere → walk → Wien Museum (nearby)
+4. Wien Museum area → walk → Karlsplatz
+5. Karlsplatz → walk → Karlskirche
 6. Karlskirche → U-Bahn or tram → Accommodation
 
 ## Things to Prepare
 
 - **Comfortable walking shoes** - You'll walk through palace gardens and between museums
-- **Layers** - Schönbrunn gardens are outdoors; weather changes quickly
-- **Hydration** - Carry a water bottle, especially for Schönbrunn gardens
-- **Energy snacks** - This is a full day; bring fruit or energy bars
-- **Sun protection** - Hat and sunscreen for outdoor palace gardens
-- **City Card activated** - Have your Vienna City Card ready for tram and U-Bahn
-- **Museum-appropriate clothing** - Comfortable but neat for museums (no strict dress code)
-- **Estimated pace**: Allow 3-4 hours at Schönbrunn, 1.5-2 hours at Upper Belvedere, 30-45 min at Wien Museum
+- **Layers** - Gardens are outdoors; weather can change
+- **Hydration** - Carry a water bottle, especially for palace gardens
+- **Energy snacks** - This is a full day; bring items to sustain energy
+- **Sun protection** - Hat and sunscreen for outdoor areas
+- **City Card activated** - Have your Vienna City Card ready for transport
+- **Museum-appropriate clothing** - Comfortable for museums
 
 ## Verify Live (Before You Go)
 
 **Critical to Check:**
 
-1. **Schönbrunn Palace Timed Entry**
-   - Book timed entry online in advance if possible
-   - Check current opening hours (subject to maintenance or seasonal changes)
-   - Palace entrance is paid; gardens are partly free
-   - Ask: "Are timed slots available for today?"
+1. **Schönbrunn Palace**
+   - Check current opening hours
+   - Confirm if timed entry is required
+   - Verify which areas are paid vs. free
+   - Ask: "Are timed slots available?"
 
-2. **Upper Belvedere Opening Hours**
-   - Confirm museum is open (renovations or special events may affect hours)
+2. **Upper Belvedere**
+   - Confirm museum is open
    - Verify entry fee and Vienna City Card discount
-   - Ask: "Is Upper Belvedere open today? What are the hours?"
+   - Ask: "What are the current hours and entry requirements?"
 
-3. **Wien Museum Status**
-   - Permanent exhibition should be free
-   - Confirm current exhibitions and accessibility
-   - Ask: "Is Wien Museum open? Are there any closures?"
+3. **Wien Museum**
+   - Confirm permanent exhibition status
+   - Verify if there are any closures
+   - Ask: "Is Wien Museum open today?"
 
-4. **Karlskirche Visitor Access**
-   - Exterior is always visible and free
-   - Interior and terrace access are paid
-   - Evening Mass times vary; check ahead
-   - Ask: "Is Karlskirche open for visitors today? What are Mass times?"
+4. **Karlskirche**
+   - Exterior is visible
+   - Interior access may be paid
+   - Terrace access may be paid
+   - Ask: "What are the visiting options and costs?"
 
 5. **Weather**
-   - Check forecast for garden weather at Schönbrunn
-   - Decide on rain backup (museums work well in any weather)
-   - Ask: "What's the weather forecast for Vienna today?"
+   - Check forecast for outdoor areas
+   - Plan indoor backup if needed
 
 6. **Public Transport**
-   - Check for U-Bahn or tram disruptions
+   - Check for U-Bahn or tram service disruptions
    - Confirm your City Card covers all routes needed
-   - Ask: "Are there any transit delays today?"
 
 ## Optional Adjustment: Lighter Day
 
 If you're tired, short on time, or want a relaxed pace:
 
 **Option A: Skip Upper Belvedere**
-- Focus on Schönbrunn (full morning and early afternoon)
-- Visit Wien Museum (shorter, free)
-- Enjoy Karlskirche and evening in the Karlsplatz area
-- Have a leisurely dinner and early rest
-
-**Option B: Half-day Palace Focus**
-- Spend extended time at Schönbrunn (palace interiors and gardens)
-- Skip or quickvisit Upper Belvedere
-- Relax at a Karlsplatz cafe for tea time
-- Visit Karlskirche at sunset
-
-**Option C: Museums Only**
-- Skip Schönbrunn Palace interiors; just walk the free gardens briefly
-- Spend time at Upper Belvedere
+- Focus on Schönbrunn
 - Visit Wien Museum
-- Enjoy Karlskirche and dinner
+- Enjoy Karlskirche and Karlsplatz area
+- Rest earlier in the evening
+
+**Option B: Focus on Schönbrunn Only**
+- Spend time at Schönbrunn Palace and gardens
+- Skip or briefly visit other museums
+- Visit Karlskirche at a relaxed pace
+
+**Option C: Museums Focus**
+- Brief visit to Schönbrunn gardens
+- Visit Upper Belvedere and Wien Museum
+- See Karlskirche in the evening
 
 **Why adjust?**
-- Timed-entry waits at Schönbrunn can extend the day
-- Multiple museums cause "museum fatigue"
-- You may prefer depth (one place well) over breadth (multiple places quickly)
+- Multiple timed-entry attractions can create schedule pressure
+- Museum visits in one day can be tiring
+- You may prefer focused exploration of one place over multiple locations
 
 ---
 
 ## Test Notes
 
 **What worked well:**
-- Day 2 data from austria-13-day-sanitized.md was complete and clear
-- All major attractions (Schönbrunn, Belvedere, Wien Museum, Karlskirche) were present
-- Food, transport, and preparation details were extractable
-- Structure matched BOT_SPEC.md output format exactly
+- Day 2 data from austria-13-day-sanitized.md included all major attractions
+- Attractions (Schönbrunn, Belvedere, Wien Museum, Karlskirche) were clearly listed
+- Food, transport, and preparation notes were available from the dataset
+- Structure matches BOT_SPEC.md output format
 
-**What to verify live:**
-- Exact opening hours and ticket availability (dataset provides general info only)
-- Timed-entry requirements for Schönbrunn
-- Current Vienna City Card discounts
-- Public transport schedule and disruptions
-- Weather and seasonal closures
+**Data constraints:**
+- The dataset does not specify exact opening hours or times
+- Clock times are not provided in the itinerary
+- Specific route numbers or transit durations are not detailed
+- Duration estimates must come from general travel knowledge, not the dataset
 
 **Dataset sufficiency:**
-- The Austria itinerary dataset provides enough detail for a practical daily briefing
-- Time estimates are reasonable for planning
-- Transport connections are clear enough for navigation
-- Food and cafe suggestions are specific and actionable
+- The Austria itinerary dataset provides day-level structure
+- Attractions and general flow are clear
+- Food and cafe suggestions are specific
+- Information is adequate for a traveler to plan their day
 
 ---
 
@@ -189,13 +178,14 @@ If you're tired, short on time, or want a relaxed pace:
 ✅ **Includes Upper Belvedere**  
 ✅ **Includes Wien Museum**  
 ✅ **Includes Karlskirche**  
-✅ **Includes food suggestions with specific restaurants and dishes**  
-✅ **Includes transport notes with U-Bahn and tram routing**  
-✅ **Includes things to prepare (shoes, layers, water, snacks, etc.)**  
-✅ **Includes things to verify live (hours, bookings, weather)**  
+✅ **Includes food suggestions with specific cafes**  
+✅ **Includes transport notes without invented route numbers**  
+✅ **Includes things to prepare**  
+✅ **Includes things to verify live**  
 ✅ **Includes optional lighter-day adjustments**  
 ✅ **Follows BOT_SPEC.md structured format**  
-✅ **Does not invent opening hours or exact prices**  
+✅ **Does not invent clock times**  
+✅ **Does not invent route numbers or durations**  
 ✅ **Uses only data from austria-13-day-sanitized.md**  
 
 ---

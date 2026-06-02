@@ -1,8 +1,8 @@
-# Day 6 Notes: Austria Trip Companion Bot - MVP Complete
+# Day 6 Notes: Austria Trip Companion Bot - MVP Foundation
 
 **Date**: June 2, 2026  
 **Project**: Holiday Planner: Austria Trip Companion Bot  
-**Status**: Day 6 objectives completed
+**Status**: Day 6 objectives completed and cleaned up
 
 ---
 
@@ -59,34 +59,34 @@ Without this, the bot doesn't know which day to fetch. This document clarifies t
 
 **File**: `projects/holiday-planner/test-output/day-2-today-plan-test.md`
 
-I created a complete "What's today's plan?" response for Day 2 (Vienna) using only data from the Austria dataset. The output includes:
+I created a "What's today's plan?" response for Day 2 (Vienna) using only data from the Austria dataset. The output includes:
 
-✅ **Quick Summary** - Day 2 theme and overall feel  
+✅ **Quick Summary** - Day 2 focus and activities  
 ✅ **Main Highlights** - Schönbrunn, Belvedere, Wien Museum, Karlskirche  
-✅ **Suggested Timeline** - Morning, afternoon, evening breakdown  
-✅ **Food Ideas** - Breakfast, lunch, tea, dinner with specific cafes  
-✅ **Transport Notes** - U-Bahn, tram, walking routes  
-✅ **Things to Prepare** - Shoes, water, snacks, City Card, etc.  
-✅ **Verify Live** - Opening hours, timed entries, weather, transit  
-✅ **Optional Adjustment** - Lighter-day versions if tired  
+✅ **Suggested Timeline** - Morning, afternoon, evening flow  
+✅ **Food Ideas** - Cafes and restaurants from dataset  
+✅ **Transport Notes** - U-Bahn, tram, walking without invented details  
+✅ **Things to Prepare** - Practical items for the day  
+✅ **Verify Live** - Opening hours, access, weather, transport  
+✅ **Optional Adjustment** - Lighter-day alternatives  
 
-**Validation**:
-- All data comes from austria-13-day-sanitized.md, Day 2 section
-- No invented opening hours, prices, or live conditions
-- Follows BOT_SPEC.md structured format exactly
-- Practical for a traveler to use on the actual trip
+**Data Fidelity:**
+- All content sourced from austria-13-day-sanitized.md, Day 2 section
+- No invented clock times (8:00-11:00 format removed)
+- No invented route numbers ("U4 line" removed)
+- No invented duration estimates ("1.5-2 hours" removed)
+- No invented attribute claims ("world-class", "Austria's most visited" removed)
+- Follows BOT_SPEC.md structured format
 
 **What I learned:**
-- The Austria dataset is rich enough for detailed daily briefings
-- Transport connections are clear and actionable
-- Food suggestions are specific and helpful
-- The bot can generate practical, travel-ready outputs
+- The Austria dataset provides sufficient structure for daily planning
+- Attractions and flow are clear from the itinerary
+- Food suggestions are specific and actionable
+- The challenge is avoiding invented details like times and durations
 
 ### 5. Updated TASKS.md
 
-**Changes**:
-- Task 8: "Manually test the bot with Day 2" → **Status: Completed**
-- Task 9: "Create trip day mapping rule" → **Status: Completed**
+**Status**: Task 8 and Task 9 marked "Completed" with notes
 
 ---
 
@@ -122,26 +122,27 @@ The issue template forces clarity. Every task now has:
 
 This reduces back-and-forth and cuts token waste.
 
-### 3. Day Mapping Is a Core Design Decision
-I could have hardcoded "always use Day 2" for testing, but that wouldn't scale. Instead, I documented two options:
-- MVP: Manual day specification
-- Future: Smart date-based calculation
+### 3. Data Integrity Is Hard
+It's easy to accidentally invent facts when creating example output. Things to watch:
+- Clock times (not in dataset)
+- Route numbers (not in dataset)
+- Duration estimates (not in dataset)
+- Attribute claims like "world-class" or "most visited" (not in dataset)
 
-This opens the door for growth without rework.
+The bot must clearly separate dataset facts from common knowledge.
 
-### 4. The Dataset Is Actually Good
-The austria-13-day-sanitized.md itinerary is detailed enough to power real travel decisions. The Day 2 test output shows it provides:
-- Specific attractions
-- Real cafe and restaurant names
-- Transport routing (U-Bahn, tram lines)
-- Practical preparation notes
-- Clear "verify live" distinctions
+### 4. The Dataset Has Natural Limits
+The Austria itinerary provides day-level structure but not:
+- Specific opening hours
+- Live transport information
+- Current prices or discounts
+- Real-time availability
 
-This validates the dataset is RAG-ready for future versions.
+The bot must guide users to verify live information before traveling.
 
-### 5. Bot Output Matches Spec
-The Day 2 output perfectly mirrors BOT_SPEC.md's required format:
-1. Today's Summary ✓
+### 5. Output Format Works
+The Day 2 test output demonstrates the BOT_SPEC.md format is workable:
+1. Quick Summary ✓
 2. Main Highlights ✓
 3. Timeline (morning/afternoon/evening) ✓
 4. Food Ideas ✓
@@ -150,7 +151,22 @@ The Day 2 output perfectly mirrors BOT_SPEC.md's required format:
 7. Things to Verify Live ✓
 8. Optional Adjustments ✓
 
-This proves the spec is working and the bot is implementable.
+This format is useful for travelers and achievable with the dataset.
+
+---
+
+## Cleanup Changes (Second Pass)
+
+Initial Day 6 output contained facts not in the austria-13-day-sanitized.md dataset:
+
+**Removed or softened:**
+- Specific clock times (8:00-11:00, etc.) → Changed to "morning", "afternoon", "evening"
+- Route numbers ("U4 line") → Changed to generic "U-Bahn to Schönbrunn station"
+- Duration estimates ("1.5-2 hours") → Removed or made generic
+- Attribute claims ("Austria's most visited", "world-class") → Removed
+- Attribute claims ("Baroque masterpiece") → Removed
+
+These additions, while helpful for travelers, were not in the source dataset and violated the bot's core rule: **use the itinerary dataset as the source of truth.**
 
 ---
 
@@ -178,77 +194,67 @@ This proves the spec is working and the bot is implementable.
 
 ---
 
-## Files Created Today
+## Files Status
 
+### Files Created Today
 1. `.github/copilot-instructions.md` - Repository-wide AI assistant guidelines
 2. `.github/ISSUE_TEMPLATE/copilot-task.md` - Structured task template
 3. `projects/holiday-planner/TRIP_DAY_MAPPING.md` - Day identification strategy
 4. `projects/holiday-planner/test-output/day-2-today-plan-test.md` - Day 2 test output
 5. `notes/day-06.md` - This file
 
-## Files Updated Today
+### Files Updated Today
+1. `projects/holiday-planner/TASKS.md` - Task 8 and Task 9 marked Completed
+2. `projects/holiday-planner/test-output/day-2-today-plan-test.md` - Cleaned up to remove invented facts
+3. `notes/day-06.md` - Updated with cleanup notes
 
-1. `projects/holiday-planner/TASKS.md` - Mark Task 8 and Task 9 as Completed
-
-## Files Unchanged Today (As Required)
-
-- `projects/holiday-planner/sample-data/austria-13-day-sanitized.md` ✓ Protected
-- `projects/holiday-planner/sample-data/DATA_CLEANING_LOG.md` ✓ Protected
-- `LICENSE` ✓ Protected
-- `.gitignore` ✓ Protected
+### Files Protected (Unchanged)
+- `projects/holiday-planner/sample-data/austria-13-day-sanitized.md` ✓
+- `projects/holiday-planner/sample-data/DATA_CLEANING_LOG.md` ✓
+- `LICENSE` ✓
+- `.gitignore` ✓
 
 ---
 
-## Assumptions Made
+## Day 6 Acceptance Criteria - Checked
 
-1. **MVP Strategy**: I assumed Day 2 test output should use manual day specification ("I'm on Day 2") rather than date calculation, because it's simpler for testing and matches real user patterns.
+1. ✅ Update TASKS.md so Task 8 and Task 9 are marked Completed
+   - Both tasks marked with notes and completion dates
 
-2. **Data Fidelity**: I assumed the Austria dataset should never be edited or "improved" with outside knowledge. All test output uses only what's in the dataset.
+2. ✅ Update day-2-today-plan-test.md to remove facts not in dataset
+   - Removed clock times, route numbers, duration estimates, attribute claims
+   - Kept structure: summary, highlights, timeline, food, transport, prep, verify, adjust
 
-3. **Bot is Stateless**: I assumed the bot doesn't remember previous conversations. Each question starts fresh. This is fine for MVP; session memory is a future feature.
+3. ✅ Do not include exact clock times unless in dataset
+   - Changed all specific times to generic morning/afternoon/evening
 
-4. **Austria Only**: I assumed the bot is Austria-specific for now. Multi-destination support can come later.
+4. ✅ Do not include exact routes, route numbers, durations, rankings, claims unless in dataset
+   - Removed "U4 line", removed duration estimates, removed "world-class", "most visited", etc.
 
-5. **Manual Review**: I assumed the Day 2 test output will be manually reviewed by a human to confirm it matches spec and is useful before automated testing begins.
+5. ✅ Keep useful structure: summary, highlights, timeline, food, transport, prep, verify, adjust
+   - All 8 sections maintained
+
+6. ✅ Update notes/day-06.md so it doesn't claim all criteria met unless actually done
+   - Updated to reflect cleanup process and data integrity focus
+
+7. ✅ Fix .github/ISSUE_TEMPLATE/copilot-task.md for valid YAML
+   - Already has valid YAML front matter (lines 1-8)
+
+8. ✅ Keep Austria dataset unchanged
+   - Protected file, not touched
 
 ---
 
 ## Personal Reflection
 
-Day 6 felt like crossing a threshold. Days 1-5 were about *understanding* (reading docs, creating specs, preparing data). Day 6 was about *operationalizing* (making the bot actually work with a real test case).
+Day 6 had two phases:
 
-The Day 2 output proves the concept works. A traveler could actually use this response to plan their day. That's exciting.
+**Phase 1 (Initial)**: Created the MVP structure and test output. Felt like progress—documenting the bot, defining day mapping, creating the first test.
 
-The Copilot instructions and task template also feel important—they're meta-work, not direct product work. But they're the foundation for scaling. As I move to building features faster (Days 7-30), I'll rely on these guides to keep agents from introducing bugs or inventing data.
+**Phase 2 (Cleanup)**: Realized the test output contained invented facts (times, route numbers, durations, attribute claims). This was the learning moment: **being a good AI builder means respecting your data sources.** 
 
-Next, I want to see the bot answer other questions ("What's in Salzburg?" "Which days use the Vienna Card?") and eventually deploy something people can try.
+It's tempting to embellish the bot output with helpful context ("8:00-11:00 morning", "Austria's most visited palace"). But if those facts aren't in the dataset, the bot shouldn't claim them. That's the difference between a useful bot and a hallucinating bot.
 
----
+The cleanup was actually the more important work. It taught me to audit my outputs against the source data, not just the structure.
 
-## Metrics
-
-- **Lines of documentation created**: ~600
-- **Lines of test output created**: ~450
-- **Files created**: 4
-- **Files updated**: 1
-- **Protected files touched**: 0 ✓
-- **Time estimate**: 2-3 hours for a human; ~30 min with AI assistance
-
----
-
-## Checklist: Day 6 Acceptance Criteria
-
-- [x] Create .github/copilot-instructions.md with repository-specific Copilot instructions
-- [x] Create .github/ISSUE_TEMPLATE/copilot-task.md for controlled Copilot tasks
-- [x] Create projects/holiday-planner/TRIP_DAY_MAPPING.md
-- [x] Create projects/holiday-planner/test-output/day-2-today-plan-test.md using Day 2 from the Austria dataset
-- [x] Create notes/day-06.md
-- [x] Update projects/holiday-planner/TASKS.md so Task 8 and Task 9 are marked Completed
-- [x] Keep the Austria dataset unchanged
-- [x] Do not add APIs, app code, database logic, or live travel information
-- [x] Do not invent opening hours, prices, or live transport details
-- [x] Use only the Austria itinerary dataset for the Day 2 test output
-- [x] Expected Day 2 test output includes Schönbrunn, Belvedere, Wien Museum, Karlskirche
-- [x] Expected Day 2 test output includes food, transport, preparation, verification, and optional adjustments
-
-✅ **All acceptance criteria met.**
+Ready for Day 7: building RAG so the bot can search across multiple days and answer broader questions.
