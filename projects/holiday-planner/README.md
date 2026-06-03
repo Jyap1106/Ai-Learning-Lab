@@ -2,28 +2,42 @@
 
 ## Project Purpose
 
-Holiday Companion Bot is an AI-assisted travel companion system that helps users understand and use their trip itinerary during an actual trip.
+Holiday Companion Bot is an AI-assisted travel product that helps users build, understand, edit, save, and eventually share their travel itinerary.
 
-The first MVP uses a sanitized Austria itinerary dataset.
+The first working example is the Austria trip.
 
-In the future, the system should support other trips by allowing new structured itinerary datasets to be added.
+The current Markdown itinerary file is used as learning scaffolding. In the final product, the itinerary should be created and updated inside the product rather than manually edited in a Markdown file.
 
 ## Current MVP
 
-The current MVP is:
+The current MVP focuses on one trip first:
 
-- Austria Trip Companion Bot
+- Austria trip
 
-It should answer questions such as:
+The MVP should help the user:
 
-- What is today's plan?
-- What should I prepare before leaving?
-- What food is planned today?
-- What transport notes should I know?
-- What can I skip if I am tired?
-- What is tomorrow's plan?
-- Which days involve intercity travel?
-- Which days are best for cafes or museums?
+- Check today's plan
+- Check tomorrow's plan
+- Understand food options
+- Understand transport notes
+- Prepare before leaving
+- Make the day lighter if tired
+- Remove, replace, add, or move activities
+- Confirm changes before saving
+- Preserve the updated itinerary state
+
+## Example User Flow
+
+1. User opens the product.
+2. Product loads the saved itinerary.
+3. User asks: "What's today's plan?"
+4. Bot retrieves today's plan.
+5. User says: "Remove one activity from today and replace it with something lighter."
+6. Bot proposes a change.
+7. User confirms the change.
+8. Backend updates the full itinerary.
+9. Updated itinerary is saved.
+10. The itinerary can later be shared or used for future preference learning.
 
 ## Why This Project Matters
 
@@ -33,20 +47,25 @@ This project is a good first AI product because it teaches:
 - Dataset preparation
 - RAG-style thinking
 - Bot behavior design
-- Multi-intent question handling
+- Intent classification
+- State management
+- Itinerary editing workflows
 - Product documentation
+- Backend planning
 - Future app planning
 - Cost-safe AI workflows
 
 ## Target User
 
-The target user is a traveler who already has a planned itinerary and wants a simple AI assistant to explain the trip day by day.
+The target user is a traveler who wants a flexible itinerary assistant.
 
-The user may be travelling and wants fast answers without searching through a long itinerary manually.
+The user may already have an itinerary or may want the product to help build one.
+
+During the trip, the user wants fast answers without searching through a long itinerary manually.
 
 ## First Version
 
-The first version will not use APIs, live maps, or a full app.
+The first version will not use paid APIs, live maps, live weather, real-time transport, user login, or database logic.
 
 It will use:
 
@@ -54,22 +73,26 @@ It will use:
 - Sanitized itinerary data
 - Reusable prompts
 - Manual bot testing
-- GitHub as the source of project memory
+- GitHub as project memory
+- A designed itinerary state model
+- A designed edit workflow
 
 ## Future Versions
 
 Later, this project could become:
 
-- A simple Vercel web app
+- A Vercel web app
+- A chat-based travel companion
+- A daily trip briefing tool
+- A trip itinerary builder
+- A saved itinerary editor
+- A shareable itinerary generator
 - A RAG itinerary assistant
-- A daily trip briefing bot
 - A food and cafe finder based on the itinerary
 - A tired-mode travel assistant
-- A multi-trip companion system
-- A trip suggestion planner that learns from past itinerary structures
+- A preference-aware travel assistant
 - A map or places API-powered assistant
 - A weather-aware travel assistant
-- A shareable travel itinerary generator
 
 ## Important Data Rule
 
@@ -86,14 +109,27 @@ Do not upload:
 - Payment details
 - Private personal information
 
-## Current Source of Truth
+## Current Learning Source of Truth
 
-The current source of truth is:
+The current protected learning dataset is:
 
 - sample-data/austria-13-day-sanitized.md
 
-This dataset should be treated as protected.
+This file is not the final product storage method.
+
+It is currently used to learn:
+
+- How itinerary data should be structured
+- How a bot retrieves trip information
+- How question patterns work
+- How itinerary state might be designed later
+
+## Final Product Direction
+
+The final product should manage itinerary state.
+
+That means the product should eventually store the current saved version of the trip, allow user-confirmed edits, preserve version history, and support future sharing.
 
 ## Current Status
 
-MVP planning and prompt testing stage.
+MVP planning, prompt testing, itinerary state design, and edit workflow design stage.
