@@ -1,81 +1,63 @@
 ---
 name: Copilot Task
-about: Define a controlled task for GitHub Copilot or AI coding agents
-title: "[COPILOT TASK] "
+about: A controlled task for GitHub Copilot or AI coding agents
+title: "[Copilot Task] "
 labels: copilot-task
 assignees: ''
-
 ---
-
-## Task Title
-
-[Clear, concise title for the Copilot task]
 
 ## Goal
 
-[What should Copilot accomplish? One sentence summary.]
+Describe the task in one sentence.
 
-## Context
+## Active Project
 
-[Which project or area? Reference AGENTS.md if applicable.]
+Holiday Planner: Austria Trip Companion Bot
 
-- **Project**: [e.g., Holiday Planner: Austria Trip Companion Bot]
-- **Related files**: [List relevant files to read]
-- **Acceptance criteria**: [List specific requirements]
+## Files Copilot Should Read
 
-## Files Copilot Should Read First
-
-- [ ] AGENTS.md
-- [ ] README.md
-- [ ] Project-specific README
-- [ ] Other: [specify]
+- AGENTS.md
+- README.md
+- projects/holiday-planner/README.md
+- projects/holiday-planner/PRD.md
+- projects/holiday-planner/BOT_SPEC.md
+- projects/holiday-planner/TASKS.md
+- projects/holiday-planner/TRIP_DAY_MAPPING.md
+- projects/holiday-planner/prompts/today-plan-bot.md
 
 ## Files Copilot May Create or Edit
 
-- [ ] File 1
-- [ ] File 2
-- [ ] File 3
+- 
 
-## Files Copilot Must NOT Edit
+## Files Copilot Must Not Edit
 
-- [ ] File 1
-- [ ] File 2
+- projects/holiday-planner/sample-data/austria-13-day-sanitized.md
+- projects/holiday-planner/sample-data/DATA_CLEANING_LOG.md
+- LICENSE
+- .gitignore
+
+## Acceptance Criteria
+
+- [ ] 
+- [ ] 
+- [ ] 
 
 ## Constraints
 
-[Any safety rules, limitations, or special instructions?]
-
-- Do not add APIs unless explicitly requested
-- Do not invent data
-- Use only provided datasets
-- Other: [specify]
-
-## Expected Output
-
-[Describe what success looks like]
-
-## Deliverables
-
-- [ ] Task 1 completed
-- [ ] Task 2 completed
-- [ ] Task 3 completed
+- Do not rewrite unrelated files.
+- Do not add paid APIs.
+- Do not use private travel data.
+- Do not invent opening hours, prices, weather, ticket availability, exact travel durations, rankings, or live transport information.
+- Use the Austria itinerary dataset as the source of truth.
+- Keep the change small and reviewable.
 
 ## Notes
 
-[Any additional context or assumptions]
+Ask for clarification if the task is ambiguous.
 
----
+When finished, summarize:
 
-## For Copilot After Assignment
-
-Before starting work:
-
-1. Read AGENTS.md first.
-2. Read the project README and relevant documentation.
-3. Summarize your understanding in a comment on this issue.
-4. Ask before editing files.
-5. Keep changes small and focused.
-6. After completing work, summarize:
-   - Files changed
-   - Files intentionally not touched
-   - Assumptions made
+1. Files changed
+2. Files intentionally not touched
+3. Assumptions made
+4. Suggested next step
