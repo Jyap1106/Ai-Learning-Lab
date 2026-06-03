@@ -2,57 +2,131 @@
 
 ## Product Summary
 
-Holiday Companion Bot is an AI-assisted travel companion system that helps a traveler retrieve, understand, and act on their saved itinerary during a trip.
+Holiday Companion Bot is an AI-assisted travel product that helps users build, understand, edit, save, and eventually share travel itineraries.
 
-The first MVP is the Austria Trip Companion Bot, powered by a sanitized Austria 13-day itinerary dataset.
+The first MVP uses the Austria trip as the working example.
 
-The product should later evolve into a reusable system that can support other trips by adding new structured itinerary datasets.
+The product should move beyond a static itinerary reader. It should become a flexible itinerary companion that can answer trip questions and safely update the itinerary after user confirmation.
 
 ## Product Vision
 
-The long-term vision is to create a personal travel companion bot that can:
+The long-term vision is to create a travel companion that can:
 
-1. Read structured itinerary datasets
-2. Answer practical trip-day questions
-3. Help the user prepare for the day
-4. Suggest lighter alternatives when tired
-5. Retrieve food, transport, and activity details
-6. Support multiple future trips
-7. Eventually help suggest new itineraries based on past trip patterns
+1. Build an itinerary from user preferences
+2. Load a saved itinerary
+3. Answer practical trip questions
+4. Explain today and tomorrow's plan
+5. Suggest lighter alternatives
+6. Propose itinerary changes
+7. Save confirmed itinerary updates
+8. Preserve version history
+9. Support sharing
+10. Learn future travel preferences from saved itineraries and edits
 
 ## Target User
 
-The target user is a traveler who already has a planned itinerary and wants a simple AI assistant to explain and adapt the trip during travel.
+The target user is a traveler who wants a flexible itinerary assistant.
+
+The user may:
+
+- Have an existing itinerary
+- Want help building an itinerary
+- Need help understanding today or tomorrow's plan
+- Want to change the plan during the trip
+- Want to save and share the final itinerary
 
 ## Main Problem
 
-Travel itineraries often become hard to use during the actual trip.
+Travel itineraries often become hard to use during an actual trip.
 
-Useful information may be spread across:
+Problems include:
 
-- Day plans
-- Food notes
+- Plans become outdated
+- The user gets tired
+- Weather or timing changes
+- Activities need to be removed or replaced
+- Useful details are spread across the itinerary
+- Users need quick answers while travelling
+- Updated plans need to be saved
+
+A static itinerary is not flexible enough.
+
+The product should help the user manage the current itinerary state.
+
+## Key Concept: Itinerary State
+
+Itinerary state means the current saved version of the trip.
+
+It includes:
+
+- Trip name
+- Destination
+- Dates
+- Current trip day
+- Day-by-day plan
+- Activities
+- Food ideas
 - Transport notes
-- Attraction reminders
-- Ticket reminders
-- City transitions
-- Personal travel preferences
+- Preparation notes
+- User edits
+- Version history
+- Sharing status
+- User preferences
 
-The user needs a quick way to ask natural questions and retrieve the relevant itinerary details.
+In the current learning phase, itinerary state is represented using Markdown files.
+
+In the final product, itinerary state may be stored in JSON, a database, local storage, or backend storage.
 
 ## First MVP Use Case
 
 The first MVP use case is:
 
-> Ask the bot what today's plan is and receive a practical travel briefing.
+> User opens the product, checks today's plan, asks to change one activity, confirms the proposed change, and the itinerary is updated.
 
-The bot should retrieve the correct day from the Austria itinerary dataset and return a useful answer.
+## Core User Flow
 
-## Example User Stories
+1. User opens product.
+2. Product loads the saved itinerary.
+3. User asks: "What's today's plan?"
+4. Bot retrieves the relevant day from itinerary state.
+5. Bot explains highlights, food, transport, and preparation notes.
+6. User asks: "Remove one activity from today and replace it with something lighter."
+7. Bot identifies the affected day and activity.
+8. Bot proposes a change.
+9. User confirms or rejects the change.
+10. Backend updates the itinerary state.
+11. Updated itinerary is saved.
+12. Future answers use the updated itinerary.
+
+## Supported Intents
+
+The bot should support these initial intent types:
+
+1. Today's plan
+2. Tomorrow's plan
+3. Specific day lookup
+4. Food question
+5. Transport question
+6. Preparation question
+7. Tired-mode question
+8. Remove activity
+9. Replace activity
+10. Add activity
+11. Reschedule activity
+12. Make day lighter
+13. Summarize full itinerary
+14. Share itinerary
+15. Clarification needed
+
+## Read-Only User Stories
 
 ### Today's Plan
 
 As a traveler, I want to ask "What's today's plan?" so that I can quickly understand the day's highlights, food options, transport notes, and things to prepare.
+
+### Tomorrow's Plan
+
+As a traveler, I want to ask "What is tomorrow's plan?" so that I can prepare ahead.
 
 ### Food Question
 
@@ -62,111 +136,140 @@ As a traveler, I want to ask "What food is planned today?" so that I can quickly
 
 As a traveler, I want to ask "What can I skip if I am tired?" so that I can reduce the day's plan without losing the main experience.
 
-### Tomorrow Mode
+## Edit User Stories
 
-As a traveler, I want to ask "What is tomorrow's plan?" so that I can prepare ahead.
+### Remove Activity
 
-### Cross-Day Search
+As a traveler, I want to remove an activity from today's itinerary so that my plan reflects what I actually want to do.
 
-As a traveler, I want to ask "Which days involve intercity travel?" or "Which days are best for cafes?" so that I can understand the trip structure.
+### Replace Activity
+
+As a traveler, I want to replace one activity with another so that the itinerary stays flexible.
+
+### Add Activity
+
+As a traveler, I want to add a new activity to a day so that the itinerary can adapt to new interests.
+
+### Reschedule Activity
+
+As a traveler, I want to move an activity to another day so that the itinerary remains realistic.
 
 ## Inputs
 
-The bot may use:
+The product may use:
 
 - User question
+- Saved itinerary state
 - Current trip day
-- Destination or city
-- Trip dataset
-- Day number
-- Optional travel date
-- Optional user condition, such as "I am tired" or "I want a lighter plan"
-- Optional trip context, such as current city or tomorrow's day
+- Current city
+- User condition, such as tired or normal energy
+- Desired change
+- Activity to remove
+- Activity to add
+- Activity to replace
+- Confirmation response
+- Optional trip start date
+- Optional current date
 
 ## Outputs
 
-The bot should produce different outputs depending on the user's intent.
-
-Possible output sections:
+The bot may produce:
 
 - Quick summary
 - Relevant itinerary details
-- Main highlights
-- Suggested timeline
+- Today's plan
+- Tomorrow's plan
 - Food ideas
 - Transport notes
 - Things to prepare
 - Things to verify live
-- Optional lighter version
+- Optional lighter plan
+- Proposed itinerary change
+- Confirmation question
+- Updated itinerary summary after confirmation
 - Missing information
 - Clarification question
 
-## Supported Intents
+## Edit Behavior Rules
 
-The bot should support these initial intent types:
+The bot must not silently change the itinerary.
 
-1. Today's plan
-2. Specific day lookup
-3. Food question
-4. Tired-mode question
-5. Tomorrow's plan
-6. Intercity travel search
-7. Museum or culture search
-8. Cafe or food search
-9. Preparation question
-10. Clarification needed
+For edit requests, the bot should:
+
+1. Identify the affected day.
+2. Identify the affected activity.
+3. Check the current itinerary state.
+4. Propose a change.
+5. Explain what will be removed, added, moved, or replaced.
+6. Ask for user confirmation.
+7. Only save the change after confirmation.
+8. Summarize the updated plan after saving.
 
 ## Constraints
 
-- Use the itinerary dataset as the source of truth
-- Do not invent exact opening hours, prices, rankings, weather, ticket availability, or live transport details
-- If live information is needed, tell the user to verify it
-- Do not use private booking information
-- Do not add paid APIs yet
-- Keep the first version manual and simple
-- Do not treat subjective rankings as facts unless the dataset clearly supports them
-- Ask for clarification when the current day, city, or intent is unclear
+- Do not silently change itinerary state.
+- Always propose changes before applying them.
+- Ask for confirmation before saving changes.
+- Do not invent live facts.
+- Do not invent opening hours.
+- Do not invent prices.
+- Do not invent weather.
+- Do not invent ticket availability.
+- Do not invent live transport disruptions.
+- Do not use private booking information.
+- Keep backend and database implementation for later.
+- Keep paid APIs out of the MVP.
+- Treat the Austria Markdown dataset as learning scaffolding, not final product storage.
 
-## Current Dataset
+## Current Learning Dataset
 
-The current MVP dataset is:
+The current protected learning dataset is:
 
 - sample-data/austria-13-day-sanitized.md
 
-Future datasets may include:
+This dataset is used to learn how itinerary information should be structured and retrieved.
 
-- japan-trip-sanitized.md
-- korea-trip-sanitized.md
-- taiwan-trip-sanitized.md
-- thailand-trip-sanitized.md
-- custom-user-trip-sanitized.md
+## Not in Current MVP
 
-## Success Criteria
+The current MVP should not include:
 
-This project is successful if the bot can:
-
-- Answer day-specific trip questions using the correct dataset section
-- Answer cross-day questions by scanning the dataset
-- Avoid unsupported facts
-- Ask for clarification when needed
-- Separate itinerary information from live details that must be verified
-- Support a structure that can be reused for future trips
+- Live weather API
+- Live maps API
+- Live transport API
+- Booking integration
+- Payments
+- User login
+- Automatic email sending
+- Multi-user collaboration
+- Multiple trip datasets as the current focus
 
 ## Future Product Possibilities
 
 Later, this project could include:
 
-- RAG over itinerary files
 - Vercel web app
-- Trip dataset upload
-- Multiple trip selection
-- "Today mode"
-- "Tomorrow mode"
-- Food finder
-- Tired-mode itinerary adjustment
-- City-specific search
+- Backend itinerary storage
+- User accounts
+- Saved trip history
+- Shareable itinerary links
+- Version history
+- Preference memory
+- Suggestion planning mode
+- RAG over itinerary state
 - Weather-aware suggestions
 - Map or places API integration
-- Trip planning suggestion mode
 - Export to PDF or Google Docs
-- Mobile-friendly travel assistant
+
+## Success Criteria
+
+This project is successful if the MVP can:
+
+- Load or simulate an itinerary state
+- Answer today's plan
+- Answer tomorrow's plan
+- Answer food, transport, and preparation questions
+- Suggest lighter alternatives
+- Propose itinerary edits
+- Ask for confirmation before saving edits
+- Represent how updated itinerary state should be saved
+- Prepare for a future app implementation
