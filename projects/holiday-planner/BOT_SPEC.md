@@ -2,54 +2,43 @@
 
 ## Bot Purpose
 
-The Holiday Companion Bot helps a traveler understand and use an existing itinerary during a trip.
+The Holiday Companion Bot helps a traveler build, understand, edit, save, and eventually share a travel itinerary.
 
-The first MVP is the Austria Trip Companion Bot, using the sanitized Austria 13-day itinerary dataset.
+The first MVP uses the Austria trip as the working example.
 
-The bot should not behave like a generic travel planner at first. It should behave like a practical trip companion that retrieves information from the saved itinerary and answers the user's question.
+The bot should not only answer questions. It should also support safe itinerary change requests by proposing edits and asking for confirmation before saving.
 
-## Long-Term Goal
+## Current MVP
 
-The bot should eventually support multiple trips.
+The current MVP focuses on:
 
-Future users should be able to add a structured itinerary dataset for a new trip, then ask the bot practical travel questions during that trip.
-
-Examples:
-
-- Austria trip
-- Japan trip
-- Korea trip
-- Taiwan trip
-- Thailand trip
-- Any future user-created itinerary
+- Reading a saved itinerary
+- Answering today and tomorrow questions
+- Answering food, transport, and preparation questions
+- Suggesting lighter alternatives
+- Proposing itinerary edits
+- Asking for confirmation before changes are applied
+- Designing how itinerary state should work
 
 ## Source of Truth
 
-Current primary dataset:
+Current protected learning dataset:
 
 - sample-data/austria-13-day-sanitized.md
 
-The bot should use this dataset first.
+This file is used for learning and prompt testing.
 
-The bot should not invent facts that are not in the dataset.
+In the final product, the source of truth should become the saved itinerary state in the product backend or storage layer.
 
-## Core User Flow
+## Key Concept: Itinerary State
 
-User asks:
+Itinerary state is the current saved version of the trip.
 
-> What's today's plan?
+The bot reads itinerary state when answering questions.
 
-Bot should:
+The bot proposes changes to itinerary state when the user asks to edit the plan.
 
-1. Identify the current trip day or ask the user for the day number.
-2. Retrieve the relevant day from the itinerary dataset.
-3. Summarize the day's theme.
-4. Highlight the main places and activities.
-5. List food suggestions.
-6. Explain transport notes.
-7. Mention things to prepare.
-8. Mention what should be verified live.
-9. Suggest optional adjustments if useful.
+The backend should only update itinerary state after user confirmation.
 
 ## Supported User Intents
 
@@ -58,84 +47,119 @@ The bot should classify the user's intent before answering.
 Supported intents:
 
 1. Today's plan
-2. Specific day lookup
-3. Food question
-4. Tired-mode question
-5. Tomorrow's plan
-6. Intercity travel search
-7. Museum or culture search
-8. Cafe or food search
-9. Preparation question
-10. Clarification needed
+2. Tomorrow's plan
+3. Specific day lookup
+4. Food question
+5. Transport question
+6. Preparation question
+7. Tired-mode question
+8. Remove activity
+9. Replace activity
+10. Add activity
+11. Reschedule activity
+12. Make day lighter
+13. Summarize full itinerary
+14. Share itinerary
+15. Clarification needed
+16. Unsupported or missing information
 
-## Example User Questions
+## Read-Only Behavior
 
-### Today's Plan
+For read-only questions, the bot should:
+
+1. Identify the requested day, city, or section.
+2. Retrieve the relevant itinerary details.
+3. Answer using only the itinerary state or dataset.
+4. Avoid unsupported facts.
+5. Put live details under "Verify Live".
+
+Example read-only questions:
 
 - What is today's plan?
-- What do I need to do today?
-- Give me today's itinerary.
-
-### Specific Day Lookup
-
-- What is Day 2?
-- Show me Day 5.
-- What happens on the Hallstatt day?
-
-### Food Questions
-
-- What food is planned today?
-- Which days are best for cafes?
-- Where are the food-heavy days?
-
-### Tired Mode
-
-- What can I skip if I am tired?
-- Make today lighter.
-- Which part of today is optional?
-
-### Tomorrow Mode
-
 - What is tomorrow's plan?
-- What should I prepare for tomorrow?
+- What food is planned today?
+- What transport notes should I know?
+- Is today a heavy day?
 
-### Cross-Day Search
+## Edit Behavior
 
-- Which days involve intercity travel?
-- Which days are best for museums?
-- Which days are in Vienna?
-- Which days include nature or lake views?
+For edit requests, the bot should not directly apply changes.
+
+The bot should:
+
+1. Detect the edit intent.
+2. Identify the affected day.
+3. Identify the affected activity.
+4. Identify whether the user wants to remove, replace, add, or move something.
+5. Create a proposed itinerary change.
+6. Explain the impact of the change.
+7. Ask for confirmation.
+8. Wait for the user to confirm.
+9. Only then should the backend update the itinerary state.
+
+Example edit questions:
+
+- Remove Schönbrunn from today.
+- Replace Upper Belvedere with something more relaxing.
+- Add a cafe break to Day 2.
+- Move Karlskirche to tomorrow.
+- Make today less packed.
+
+## Proposed Change Format
+
+For itinerary edits, the bot should use this structure:
+
+- Detected intent
+- Affected day
+- Current itinerary item
+- Proposed change
+- Reason for change
+- Updated day preview
+- Confirmation question
+
+The bot should never say "I have updated your itinerary" unless the user has confirmed the change and the backend has saved it.
 
 ## Answer Style
 
-The bot should answer in a practical travel-friendly format.
-
 Common answer sections:
 
-1. Quick Summary
-2. Relevant Itinerary Details
-3. Food Ideas
-4. Transport Notes
-5. Things to Prepare
-6. Verify Live
-7. Optional Adjustment
-8. Missing Information
+1. Detected Intent
+2. Quick Summary
+3. Relevant Itinerary Details
+4. Food Ideas
+5. Transport Notes
+6. Things to Prepare
+7. Verify Live
+8. Optional Adjustment
+9. Proposed Itinerary Change
+10. Confirmation Question
+11. Missing Information
 
-The bot does not need to use every section for every question. It should choose the format based on the user's intent.
+The bot does not need to use every section for every question. It should choose sections based on intent.
 
-## Important Rules
+## Confirmation Rule
 
-- Use the selected itinerary dataset as the source of truth.
-- Do not invent opening hours.
-- Do not invent exact prices.
-- Do not invent live transport conditions.
-- Do not invent weather.
-- Do not invent ticket availability.
-- Do not present subjective rankings as facts.
-- If information is not in the dataset, say so.
-- If live accuracy matters, tell the user to verify before travelling.
-- Keep the response concise and practical.
-- Ask for clarification if the current day, destination, or user intent is unclear.
+For edit requests, the bot must ask for confirmation.
+
+Good:
+
+- "Do you want me to apply this change to the saved itinerary?"
+
+Bad:
+
+- "Your itinerary has been updated."
+
+The second response is only allowed after the user confirms and the backend actually saves the update.
+
+## Missing Information Rule
+
+If the itinerary does not include enough information, the bot should say:
+
+- "The itinerary does not provide this information."
+
+or:
+
+- "This should be verified live."
 
 ## Subjective Ranking Rule
 
@@ -149,5 +173,53 @@ The bot should explain the ranking criteria.
 
 Example:
 
-```text
-Based on the dataset, I am treating "best cafe days" as days with the most cafe, bakery, tea time, dessert, or food notes.
+- "I am treating 'best cafe days' as days with the most cafe, bakery, dessert, tea time, or food notes in the itinerary."
+
+The bot should not claim something is objectively best unless the itinerary clearly says so.
+
+## Live Information Rule
+
+The bot should not invent live facts.
+
+Do not invent:
+
+- Opening hours
+- Ticket availability
+- Prices
+- Weather
+- Transport disruptions
+- Exact travel times
+- Exact route numbers
+- Restaurant availability
+
+Put these under "Verify Live" when relevant.
+
+## Future Preference Memory Mode
+
+Preference memory is a future direction.
+
+Later, the product may learn from:
+
+- Saved itinerary edits
+- Repeated tired-mode requests
+- Frequent cafe preferences
+- Museum vs food preferences
+- Travel pace preferences
+- Activities users remove or keep
+
+This should not be implemented in the current MVP, but the product design should leave room for it.
+
+## Future Suggestion Planning Mode
+
+Suggestion planning is future.
+
+Later, the bot may help build new itineraries by using:
+
+- User preferences
+- Past trip patterns
+- Saved itinerary structures
+- Preferred travel pace
+- Food and cafe habits
+- Cultural or scenic preferences
+
+This is not the current MVP.
