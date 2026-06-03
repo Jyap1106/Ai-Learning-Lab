@@ -49,7 +49,7 @@ Goal:
 Use the sample itinerary data and itinerary planner prompt to generate one test itinerary manually.
 
 Reason Parked:
-The project direction has shifted from generating new itineraries to building a Holiday Companion Bot that retrieves and explains existing itinerary datasets.
+The project direction has shifted from static itinerary generation to building an editable Holiday Companion Bot.
 
 Suggested file:
 
@@ -222,27 +222,30 @@ Suggested file:
 Status: Completed
 
 Goal:
-Create a stricter prompt that helps the bot handle multiple question types.
+Create a stricter prompt that helps the bot handle multiple question types and itinerary edit intents.
 
 Supported question types:
 
 - Today's plan
-- Food questions
-- Tired-mode questions
 - Tomorrow's plan
+- Food questions
+- Transport questions
+- Tired-mode questions
+- Remove activity
+- Replace activity
+- Add activity
+- Reschedule activity
 - Cross-day search
-- Intercity travel days
-- Museum days
-- Cafe days
 
 Acceptance Criteria:
 
-- Uses the Austria dataset as source of truth
+- Uses the itinerary state or Austria dataset as source of truth
 - Asks for clarification when the day is unknown
 - Avoids unsupported facts
 - Provides different output styles depending on question type
-- Separates dataset information from live information to verify
-- Explains ranking criteria when the user asks subjective questions such as "best cafes" or "best museums"
+- Separates itinerary information from live information to verify
+- Explains ranking criteria when the user asks subjective questions
+- Proposes changes instead of silently applying them
 
 Suggested file:
 
@@ -255,13 +258,13 @@ Suggested file:
 Status: Completed
 
 Goal:
-Create a roadmap that shows how the Holiday Companion Bot can evolve into a reusable product by Day 30.
+Create a roadmap that shows how the Holiday Companion Bot can evolve into an editable itinerary product by Day 30.
 
 Acceptance Criteria:
 
 - Defines Day 30 product outcome
-- Shows Austria as the first MVP dataset
-- Explains future multi-trip support
+- Uses Austria as the first working example
+- Focuses on itinerary reading, editing, saving, and sharing
 - Includes suggestion planning as a future direction
 - Lists next learning milestones
 
@@ -271,62 +274,136 @@ Suggested file:
 
 ---
 
-## Task 13: Test the multi-intent bot prompt
+## Task 13: Define itinerary state model
 
-Status: Not started
+Status: Completed
 
 Goal:
-Test the multi-intent prompt against the Day 7 question patterns.
+Define how the product should represent the current saved version of a trip.
 
 Acceptance Criteria:
 
-- Use the multi-intent prompt
-- Test at least 7 question types
-- Record detected intent for each question
-- Record whether the answer stayed within the dataset
-- Identify what worked and what needs improvement
+- Defines itinerary state
+- Includes trip-level fields
+- Includes day-level fields
+- Includes activity-level fields
+- Includes version history concept
+- Explains that Markdown is learning scaffolding, not final storage
 
 Suggested file:
 
-- test-output/multi-intent-prompt-test.md
+- ITINERARY_STATE_MODEL.md
 
 ---
 
-## Task 14: Create reusable trip dataset template
+## Task 14: Define itinerary edit workflow
 
-Status: Not started
+Status: Completed
 
 Goal:
-Create a reusable template for future trip datasets.
+Define how the bot should handle remove, replace, add, reschedule, and make-day-lighter requests.
 
 Acceptance Criteria:
 
-- Supports any future trip
-- Uses consistent metadata
-- Uses day-by-day structure
-- Includes food, transport, notes, and general tips
-- Makes future RAG easier
+- Explains propose-before-save workflow
+- Requires user confirmation
+- Includes remove, replace, add, reschedule, and lighter-day examples
+- Mentions version history
+- Prevents silent edits
 
 Suggested file:
 
-- templates/TRIP_DATASET_TEMPLATE.md
+- EDIT_WORKFLOW.md
 
 ---
 
-## Task 15: Add a second sample trip dataset
+## Task 15: Create itinerary edit bot prompt
+
+Status: Completed
+
+Goal:
+Create a prompt for itinerary edit requests.
+
+Acceptance Criteria:
+
+- Classifies edit type
+- Identifies affected day and activity
+- Proposes a change
+- Shows updated day preview
+- Asks for confirmation
+- Avoids claiming the itinerary was saved before confirmation
+
+Suggested file:
+
+- prompts/itinerary-edit-bot.md
+
+---
+
+## Task 16: Test edit commands manually
 
 Status: Not started
 
 Goal:
-Add a small fake or sanitized second trip dataset to prove that the bot can support more than Austria.
+Test whether the bot can safely handle itinerary edit commands.
+
+Example commands:
+
+- Remove Schönbrunn from Day 2 and suggest a lighter replacement.
+- Move Karlskirche to tomorrow.
+- Make Day 2 less packed.
+- Add one cafe break to Day 2.
+- Replace Upper Belvedere with a relaxed food-focused activity.
 
 Acceptance Criteria:
 
-- Use fake or sanitized data only
-- Follow the reusable trip dataset template
-- Include at least 3 days
-- Do not include private travel information
+- Test at least 5 edit commands
+- Bot identifies affected day and activity
+- Bot proposes a change
+- Bot asks for confirmation
+- Bot does not claim the itinerary was saved
+- Save the outputs
 
 Suggested file:
 
-- sample-data/sample-future-trip-sanitized.md
+- test-output/itinerary-edit-command-tests.md
+
+---
+
+## Task 17: Design saved itinerary backend plan
+
+Status: Not started
+
+Goal:
+Define how confirmed itinerary edits could be saved in a future app.
+
+Acceptance Criteria:
+
+- Defines storage options
+- Explains MVP option
+- Explains future backend option
+- Includes version history concept
+- Avoids paid APIs for now
+
+Suggested file:
+
+- BACKEND_PERSISTENCE_PLAN.md
+
+---
+
+## Task 18: Design sharing workflow
+
+Status: Not started
+
+Goal:
+Define how a user could share the final itinerary later.
+
+Acceptance Criteria:
+
+- Defines shareable itinerary concept
+- Includes public/private options
+- Includes what data should not be shared
+- Includes future share link idea
+
+Suggested file:
+
+- SHARING_WORKFLOW.md
