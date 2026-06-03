@@ -1,4 +1,4 @@
-# TASKS: Holiday Planner
+# TASKS: Holiday Companion Bot
 
 ## Task 1: Create sample itinerary data
 
@@ -17,11 +17,6 @@ Acceptance Criteria:
 Suggested file:
 
 - sample-data/sample-itinerary.md
-
-Do not edit:
-
-- README.md
-- PRD.md
 
 ---
 
@@ -54,7 +49,7 @@ Goal:
 Use the sample itinerary data and itinerary planner prompt to generate one test itinerary manually.
 
 Reason Parked:
-The project direction has shifted from generating new itineraries to building an Austria Trip Companion Bot that retrieves and explains an existing itinerary.
+The project direction has shifted from generating new itineraries to building a Holiday Companion Bot that retrieves and explains existing itinerary datasets.
 
 Suggested file:
 
@@ -224,7 +219,7 @@ Suggested file:
 
 ## Task 11: Create multi-intent bot prompt
 
-Status: Not started
+Status: Completed
 
 Goal:
 Create a stricter prompt that helps the bot handle multiple question types.
@@ -252,3 +247,86 @@ Acceptance Criteria:
 Suggested file:
 
 - prompts/multi-intent-trip-bot.md
+
+---
+
+## Task 12: Create product roadmap
+
+Status: Completed
+
+Goal:
+Create a roadmap that shows how the Holiday Companion Bot can evolve into a reusable product by Day 30.
+
+Acceptance Criteria:
+
+- Defines Day 30 product outcome
+- Shows Austria as the first MVP dataset
+- Explains future multi-trip support
+- Includes suggestion planning as a future direction
+- Lists next learning milestones
+
+Suggested file:
+
+- ROADMAP.md
+
+---
+
+## Task 13: Test the multi-intent bot prompt
+
+Status: Not started
+
+Goal:
+Test the multi-intent prompt against the Day 7 question patterns.
+
+Acceptance Criteria:
+
+- Use the multi-intent prompt
+- Test at least 7 question types
+- Record detected intent for each question
+- Record whether the answer stayed within the dataset
+- Identify what worked and what needs improvement
+
+Suggested file:
+
+- test-output/multi-intent-prompt-test.md
+
+---
+
+## Task 14: Create reusable trip dataset template
+
+Status: Not started
+
+Goal:
+Create a reusable template for future trip datasets.
+
+Acceptance Criteria:
+
+- Supports any future trip
+- Uses consistent metadata
+- Uses day-by-day structure
+- Includes food, transport, notes, and general tips
+- Makes future RAG easier
+
+Suggested file:
+
+- templates/TRIP_DATASET_TEMPLATE.md
+
+---
+
+## Task 15: Add a second sample trip dataset
+
+Status: Not started
+
+Goal:
+Add a small fake or sanitized second trip dataset to prove that the bot can support more than Austria.
+
+Acceptance Criteria:
+
+- Use fake or sanitized data only
+- Follow the reusable trip dataset template
+- Include at least 3 days
+- Do not include private travel information
+
+Suggested file:
+
+- sample-data/sample-future-trip-sanitized.md
