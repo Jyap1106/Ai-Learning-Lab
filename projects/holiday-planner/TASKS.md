@@ -48,17 +48,13 @@ Suggested file:
 
 ## Task 3: Test the planner manually
 
-Status: Not started
+Status: Parked
 
 Goal:
-Use the sample itinerary data and planner prompt to generate one test itinerary manually.
+Use the sample itinerary data and itinerary planner prompt to generate one test itinerary manually.
 
-Acceptance Criteria:
-
-- Test with one travel request
-- Save the generated itinerary
-- Note what worked well
-- Note what needs improvement
+Reason Parked:
+The project direction has shifted from generating new itineraries to building an Austria Trip Companion Bot that retrieves and explains an existing itinerary.
 
 Suggested file:
 
@@ -84,8 +80,6 @@ Suggested file:
 
 - DATASET_GUIDE.md
 
-- ---
-
 ---
 
 ## Task 5: Add Austria 13-day sanitized itinerary
@@ -93,7 +87,7 @@ Suggested file:
 Status: Completed
 
 Goal:
-Create a sanitized Austria itinerary dataset for future planner testing.
+Create a sanitized Austria itinerary dataset for future bot testing.
 
 Acceptance Criteria:
 
@@ -108,7 +102,7 @@ Suggested file:
 
 - sample-data/austria-13-day-sanitized.md
 
-  ---
+---
 
 ## Task 6: Define trip companion bot spec
 
@@ -168,12 +162,11 @@ Acceptance Criteria:
 - Output includes transport notes
 - Output includes things to prepare
 - Output includes things to verify live
+- Avoid exact times, routes, durations, rankings, or claims not present in the dataset
 
 Suggested file:
 
 - test-output/day-2-today-plan-test.md
-
-✅ **Completed on Day 6**: Created comprehensive Day 2 test output that includes all required elements, follows BOT_SPEC.md format, and uses only data from austria-13-day-sanitized.md.
 
 ---
 
@@ -195,4 +188,67 @@ Suggested file:
 
 - TRIP_DAY_MAPPING.md
 
-✅ **Completed on Day 6**: Created TRIP_DAY_MAPPING.md documenting both approaches, recommending manual day specification for MVP, and providing error handling and future enhancement paths.
+---
+
+## Task 10: Test more bot question patterns
+
+Status: Completed
+
+Goal:
+Test whether the bot can answer different travel-assistant questions using the Austria dataset.
+
+Example questions:
+
+- What food is planned today?
+- Is today a heavy day?
+- What can I skip if I am tired?
+- What is tomorrow's plan?
+- Which days involve intercity travel?
+- Which days are best for cafes?
+- Which days are best for museums?
+
+Acceptance Criteria:
+
+- Test at least 5 question patterns
+- Use only the Austria dataset
+- Do not use outside knowledge
+- Save the results
+- Note what worked and what needs improvement
+- Avoid exact times, routes, durations, rankings, or claims not present in the dataset
+
+Suggested file:
+
+- test-output/bot-question-pattern-tests.md
+
+---
+
+## Task 11: Create multi-intent bot prompt
+
+Status: Not started
+
+Goal:
+Create a stricter prompt that helps the bot handle multiple question types.
+
+Supported question types:
+
+- Today's plan
+- Food questions
+- Tired-mode questions
+- Tomorrow's plan
+- Cross-day search
+- Intercity travel days
+- Museum days
+- Cafe days
+
+Acceptance Criteria:
+
+- Uses the Austria dataset as source of truth
+- Asks for clarification when the day is unknown
+- Avoids unsupported facts
+- Provides different output styles depending on question type
+- Separates dataset information from live information to verify
+- Explains ranking criteria when the user asks subjective questions such as "best cafes" or "best museums"
+
+Suggested file:
+
+- prompts/multi-intent-trip-bot.md
