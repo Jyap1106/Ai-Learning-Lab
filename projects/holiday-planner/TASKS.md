@@ -475,7 +475,7 @@ Suggested file:
 
 ## Task 22: Design sharing workflow
 
-Status: Not started
+Status: Completed
 
 Goal:
 Define how a user could share the final itinerary later.
@@ -486,6 +486,8 @@ Acceptance Criteria:
 - Includes public/private options
 - Includes what data should not be shared
 - Includes future share link idea
+- Includes share preview behavior
+- Includes revoke sharing behavior
 
 Suggested file:
 
@@ -493,28 +495,7 @@ Suggested file:
 
 ---
 
-## Task 23: Design UI behavior
-
-Status: Not started
-
-Goal:
-Define how the first user interface should behave.
-
-Acceptance Criteria:
-
-- Defines main screens
-- Defines chat behavior
-- Defines today/tomorrow plan cards
-- Defines proposed change preview
-- Defines confirm/reject buttons
-
-Suggested file:
-
-- UI_SPEC.md
-
----
-
-## Task 24: Create backbone checkpoint
+## Task 23: Create backbone checkpoint
 
 Status: Completed
 
@@ -529,6 +510,7 @@ Acceptance Criteria:
 - Reviews backend save behavior
 - Reviews version history
 - Reviews confirmation flow
+- Reviews sharing workflow
 - Identifies gaps before UI planning
 
 Suggested file:
@@ -537,7 +519,99 @@ Suggested file:
 
 ---
 
-## Task 25: Design data loading plan
+## Task 24: Define product vision
+
+Status: Completed
+
+Goal:
+Capture the product vision based on the intended user flow and final product direction.
+
+Acceptance Criteria:
+
+- Defines primary user
+- Defines future users
+- Defines before, during, and after trip usage
+- Defines home screen vision
+- Defines editing behavior
+- Defines sharing vision
+- Defines Day 30 outcome
+
+Suggested file:
+
+- PRODUCT_VISION.md
+
+---
+
+## Task 25: Define MVP scope
+
+Status: Completed
+
+Goal:
+Define what the first usable MVP should include and exclude.
+
+Acceptance Criteria:
+
+- Defines MVP user
+- Defines MVP trip
+- Defines MVP modes
+- Defines MVP home screen
+- Defines MVP edit behavior
+- Defines MVP save behavior
+- Defines out-of-scope features
+- Defines low-credit build strategy
+
+Suggested file:
+
+- MVP_SCOPE.md
+
+---
+
+## Task 26: Design UI behavior
+
+Status: Not started
+
+Goal:
+Define how the first user interface should behave.
+
+Acceptance Criteria:
+
+- Defines main screens
+- Defines today plan card
+- Defines tomorrow plan card
+- Defines chat assistant
+- Defines trip dashboard
+- Defines proposed change preview
+- Defines confirm/reject buttons
+- Defines create new trip entry point
+
+Suggested file:
+
+- UI_SPEC.md
+
+---
+
+## Task 27: Create Vercel build prompt
+
+Status: Not started
+
+Goal:
+Create a controlled prompt for building the first frontend prototype.
+
+Acceptance Criteria:
+
+- Defines frontend-only scope
+- Avoids backend and paid APIs
+- Uses fake/local state
+- Includes main UI sections
+- Includes constraints for v0 or Vercel-style generation
+
+Suggested file:
+
+- prompts/vercel-build-prompt.md
+
+---
+
+## Task 28: Design data loading plan
 
 Status: Not started
 
@@ -546,32 +620,11 @@ Define how the prototype should load itinerary state.
 
 Acceptance Criteria:
 
-- Defines static data loading option
-- Defines local state option
-- Defines future backend option
-- Keeps implementation simple for MVP
+- Explains static data loading
+- Explains local state option
+- Explains future backend option
+- Keeps MVP simple
 
 Suggested file:
 
 - DATA_LOADING_PLAN.md
-
----
-
-## Task 26: Design retrieval strategy
-
-Status: Not started
-
-Goal:
-Define how the bot retrieves the right day, activity, or itinerary section.
-
-Acceptance Criteria:
-
-- Explains day lookup
-- Explains activity lookup
-- Explains cross-day search
-- Explains edit-target retrieval
-- Prepares for future RAG
-
-Suggested file:
-
-- RETRIEVAL_STRATEGY.md
