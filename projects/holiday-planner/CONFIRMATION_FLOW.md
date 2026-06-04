@@ -62,7 +62,7 @@ saved
 save_failed
 ```
 
-## State 1: No Change Requested
+## State 1: no_change_requested
 
 The user is only asking a question.
 
@@ -74,7 +74,7 @@ What is today's plan?
 
 No confirmation is needed because nothing is being changed.
 
-## State 2: Change Requested
+## State 2: change_requested
 
 The user asks for an edit.
 
@@ -86,7 +86,7 @@ Remove Schönbrunn from Day 2.
 
 The bot should not save anything yet.
 
-## State 3: Proposal Generated
+## State 3: proposal_generated
 
 The bot creates a proposed change.
 
@@ -100,7 +100,7 @@ Impact:
 Day 2 becomes lighter and more flexible.
 ```
 
-## State 4: Awaiting Confirmation
+## State 4: awaiting_confirmation
 
 The bot asks:
 
@@ -110,7 +110,7 @@ Do you want me to apply this change to the itinerary?
 
 At this point, the product is waiting for the user.
 
-## State 5: Confirmed
+## State 5: confirmed
 
 The user confirms.
 
@@ -130,7 +130,7 @@ Yes, save this change.
 
 Only now should the backend save the update.
 
-## State 6: Rejected
+## State 6: rejected
 
 The user rejects the change.
 
@@ -150,7 +150,7 @@ Do not change it.
 
 The itinerary should remain unchanged.
 
-## State 7: Revision Requested
+## State 7: revision_requested
 
 The user wants a different proposal.
 
@@ -164,7 +164,7 @@ The bot should create a revised proposal.
 
 The backend should still not save anything.
 
-## State 8: Saving
+## State 8: saving
 
 The backend is applying the confirmed change.
 
@@ -174,7 +174,7 @@ The product can show:
 Saving your itinerary update...
 ```
 
-## State 9: Saved
+## State 9: saved
 
 The backend successfully saves the update.
 
@@ -186,7 +186,7 @@ Your itinerary has been updated.
 
 This phrase should only be used after the backend confirms the save.
 
-## State 10: Save Failed
+## State 10: save_failed
 
 The backend fails to save.
 
@@ -255,7 +255,7 @@ move it to another day
 
 ## Proposed Change Format
 
-Every proposal should show:
+Every proposed change should show:
 
 - Affected day
 - Current itinerary item
