@@ -516,7 +516,7 @@ Suggested file:
 
 ## Task 24: Create backbone checkpoint
 
-Status: Not started
+Status: Completed
 
 Goal:
 Review the product backbone before moving into UI and prototype planning.
@@ -534,3 +534,44 @@ Acceptance Criteria:
 Suggested file:
 
 - CHECKPOINT_DAY_14.md
+
+---
+
+## Task 25: Design data loading plan
+
+Status: Not started
+
+Goal:
+Define how the prototype should load itinerary state.
+
+Acceptance Criteria:
+
+- Defines static data loading option
+- Defines local state option
+- Defines future backend option
+- Keeps implementation simple for MVP
+
+Suggested file:
+
+- DATA_LOADING_PLAN.md
+
+---
+
+## Task 26: Design retrieval strategy
+
+Status: Not started
+
+Goal:
+Define how the bot retrieves the right day, activity, or itinerary section.
+
+Acceptance Criteria:
+
+- Explains day lookup
+- Explains activity lookup
+- Explains cross-day search
+- Explains edit-target retrieval
+- Prepares for future RAG
+
+Suggested file:
+
+- RETRIEVAL_STRATEGY.md
