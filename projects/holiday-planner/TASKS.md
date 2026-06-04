@@ -432,7 +432,7 @@ Suggested file:
 
 ## Task 20: Design version history behavior
 
-Status: Not started
+Status: Completed
 
 Goal:
 Define how the product should track, compare, and restore itinerary versions.
@@ -453,7 +453,7 @@ Suggested file:
 
 ## Task 21: Design confirmation flow
 
-Status: Not started
+Status: Completed
 
 Goal:
 Define how the user confirms, rejects, or revises proposed itinerary changes.
@@ -465,6 +465,7 @@ Acceptance Criteria:
 - Defines revise flow
 - Explains UI states
 - Prevents accidental saves
+- Connects confirmation to version history
 
 Suggested file:
 
@@ -489,3 +490,47 @@ Acceptance Criteria:
 Suggested file:
 
 - SHARING_WORKFLOW.md
+
+---
+
+## Task 23: Design UI behavior
+
+Status: Not started
+
+Goal:
+Define how the first user interface should behave.
+
+Acceptance Criteria:
+
+- Defines main screens
+- Defines chat behavior
+- Defines today/tomorrow plan cards
+- Defines proposed change preview
+- Defines confirm/reject buttons
+
+Suggested file:
+
+- UI_SPEC.md
+
+---
+
+## Task 24: Create backbone checkpoint
+
+Status: Not started
+
+Goal:
+Review the product backbone before moving into UI and prototype planning.
+
+Acceptance Criteria:
+
+- Reviews PRD
+- Reviews bot spec
+- Reviews itinerary state model
+- Reviews backend save behavior
+- Reviews version history
+- Reviews confirmation flow
+- Identifies gaps before UI planning
+
+Suggested file:
+
+- CHECKPOINT_DAY_14.md
