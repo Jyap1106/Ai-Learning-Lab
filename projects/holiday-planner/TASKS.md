@@ -593,7 +593,7 @@ Suggested file:
 
 ## Task 27: Design data loading plan
 
-Status: Not started
+Status: Completed
 
 Goal:
 Define how the prototype should load itinerary state without a backend.
@@ -604,6 +604,9 @@ Acceptance Criteria:
 - Explains local state option
 - Explains localStorage option
 - Explains future backend option
+- Defines startup flow
+- Defines proposed change state
+- Defines save status values
 - Keeps MVP simple and low-credit
 
 Suggested file:
@@ -614,7 +617,7 @@ Suggested file:
 
 ## Task 28: Design chat behavior
 
-Status: Not started
+Status: Completed
 
 Goal:
 Define how the chat assistant should behave in the frontend-only MVP.
@@ -626,6 +629,7 @@ Acceptance Criteria:
 - Defines read-only responses
 - Defines edit-request responses
 - Defines proposed change behavior
+- Defines confirm/reject behavior
 - Avoids real AI API calls for MVP if credits are limited
 
 Suggested file:
@@ -648,7 +652,7 @@ Acceptance Criteria:
 - Uses fake/local state
 - Includes main UI sections
 - Includes constraints for v0 or Vercel-style generation
-- References PRODUCT_VISION.md, MVP_SCOPE.md, and UI_SPEC.md
+- References PRODUCT_VISION.md, MVP_SCOPE.md, UI_SPEC.md, DATA_LOADING_PLAN.md, and CHAT_BEHAVIOR_SPEC.md
 
 Suggested file:
 
@@ -674,3 +678,24 @@ Acceptance Criteria:
 Suggested file:
 
 - COST_SAFE_PROTOTYPE_PLAN.md
+
+---
+
+## Task 31: Design retrieval strategy
+
+Status: Not started
+
+Goal:
+Define how the bot retrieves the right day, activity, or itinerary section.
+
+Acceptance Criteria:
+
+- Explains day lookup
+- Explains activity lookup
+- Explains cross-day search
+- Explains edit-target retrieval
+- Prepares for future RAG
+
+Suggested file:
+
+- RETRIEVAL_STRATEGY.md
