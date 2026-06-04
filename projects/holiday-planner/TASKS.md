@@ -353,7 +353,7 @@ Goal:
 Test whether the bot can safely handle itinerary edit commands.
 
 Reason Parked:
-The user understands the testing concept. Testing will be grouped into future checkpoint days instead of being the daily focus.
+Testing will be grouped into future checkpoint days instead of being the daily focus.
 
 Suggested file:
 
@@ -407,9 +407,9 @@ Suggested file:
 
 ---
 
-## Task 19: Design saved itinerary backend behavior
+## Task 19: Design backend save behavior
 
-Status: Not started
+Status: Completed
 
 Goal:
 Define how confirmed itinerary edits could be saved in a future app.
@@ -421,6 +421,7 @@ Acceptance Criteria:
 - Explains future backend option
 - Includes version history concept
 - Explains save flow
+- Defines save states
 - Avoids paid APIs for now
 
 Suggested file:
@@ -429,7 +430,49 @@ Suggested file:
 
 ---
 
-## Task 20: Design sharing workflow
+## Task 20: Design version history behavior
+
+Status: Not started
+
+Goal:
+Define how the product should track, compare, and restore itinerary versions.
+
+Acceptance Criteria:
+
+- Defines version history purpose
+- Defines version entry fields
+- Explains before and after snapshots
+- Explains rollback or restore behavior
+- Keeps version history simple for MVP
+
+Suggested file:
+
+- VERSION_HISTORY.md
+
+---
+
+## Task 21: Design confirmation flow
+
+Status: Not started
+
+Goal:
+Define how the user confirms, rejects, or revises proposed itinerary changes.
+
+Acceptance Criteria:
+
+- Defines confirm flow
+- Defines reject flow
+- Defines revise flow
+- Explains UI states
+- Prevents accidental saves
+
+Suggested file:
+
+- CONFIRMATION_FLOW.md
+
+---
+
+## Task 22: Design sharing workflow
 
 Status: Not started
 
