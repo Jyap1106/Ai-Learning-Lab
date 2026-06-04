@@ -49,7 +49,7 @@ Goal:
 Use the sample itinerary data and itinerary planner prompt to generate one test itinerary manually.
 
 Reason Parked:
-The project direction has shifted from static itinerary generation to building an editable Holiday Companion Bot.
+The project direction has shifted from generating new itineraries to building a Holiday Companion Bot that can read, explain, edit, and save itinerary state.
 
 Suggested file:
 
@@ -104,7 +104,7 @@ Suggested file:
 Status: Completed
 
 Goal:
-Create a bot specification for the Austria Trip Companion Bot.
+Create a bot specification for the first Austria Trip Companion Bot.
 
 Acceptance Criteria:
 
@@ -222,7 +222,7 @@ Suggested file:
 Status: Completed
 
 Goal:
-Create a stricter prompt that helps the bot handle multiple question types and itinerary edit intents.
+Create a stricter prompt that helps the bot handle multiple question types.
 
 Supported question types:
 
@@ -230,22 +230,22 @@ Supported question types:
 - Tomorrow's plan
 - Food questions
 - Transport questions
+- Preparation questions
 - Tired-mode questions
 - Remove activity
 - Replace activity
 - Add activity
 - Reschedule activity
-- Cross-day search
 
 Acceptance Criteria:
 
-- Uses the itinerary state or Austria dataset as source of truth
+- Uses the Austria dataset as source of truth
 - Asks for clarification when the day is unknown
 - Avoids unsupported facts
 - Provides different output styles depending on question type
-- Separates itinerary information from live information to verify
+- Separates dataset information from live information to verify
 - Explains ranking criteria when the user asks subjective questions
-- Proposes changes instead of silently applying them
+- Proposes itinerary changes without claiming they are saved
 
 Suggested file:
 
@@ -263,10 +263,11 @@ Create a roadmap that shows how the Holiday Companion Bot can evolve into an edi
 Acceptance Criteria:
 
 - Defines Day 30 product outcome
-- Uses Austria as the first working example
-- Focuses on itinerary reading, editing, saving, and sharing
-- Includes suggestion planning as a future direction
-- Lists next learning milestones
+- Shows Austria as the first MVP trip
+- Explains itinerary state
+- Includes itinerary edit workflow
+- Includes saved-state design
+- Includes next learning milestones
 
 Suggested file:
 
@@ -279,16 +280,18 @@ Suggested file:
 Status: Completed
 
 Goal:
-Define how the product should represent the current saved version of a trip.
+Define the future itinerary state model for the Holiday Companion Bot.
 
 Acceptance Criteria:
 
 - Defines itinerary state
-- Includes trip-level fields
-- Includes day-level fields
-- Includes activity-level fields
-- Includes version history concept
-- Explains that Markdown is learning scaffolding, not final storage
+- Explains why Markdown is only a learning format
+- Lists future storage options
+- Defines trip-level fields
+- Defines day-level fields
+- Defines activity-level fields
+- Defines version history
+- Defines user preferences
 
 Suggested file:
 
@@ -301,15 +304,17 @@ Suggested file:
 Status: Completed
 
 Goal:
-Define how the bot should handle remove, replace, add, reschedule, and make-day-lighter requests.
+Define how the bot should handle itinerary edit requests.
 
 Acceptance Criteria:
 
-- Explains propose-before-save workflow
-- Requires user confirmation
-- Includes remove, replace, add, reschedule, and lighter-day examples
-- Mentions version history
-- Prevents silent edits
+- Explains remove activity
+- Explains replace activity
+- Explains add activity
+- Explains reschedule activity
+- Explains make-day-lighter behavior
+- Requires confirmation before saving changes
+- Defines proposed change format
 
 Suggested file:
 
@@ -322,16 +327,17 @@ Suggested file:
 Status: Completed
 
 Goal:
-Create a prompt for itinerary edit requests.
+Create a reusable prompt for itinerary edit requests.
 
 Acceptance Criteria:
 
+- Uses itinerary state or dataset as source of truth
 - Classifies edit type
-- Identifies affected day and activity
-- Proposes a change
-- Shows updated day preview
+- Identifies affected day
+- Identifies affected activity
+- Produces a proposed change
 - Asks for confirmation
-- Avoids claiming the itinerary was saved before confirmation
+- Avoids claiming changes are saved before confirmation
 
 Suggested file:
 
@@ -339,9 +345,9 @@ Suggested file:
 
 ---
 
-## Task 16: Test edit commands manually
+## Task 16: Test itinerary edit commands manually
 
-Status: Not started
+Status: Completed
 
 Goal:
 Test whether the bot can safely handle itinerary edit commands.
@@ -386,7 +392,7 @@ Acceptance Criteria:
 
 Suggested file:
 
-- BACKEND_PERSISTENCE_PLAN.md
+- BACKEND_SAVE_BEHAVIOR.md
 
 ---
 
