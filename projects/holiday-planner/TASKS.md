@@ -347,27 +347,13 @@ Suggested file:
 
 ## Task 16: Test itinerary edit commands manually
 
-Status: Completed
+Status: Parked
 
 Goal:
 Test whether the bot can safely handle itinerary edit commands.
 
-Example commands:
-
-- Remove Schönbrunn from Day 2 and suggest a lighter replacement.
-- Move Karlskirche to tomorrow.
-- Make Day 2 less packed.
-- Add one cafe break to Day 2.
-- Replace Upper Belvedere with a relaxed food-focused activity.
-
-Acceptance Criteria:
-
-- Test at least 5 edit commands
-- Bot identifies affected day and activity
-- Bot proposes a change
-- Bot asks for confirmation
-- Bot does not claim the itinerary was saved
-- Save the outputs
+Reason Parked:
+The user understands the testing concept. Testing will be grouped into future checkpoint days instead of being the daily focus.
 
 Suggested file:
 
@@ -375,7 +361,53 @@ Suggested file:
 
 ---
 
-## Task 17: Design saved itinerary backend plan
+## Task 17: Define AI tool backbone
+
+Status: Completed
+
+Goal:
+Explain the backbone of the Holiday Companion Bot as an AI product.
+
+Acceptance Criteria:
+
+- Explains user interface
+- Explains prompt layer
+- Explains intent classification
+- Explains skills
+- Explains tools or actions
+- Explains itinerary state
+- Explains backend storage
+- Explains safety rules
+- Explains testing checkpoints
+
+Suggested file:
+
+- AI_TOOL_BACKBONE.md
+
+---
+
+## Task 18: Create skill and tool map
+
+Status: Completed
+
+Goal:
+Map the skills and future tools needed for the Holiday Companion Bot.
+
+Acceptance Criteria:
+
+- Defines prompt, skill, tool, workflow, state, and Markdown files
+- Lists current skills
+- Lists future tools
+- Groups skills into read, edit, save, and future categories
+- Explains how Markdown files help build AI products
+
+Suggested file:
+
+- SKILL_TOOL_MAP.md
+
+---
+
+## Task 19: Design saved itinerary backend behavior
 
 Status: Not started
 
@@ -388,6 +420,7 @@ Acceptance Criteria:
 - Explains MVP option
 - Explains future backend option
 - Includes version history concept
+- Explains save flow
 - Avoids paid APIs for now
 
 Suggested file:
@@ -396,7 +429,7 @@ Suggested file:
 
 ---
 
-## Task 18: Design sharing workflow
+## Task 20: Design sharing workflow
 
 Status: Not started
 
