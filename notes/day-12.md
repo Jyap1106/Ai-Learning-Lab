@@ -135,8 +135,6 @@ Version history
 
 ## Next Step
 
-The next backbone topic is sharing workflow.
+The next backbone checkpoint is Day 14.
 
-Suggested file:
-
-- projects/holiday-planner/SHARING_WORKFLOW.md
+The checkpoint will review whether the product has the right core structure before moving into UI and prototype planning.
