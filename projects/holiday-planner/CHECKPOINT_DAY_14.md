@@ -1,16 +1,14 @@
-# Day 14 Checkpoint: Holiday Companion Bot Backbone Review
+# Day 14 Backbone Checkpoint
 
 ## Purpose
 
-This checkpoint reviews the backbone of the Holiday Companion Bot before moving into UI and prototype planning.
+This checkpoint reviews the Holiday Companion Bot product backbone before moving into UI and prototype planning.
 
-The goal is not to test every bot response.
+The goal is to confirm that the product logic is clear before building screens or app code.
 
-The goal is to confirm that the product has a clear structure.
+## Current Product
 
-## Product Direction
-
-The product is:
+The active product is:
 
 ```text
 Holiday Companion Bot
@@ -22,254 +20,354 @@ The first working example is:
 Austria trip
 ```
 
-The product should eventually help users:
+The current protected learning dataset is:
+
+```text
+sample-data/austria-13-day-sanitized.md
+```
+
+## Product Direction
+
+The product should help users:
 
 - Build an itinerary
 - Check today's plan
 - Check tomorrow's plan
-- Ask travel questions
+- Ask food, transport, and preparation questions
+- Ask for lighter alternatives
 - Remove activities
 - Replace activities
 - Add activities
 - Reschedule activities
-- Confirm changes
+- Confirm changes before saving
 - Save updated itinerary state
 - Track version history
-- Share itinerary later
+- Share a cleaned itinerary later
 
 ## Backbone Files Reviewed
 
-This checkpoint reviews these files:
+## 1. README.md
 
-- README.md
-- PRD.md
-- BOT_SPEC.md
-- ROADMAP.md
-- TASKS.md
-- AI_TOOL_BACKBONE.md
-- SKILL_TOOL_MAP.md
-- ITINERARY_STATE_MODEL.md
-- EDIT_WORKFLOW.md
-- BACKEND_SAVE_BEHAVIOR.md
-- VERSION_HISTORY.md
-- CONFIRMATION_FLOW.md
+Purpose:
 
-## Checkpoint 1: Product Goal
-
-The product goal is clear if it can be summarized as:
-
-```text
-A travel companion product that helps users manage a flexible itinerary through AI-assisted reading, editing, saving, and sharing.
-```
+Explains the project purpose and current MVP direction.
 
 Status:
 
 ```text
-Passed
+Ready
 ```
 
-## Checkpoint 2: Current MVP Scope
+## 2. PRD.md
 
-The MVP is clear if it focuses on:
+Purpose:
 
-- One trip first
-- Austria as the working example
-- Itinerary reading
-- Itinerary editing
-- Confirmation before saving
-- Backend save design
-- Version history design
-- Future UI planning
+Defines product requirements, user flows, supported intents, and MVP constraints.
 
 Status:
 
 ```text
-Passed
+Ready
 ```
 
-## Checkpoint 3: What Is Not in MVP
+## 3. BOT_SPEC.md
 
-The MVP should not include:
+Purpose:
 
-- Paid APIs
-- Live maps
-- Live weather
-- Real-time transport
-- Booking integrations
-- Payment features
-- Full user authentication
-- Multiple trip dataset platform
-- Complex database implementation
+Defines bot behavior, supported intents, read-only behavior, edit behavior, and safety rules.
 
 Status:
 
 ```text
-Passed
+Ready
 ```
 
-## Checkpoint 4: Itinerary State
+## 4. ROADMAP.md
 
-The project now understands itinerary state as:
+Purpose:
 
-```text
-The current saved version of the trip that the bot reads from and updates after user-confirmed changes.
-```
-
-Relevant file:
-
-- ITINERARY_STATE_MODEL.md
+Defines the Day 30 product outcome and learning path.
 
 Status:
 
 ```text
-Passed
+Ready
 ```
 
-## Checkpoint 5: Bot Behavior
+## 5. TASKS.md
 
-The bot should be able to:
+Purpose:
 
-- Classify user intent
-- Answer today's plan
-- Answer tomorrow's plan
-- Answer food questions
-- Answer transport questions
-- Suggest lighter options
-- Propose itinerary changes
-- Ask for confirmation
-- Avoid unsupported facts
-
-Relevant files:
-
-- BOT_SPEC.md
-- prompts/multi-intent-trip-bot.md
-- prompts/itinerary-edit-bot.md
+Tracks product backbone tasks and next steps.
 
 Status:
 
 ```text
-Passed
+Ready
 ```
 
-## Checkpoint 6: Edit Workflow
+## 6. ITINERARY_STATE_MODEL.md
 
-The edit workflow is clear if the bot follows:
+Purpose:
 
-```text
-User asks for change
-↓
-Bot identifies affected day and activity
-↓
-Bot proposes change
-↓
-User confirms
-↓
-Backend saves
-↓
-Version history records change
-```
-
-Relevant file:
-
-- EDIT_WORKFLOW.md
+Explains the future saved itinerary state.
 
 Status:
 
 ```text
-Passed
+Ready
 ```
 
-## Checkpoint 7: Confirmation Flow
+## 7. EDIT_WORKFLOW.md
 
-The confirmation flow is clear if the bot does not silently save changes.
+Purpose:
 
-The correct pattern is:
+Explains how itinerary edits should be proposed, confirmed, and saved.
+
+Status:
 
 ```text
-Proposal
+Ready
+```
+
+## 8. BACKEND_SAVE_BEHAVIOR.md
+
+Purpose:
+
+Explains how confirmed changes should be saved in a future backend.
+
+Status:
+
+```text
+Ready
+```
+
+## 9. VERSION_HISTORY.md
+
+Purpose:
+
+Explains how itinerary changes should be tracked and restored.
+
+Status:
+
+```text
+Ready
+```
+
+## 10. CONFIRMATION_FLOW.md
+
+Purpose:
+
+Explains how users confirm, reject, or revise proposed itinerary changes.
+
+Status:
+
+```text
+Ready
+```
+
+## 11. SHARING_WORKFLOW.md
+
+Purpose:
+
+Explains how the product could share a cleaned itinerary later.
+
+Status:
+
+```text
+Ready
+```
+
+## 12. AI_TOOL_BACKBONE.md
+
+Purpose:
+
+Explains the overall AI product architecture.
+
+Status:
+
+```text
+Ready
+```
+
+## 13. SKILL_TOOL_MAP.md
+
+Purpose:
+
+Maps product skills and future tools.
+
+Status:
+
+```text
+Ready
+```
+
+## Current Product Backbone
+
+The product backbone is:
+
+```text
+User interface
 ↓
-Confirmation
+Prompt layer
 ↓
-Save
+Intent classification
+↓
+Skills
+↓
+Tools or backend actions
+↓
+Itinerary state
+↓
+Confirmation flow
+↓
+Backend save behavior
 ↓
 Version history
+↓
+Sharing workflow
 ```
 
-Relevant file:
+## Current Core Flow
 
-- CONFIRMATION_FLOW.md
-
-Status:
+The core future flow is:
 
 ```text
-Passed
+User opens product
+↓
+Product loads saved itinerary state
+↓
+User asks a question or gives a command
+↓
+Bot classifies intent
+↓
+Bot retrieves relevant itinerary information
+↓
+Bot answers or proposes a change
+↓
+If change is proposed, user confirms or rejects
+↓
+Backend saves confirmed change
+↓
+Version history records the update
+↓
+Future answers use updated itinerary state
 ```
 
-## Checkpoint 8: Backend Save Behavior
+## Product Decisions Confirmed
 
-Backend save behavior is clear if the project understands:
+## Decision 1: One Trip First
 
-- Proposed change
-- User confirmation
-- Backend validation
-- Saved itinerary state
-- Version history entry
-- Failed save behavior
+The current MVP focuses on the Austria trip first.
 
-Relevant file:
+Other trips are future work.
 
-- BACKEND_SAVE_BEHAVIOR.md
+## Decision 2: Markdown Is Learning Scaffolding
 
-Status:
+Markdown files help design and understand the system.
 
-```text
-Passed
-```
+The final product should not require users to manually edit Markdown files.
 
-## Checkpoint 9: Version History
+## Decision 3: Itinerary State Is Required
 
-Version history is clear if the product can track:
+The final product needs saved itinerary state.
 
-- What changed
-- What day changed
-- Previous value
-- New value
-- Reason
-- Confirmation status
-- Restore possibility
+Without state, the product cannot remember changes.
 
-Relevant file:
+## Decision 4: Bot Must Propose Before Saving
 
-- VERSION_HISTORY.md
+The bot should not silently change the itinerary.
 
-Status:
+It should propose changes and ask for confirmation.
 
-```text
-Passed
-```
+## Decision 5: Version History Is Needed
 
-## Checkpoint 10: Skills and Tools
+Version history makes itinerary edits trackable and reversible.
 
-The product backbone includes skills such as:
+## Decision 6: Sharing Requires Privacy Filtering
+
+The product should not share private details, version history, or preference memory by default.
+
+## What Is Ready
+
+The product now has a strong backbone for:
+
+- Product requirements
+- Bot behavior
+- Prompt behavior
+- Itinerary state
+- Edit workflow
+- Backend save behavior
+- Version history
+- Confirmation flow
+- Sharing workflow
+- Skill and tool mapping
+- AI product architecture
+
+## What Is Not Built Yet
+
+The product does not yet have:
+
+- UI screens
+- Vercel prototype
+- Backend
+- Database
+- Real save function
+- Real share link
+- Real user accounts
+- Live APIs
+- Real itinerary builder
+
+These are future build steps.
+
+## Risks to Watch
+
+## Risk 1: Bot Invents Live Details
+
+The bot must not invent opening hours, ticket availability, weather, prices, or live transport details.
+
+## Risk 2: Bot Claims It Saved Changes Too Early
+
+The bot must not say the itinerary has been updated unless the user confirms and the backend saves it.
+
+## Risk 3: Private Data Gets Shared
+
+Sharing should exclude private notes, booking information, payment details, and version history.
+
+## Risk 4: Scope Gets Too Big
+
+The MVP should not include every future feature.
+
+Focus first on:
 
 - Read itinerary
-- Find current day
-- Summarize day
-- Answer food questions
-- Answer transport questions
-- Make day lighter
-- Remove activity
-- Replace activity
-- Add activity
-- Reschedule activity
-- Ask for confirmation
-- Save confirmed change
-- Track version history
-- Share itinerary later
+- Answer questions
+- Propose edits
+- Confirm changes
+- Save state design
 
-Relevant file:
+## UI Planning Readiness
 
-- SKILL_TOOL_MAP.md
+The project is ready to move into UI planning.
+
+The next file should be:
+
+```text
+UI_SPEC.md
+```
+
+The UI should focus on:
+
+- Today plan card
+- Tomorrow plan card
+- Chat assistant
+- Full itinerary view
+- Proposed change preview
+- Confirm and reject buttons
+- Save status
+- Share preview later
+
+## Day 14 Checkpoint Result
 
 Status:
 
@@ -277,61 +375,20 @@ Status:
 Passed
 ```
 
-## Checkpoint 11: Markdown as AI Product Backbone
+Reason:
 
-The project now uses Markdown files as:
+The product backbone is now clear enough to begin UI and prototype planning.
 
-- Product memory
-- AI instructions
-- Prompt library
-- Workflow documentation
-- Future engineering guidance
-- Portfolio evidence
+## Next Step
 
-This is useful because AI tools can read `.md` files as structured context.
-
-Status:
+Proceed to Day 15:
 
 ```text
-Passed
+Day 15 — UI Specification
 ```
 
-## Checkpoint 12: Gaps Before UI Planning
-
-Before UI planning, the main missing pieces are:
-
-- Sharing workflow
-- UI spec
-- Data loading plan
-- Chat behavior spec
-- Retrieval strategy
-- Cost and API safety plan
-
-These will be handled in the next phase.
-
-Status:
+Suggested file:
 
 ```text
-Known gaps identified
+projects/holiday-planner/UI_SPEC.md
 ```
-
-## Overall Checkpoint Result
-
-```text
-Passed
-```
-
-The Holiday Companion Bot now has a strong product backbone.
-
-The project is ready to move into UI and prototype planning after the remaining backbone files are added.
-
-## Next Recommended Files
-
-The next files to create are:
-
-- SHARING_WORKFLOW.md
-- UI_SPEC.md
-- DATA_LOADING_PLAN.md
-- CHAT_BEHAVIOR_SPEC.md
-- RETRIEVAL_STRATEGY.md
-- COST_AND_API_SAFETY_PLAN.md
