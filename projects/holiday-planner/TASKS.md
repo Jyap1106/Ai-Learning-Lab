@@ -568,14 +568,14 @@ Suggested file:
 
 ## Task 26: Design UI behavior
 
-Status: Not started
+Status: Completed
 
 Goal:
 Define how the first user interface should behave.
 
 Acceptance Criteria:
 
-- Defines main screens
+- Defines main screen layout
 - Defines today plan card
 - Defines tomorrow plan card
 - Defines chat assistant
@@ -583,6 +583,7 @@ Acceptance Criteria:
 - Defines proposed change preview
 - Defines confirm/reject buttons
 - Defines create new trip entry point
+- Defines frontend-only MVP constraints
 
 Suggested file:
 
@@ -590,7 +591,50 @@ Suggested file:
 
 ---
 
-## Task 27: Create Vercel build prompt
+## Task 27: Design data loading plan
+
+Status: Not started
+
+Goal:
+Define how the prototype should load itinerary state without a backend.
+
+Acceptance Criteria:
+
+- Explains static data loading
+- Explains local state option
+- Explains localStorage option
+- Explains future backend option
+- Keeps MVP simple and low-credit
+
+Suggested file:
+
+- DATA_LOADING_PLAN.md
+
+---
+
+## Task 28: Design chat behavior
+
+Status: Not started
+
+Goal:
+Define how the chat assistant should behave in the frontend-only MVP.
+
+Acceptance Criteria:
+
+- Defines mock chat behavior
+- Defines quick prompt chips
+- Defines read-only responses
+- Defines edit-request responses
+- Defines proposed change behavior
+- Avoids real AI API calls for MVP if credits are limited
+
+Suggested file:
+
+- CHAT_BEHAVIOR_SPEC.md
+
+---
+
+## Task 29: Create Vercel build prompt
 
 Status: Not started
 
@@ -604,6 +648,7 @@ Acceptance Criteria:
 - Uses fake/local state
 - Includes main UI sections
 - Includes constraints for v0 or Vercel-style generation
+- References PRODUCT_VISION.md, MVP_SCOPE.md, and UI_SPEC.md
 
 Suggested file:
 
@@ -611,20 +656,21 @@ Suggested file:
 
 ---
 
-## Task 28: Design data loading plan
+## Task 30: Create cost-safe prototype plan
 
 Status: Not started
 
 Goal:
-Define how the prototype should load itinerary state.
+Define how to build the first prototype while minimizing credits and avoiding unnecessary AI generation.
 
 Acceptance Criteria:
 
-- Explains static data loading
-- Explains local state option
-- Explains future backend option
-- Keeps MVP simple
+- Defines what to build manually
+- Defines what to ask AI to generate
+- Defines what not to generate yet
+- Defines low-credit build sequence
+- Defines fallback if v0 credits are low
 
 Suggested file:
 
-- DATA_LOADING_PLAN.md
+- COST_SAFE_PROTOTYPE_PLAN.md
