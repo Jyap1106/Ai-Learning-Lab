@@ -33,7 +33,7 @@ Acceptance Criteria:
 - Output includes day-by-day itinerary
 - Output includes assumptions
 - Output avoids inventing exact facts not provided
-- Prompt can use sample itinerary data
+- Prompt can use sample data
 
 Suggested file:
 
@@ -638,9 +638,31 @@ Suggested file:
 
 ---
 
-## Task 29: Create Vercel build prompt
+## Task 29: Create cost-safe prototype plan
 
-Status: Not started
+Status: Completed
+
+Goal:
+Define how to build the first prototype while minimizing credits and avoiding unnecessary AI generation.
+
+Acceptance Criteria:
+
+- Defines what to build manually
+- Defines what to ask AI to generate
+- Defines what not to generate yet
+- Defines low-credit build sequence
+- Defines fallback if v0 credits are low
+- Keeps first prototype frontend-only
+
+Suggested file:
+
+- COST_SAFE_PROTOTYPE_PLAN.md
+
+---
+
+## Task 30: Create Vercel build prompt
+
+Status: Completed
 
 Goal:
 Create a controlled prompt for building the first frontend prototype.
@@ -660,30 +682,9 @@ Suggested file:
 
 ---
 
-## Task 30: Create cost-safe prototype plan
-
-Status: Not started
-
-Goal:
-Define how to build the first prototype while minimizing credits and avoiding unnecessary AI generation.
-
-Acceptance Criteria:
-
-- Defines what to build manually
-- Defines what to ask AI to generate
-- Defines what not to generate yet
-- Defines low-credit build sequence
-- Defines fallback if v0 credits are low
-
-Suggested file:
-
-- COST_SAFE_PROTOTYPE_PLAN.md
-
----
-
 ## Task 31: Design retrieval strategy
 
-Status: Not started
+Status: Completed
 
 Goal:
 Define how the bot retrieves the right day, activity, or itinerary section.
@@ -694,8 +695,75 @@ Acceptance Criteria:
 - Explains activity lookup
 - Explains cross-day search
 - Explains edit-target retrieval
+- Explains token-saving retrieval
 - Prepares for future RAG
 
 Suggested file:
 
 - RETRIEVAL_STRATEGY.md
+
+---
+
+## Task 32: Create local itinerary state sample
+
+Status: Not started
+
+Goal:
+Create a simplified JSON-like sample itinerary state for the frontend prototype.
+
+Acceptance Criteria:
+
+- Includes trip metadata
+- Includes at least Day 2 and Day 3
+- Includes food, transport, notes, and version history
+- Keeps private data out
+- Can be used by the frontend prototype
+
+Suggested file:
+
+- sample-data/austria-itinerary-state-sample.json
+
+---
+
+## Task 33: Create frontend component plan
+
+Status: Not started
+
+Goal:
+Break the frontend prototype into components before building.
+
+Acceptance Criteria:
+
+- Lists components
+- Defines component props
+- Defines state each component needs
+- Defines user interactions
+- Helps reduce build confusion
+
+Suggested file:
+
+- FRONTEND_COMPONENT_PLAN.md
+
+---
+
+## Task 34: Prototype build checkpoint
+
+Status: Not started
+
+Goal:
+Review whether the repo is ready for the first frontend build.
+
+Acceptance Criteria:
+
+- Confirms product vision
+- Confirms MVP scope
+- Confirms UI spec
+- Confirms data loading plan
+- Confirms chat behavior spec
+- Confirms build prompt
+- Confirms cost-safe plan
+- Confirms local itinerary state sample
+
+Suggested file:
+
+- PROTOTYPE_BUILD_CHECKPOINT.md
