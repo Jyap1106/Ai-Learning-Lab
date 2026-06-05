@@ -706,7 +706,7 @@ Suggested file:
 
 ## Task 32: Create local itinerary state sample
 
-Status: Not started
+Status: Completed
 
 Goal:
 Create a simplified JSON-like sample itinerary state for the frontend prototype.
@@ -714,7 +714,7 @@ Create a simplified JSON-like sample itinerary state for the frontend prototype.
 Acceptance Criteria:
 
 - Includes trip metadata
-- Includes at least Day 2 and Day 3
+- Includes multiple itinerary days
 - Includes food, transport, notes, and version history
 - Keeps private data out
 - Can be used by the frontend prototype
@@ -727,7 +727,7 @@ Suggested file:
 
 ## Task 33: Create frontend component plan
 
-Status: Not started
+Status: Completed
 
 Goal:
 Break the frontend prototype into components before building.
@@ -748,7 +748,7 @@ Suggested file:
 
 ## Task 34: Prototype build checkpoint
 
-Status: Not started
+Status: Completed
 
 Goal:
 Review whether the repo is ready for the first frontend build.
@@ -767,3 +767,93 @@ Acceptance Criteria:
 Suggested file:
 
 - PROTOTYPE_BUILD_CHECKPOINT.md
+
+---
+
+## Task 35: Local prototype implementation plan
+
+Status: Completed
+
+Goal:
+Define the step-by-step implementation plan for the local frontend prototype.
+
+Acceptance Criteria:
+
+- Defines build order
+- Defines recommended tech stack
+- Defines component sequence
+- Defines state behavior
+- Defines localStorage behavior
+- Defines what AI should and should not generate
+
+Suggested file:
+
+- LOCAL_PROTOTYPE_IMPLEMENTATION_PLAN.md
+
+---
+
+## Task 36: Create build start checklist
+
+Status: Not started
+
+Goal:
+Create a final checklist before starting the actual frontend implementation.
+
+Acceptance Criteria:
+
+- Confirms required docs are ready
+- Confirms sample data is ready
+- Confirms build prompt is ready
+- Confirms low-credit constraints
+- Confirms first implementation steps
+
+Suggested file:
+
+- BUILD_START_CHECKLIST.md
+
+---
+
+## Task 37: Start frontend prototype
+
+Status: Not started
+
+Goal:
+Begin building the frontend-only prototype.
+
+Acceptance Criteria:
+
+- Create app shell
+- Add local sample data
+- Show today's plan
+- Show tomorrow's plan
+- Add trip dashboard
+- Add mock chat assistant
+- Add proposed change card
+
+Suggested output:
+
+- Frontend app project or prototype notes
+
+---
+
+## Task 38: Prototype checkpoint test
+
+Status: Not started
+
+Goal:
+Review whether the first prototype works as intended.
+
+Acceptance Criteria:
+
+- App loads
+- Today's plan appears
+- Tomorrow's plan appears
+- Prompt chips work
+- Proposed change appears
+- Confirm/reject works
+- Save status updates
+- Version summary updates
+
+Suggested file:
+
+- PROTOTYPE_TEST_CHECKPOINT.md
