@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 
+import type { ChatMessage } from "@/components/holiday/ChatAssistant";
 import FloatingChatPanel from "@/components/holiday/FloatingChatPanel";
 import Header from "@/components/holiday/Header";
 import ProposedChangeCard from "@/components/holiday/ProposedChangeCard";
@@ -15,16 +16,15 @@ import {
   type ProposedChange,
 } from "@/lib/mockResponses";
 import {
-  buildTodayTimeline,
-  getTimelineStatus,
-  type TodayTimelineItem,
-} from "@/lib/todayTimeline";
-import {
   clearTripStorage,
   loadTripFromStorage,
   saveTripToStorage,
 } from "@/lib/storage";
-import type { ChatMessage } from "@/components/holiday/ChatAssistant";
+import {
+  buildTodayTimeline,
+  getTimelineStatus,
+  type TodayTimelineItem,
+} from "@/lib/todayTimeline";
 
 interface VersionHistoryEntry {
   version: number;
@@ -185,7 +185,7 @@ function createChangeVersionEntry(
     affectedDay: proposedChange.affectedDay,
     createdAt: new Date().toISOString(),
     snapshot: cloneDays(updatedDays),
-    summary: `Day ${proposedChange.affectedDay}: ${proposedChange.title} → ${
+    summary: `Day ${proposedChange.affectedDay}: ${proposedChange.title} -> ${
       selectedOption?.label ?? "selected option"
     }`,
   };
@@ -300,7 +300,7 @@ function updateSpecificActivity(day: Day, proposedChange: ProposedChange) {
       evening: eveningResult.items,
       notes: appendUnique(
         day.notes,
-        `Updated locally: ${proposedChange.title} — ${replacementLabel}.`,
+        `Updated locally: ${proposedChange.title} - ${replacementLabel}.`,
       ),
     },
   };
@@ -312,7 +312,7 @@ function updateDayWithProposedChange(day: Day, proposedChange: ProposedChange): 
   );
 
   const selectedLabel = getSelectedReplacementLabel(day, proposedChange);
-  const updatedNote = `Updated locally: ${proposedChange.title} — ${
+  const updatedNote = `Updated locally: ${proposedChange.title} - ${
     selectedOption?.label ?? selectedLabel
   }.`;
 
@@ -521,6 +521,7 @@ export default function Home() {
   const [now, setNow] = useState(() => new Date());
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isTripToolsOpen, setIsTripToolsOpen] = useState(false);
+  const [isCommandCenterMinimized, setIsCommandCenterMinimized] = useState(false);
   const [proposedChange, setProposedChange] = useState<ProposedChange | null>(null);
 
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>(() => [
@@ -653,9 +654,7 @@ export default function Home() {
       ...previousMessages,
       createMessage(
         "user",
-        action === "skip"
-          ? `Keep ${item.title} as free time`
-          : `Replace ${item.title}`,
+        action === "skip" ? `Keep ${item.title} as free time` : `Replace ${item.title}`,
       ),
       createMessage(
         "assistant",
@@ -714,7 +713,7 @@ export default function Home() {
         [
           "Saved locally.",
           "",
-          "Today’s plan has been updated.",
+          "Today's plan has been updated.",
           "Version history is available inside Trip tools.",
         ].join("\n"),
         "Change confirmed",
@@ -845,6 +844,7 @@ export default function Home() {
     setTripData(freshTrip);
     setProposedChange(null);
     setIsTripToolsOpen(false);
+    setIsCommandCenterMinimized(false);
     setChatMessages([
       createMessage(
         "assistant",
@@ -872,6 +872,10 @@ export default function Home() {
               now={now}
               timelineStatus={timelineStatus}
               saveStatus={tripData.saveStatus}
+              isMinimized={isCommandCenterMinimized}
+              onToggleMinimized={() =>
+                setIsCommandCenterMinimized((previousValue) => !previousValue)
+              }
               onPromptClick={handlePromptChipClick}
               onOpenChat={() => setIsChatOpen(true)}
               onOpenTools={() => setIsTripToolsOpen(true)}
