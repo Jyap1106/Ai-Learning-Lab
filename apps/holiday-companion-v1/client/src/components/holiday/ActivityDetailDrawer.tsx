@@ -1,0 +1,174 @@
+import {
+  Ban,
+  CheckCircle2,
+  Clock3,
+  Coffee,
+  MapPin,
+  MessageCircle,
+  Navigation,
+  PencilLine,
+  Shuffle,
+  StickyNote,
+  X,
+} from "lucide-react";
+
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  formatTimelineTime,
+  type TodayTimelineItem,
+} from "@/lib/todayTimeline";
+
+interface ActivityDetailDrawerProps {
+  item: TodayTimelineItem | null;
+  isOpen: boolean;
+  isCurrent?: boolean;
+  isNext?: boolean;
+  onClose: () => void;
+  onAskAboutItem: (item: TodayTimelineItem) => void;
+  onReplaceItem: (item: TodayTimelineItem) => void;
+  onKeepFreeTime: (item: TodayTimelineItem) => void;
+  onEditItem: (item: TodayTimelineItem) => void;
+  onMarkDone?: (item: TodayTimelineItem) => void;
+  onSkipItem?: (item: TodayTimelineItem) => void;
+}
+
+function getCategoryLabel(category: TodayTimelineItem["category"]) {
+  switch (category) {
+    case "food":
+      return "Food";
+    case "transport":
+      return "Transport";
+    case "free_time":
+      return "Free time";
+    default:
+      return "Activity";
+  }
+}
+
+export default function ActivityDetailDrawer({
+  item,
+  isOpen,
+  isCurrent = false,
+  isNext = false,
+  onClose,
+  onAskAboutItem,
+  onReplaceItem,
+  onKeepFreeTime,
+  onEditItem,
+  onMarkDone,
+  onSkipItem,
+}: ActivityDetailDrawerProps) {
+  if (!isOpen || !item) {
+    return null;
+  }
+
+  return (
+    <section className="fixed inset-0 z-50">
+      <div className="absolute inset-0 bg-slate-950/35" onClick={onClose} />
+
+      <div className="absolute inset-x-3 bottom-3 mx-auto max-w-2xl overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl">
+        <div className="flex items-start justify-between gap-3 border-b border-slate-100 p-4">
+          <div>
+            <div className="mb-2 flex flex-wrap items-center gap-2">
+              {isCurrent && <Badge variant="default">Now</Badge>}
+              {isNext && <Badge variant="secondary">Next</Badge>}
+
+              <Badge variant="outline">
+                <Clock3 className="mr-1 h-3 w-3" />
+                {formatTimelineTime(item.time)}
+              </Badge>
+
+              <Badge variant="outline">{getCategoryLabel(item.category)}</Badge>
+            </div>
+
+            <h2 className="text-xl font-bold leading-tight text-slate-950">
+              {item.title}
+            </h2>
+
+            <p className="mt-1 text-sm text-slate-500">
+              Day {item.dayNumber} · {item.period}
+            </p>
+          </div>
+
+          <Button type="button" size="sm" variant="outline" onClick={onClose}>
+            <X className="h-4 w-4" />
+            Close
+          </Button>
+        </div>
+
+        <div className="max-h-[72vh] space-y-4 overflow-y-auto p-4">
+          <div className="grid gap-3 sm:grid-cols-3">
+            <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
+              <p className="mb-1 flex items-center gap-2 text-sm font-semibold text-slate-900">
+                <MapPin className="h-4 w-4 text-blue-600" />
+                Location
+              </p>
+              <p className="text-sm leading-6 text-slate-600">{item.location}</p>
+            </div>
+
+            <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
+              <p className="mb-1 flex items-center gap-2 text-sm font-semibold text-slate-900">
+                <Navigation className="h-4 w-4 text-blue-600" />
+                Transport
+              </p>
+              <p className="text-sm leading-6 text-slate-600">{item.transport}</p>
+            </div>
+
+            <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
+              <p className="mb-1 flex items-center gap-2 text-sm font-semibold text-slate-900">
+                <StickyNote className="h-4 w-4 text-blue-600" />
+                Remark
+              </p>
+              <p className="text-sm leading-6 text-slate-600">{item.remarks}</p>
+            </div>
+          </div>
+
+          <div className="rounded-2xl border border-blue-100 bg-blue-50 p-4">
+            <p className="text-sm font-semibold text-blue-900">Quick decision</p>
+            <p className="mt-1 text-sm leading-6 text-blue-800">
+              Use these actions when your timing changes, you are tired, or you want
+              the bot to explain this stop.
+            </p>
+          </div>
+
+          <div className="grid gap-2 sm:grid-cols-2">
+            <Button type="button" onClick={() => onAskAboutItem(item)}>
+              <MessageCircle className="h-4 w-4" />
+              Ask bot about this
+            </Button>
+
+            <Button type="button" variant="secondary" onClick={() => onReplaceItem(item)}>
+              <Shuffle className="h-4 w-4" />
+              Replace activity
+            </Button>
+
+            <Button type="button" variant="outline" onClick={() => onKeepFreeTime(item)}>
+              <Coffee className="h-4 w-4" />
+              Keep as free time
+            </Button>
+
+            <Button type="button" variant="outline" onClick={() => onEditItem(item)}>
+              <PencilLine className="h-4 w-4" />
+              Edit details
+            </Button>
+
+            {onMarkDone && (
+              <Button type="button" variant="outline" onClick={() => onMarkDone(item)}>
+                <CheckCircle2 className="h-4 w-4" />
+                Mark done
+              </Button>
+            )}
+
+            {onSkipItem && (
+              <Button type="button" variant="outline" onClick={() => onSkipItem(item)}>
+                <Ban className="h-4 w-4" />
+                Skip this
+              </Button>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
