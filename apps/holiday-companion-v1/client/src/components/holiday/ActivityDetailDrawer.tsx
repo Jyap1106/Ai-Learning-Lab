@@ -1,4 +1,5 @@
 import {
+  ArrowRightLeft,
   Ban,
   CheckCircle2,
   Clock3,
@@ -29,6 +30,7 @@ interface ActivityDetailDrawerProps {
   onReplaceItem: (item: TodayTimelineItem) => void;
   onKeepFreeTime: (item: TodayTimelineItem) => void;
   onEditItem: (item: TodayTimelineItem) => void;
+  onMoveItem: (item: TodayTimelineItem) => void;
   onMarkDone?: (item: TodayTimelineItem) => void;
   onSkipItem?: (item: TodayTimelineItem) => void;
 }
@@ -56,6 +58,7 @@ export default function ActivityDetailDrawer({
   onReplaceItem,
   onKeepFreeTime,
   onEditItem,
+  onMoveItem,
   onMarkDone,
   onSkipItem,
 }: ActivityDetailDrawerProps) {
@@ -151,6 +154,11 @@ export default function ActivityDetailDrawer({
             <Button type="button" variant="outline" onClick={() => onEditItem(item)}>
               <PencilLine className="h-4 w-4" />
               Edit details
+            </Button>
+
+            <Button type="button" variant="outline" onClick={() => onMoveItem(item)}>
+              <ArrowRightLeft className="h-4 w-4" />
+              Move activity
             </Button>
 
             {onMarkDone && (
