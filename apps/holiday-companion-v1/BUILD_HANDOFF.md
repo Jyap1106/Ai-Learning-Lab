@@ -9,6 +9,10 @@
 **Build Type**: First Manus Run - Static Dashboard Slice  
 **Duration**: Single session
 
+**Bug Fixes Applied (Post-Build)**:
+- ✅ **Fixed missing `@/lib/utils` import**: Created `client/src/lib/utils.ts` to export the `cn` utility function compatible with all shadcn/ui components.
+- ✅ **Fixed analytics placeholder warnings**: Removed the Google/Umami analytics script and `%VITE_ANALYTICS_*%` placeholders from `client/index.html` since V1 does not use analytics yet.
+
 ## What Was Built
 
 This is the first working prototype of the Holiday Companion Bot, focusing on the static dashboard slice. The app loads a sample Austria trip itinerary and displays today's plan, tomorrow's plan, and the full trip overview.
@@ -86,6 +90,8 @@ apps/holiday-companion-v1/
 │   │   │       └── FullItineraryList.tsx
 │   │   ├── data/
 │   │   │   └── austriaItineraryState.json
+│   │   ├── lib/
+│   │   │   └── utils.ts (new - added for class merge support)
 │   │   └── pages/
 │   │       └── Home.tsx (modified)
 │   └── [other template files]
