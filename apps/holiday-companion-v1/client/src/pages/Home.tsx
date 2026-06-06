@@ -1,22 +1,26 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
+
+import ChatAssistant, { type ChatMessage } from "@/components/holiday/ChatAssistant";
+import FullItineraryList from "@/components/holiday/FullItineraryList";
 import Header from "@/components/holiday/Header";
+import ProposedChangeCard from "@/components/holiday/ProposedChangeCard";
 import TodayPlanCard from "@/components/holiday/TodayPlanCard";
 import TomorrowPlanCard from "@/components/holiday/TomorrowPlanCard";
 import TripDashboard from "@/components/holiday/TripDashboard";
-import FullItineraryList from "@/components/holiday/FullItineraryList";
-import ChatAssistant, {
-  type ChatMessage,
-} from "@/components/holiday/ChatAssistant";
-import ProposedChangeCard from "@/components/holiday/ProposedChangeCard";
 import austriaData from "@/data/austriaItineraryState.json";
 import {
+  DEFAULT_PROMPT_CHIPS,
   createMockAssistantResponse,
   createMockProposedChange,
-  DEFAULT_PROMPT_CHIPS,
   isEditPrompt,
   type Day,
   type ProposedChange,
 } from "@/lib/mockResponses";
+import {
+  clearTripStorage,
+  loadTripFromStorage,
+  saveTripToStorage,
+} from "@/lib/storage";
 
 interface VersionHistoryEntry {
   version: number;
@@ -33,16 +37,19 @@ interface ItineraryState {
   duration: string;
   currentDay: number;
   saveStatus: string;
+  shareStatus?: string;
+  source?: string;
+  tripStyle?: string[];
   days: Day[];
   versionHistory: VersionHistoryEntry[];
+  proposedChange?: unknown;
+  metadata?: Record<string, unknown>;
 }
-
-const STORAGE_KEY = "holiday_companion_current_trip";
 
 function createMessage(
   role: "user" | "assistant",
   content: string,
-  title?: string
+  title?: string,
 ): ChatMessage {
   return {
     id: `${role}-${Date.now()}-${Math.random().toString(16).slice(2)}`,
@@ -52,12 +59,57 @@ function createMessage(
   };
 }
 
+function cloneTrip(trip: ItineraryState): ItineraryState {
+  return JSON.parse(JSON.stringify(trip)) as ItineraryState;
+}
+
+function createInitialTripState(): ItineraryState {
+  const sampleTrip = cloneTrip(austriaData as ItineraryState);
+
+  return {
+    ...sampleTrip,
+    saveStatus: "using_sample_data",
+    days: sampleTrip.days.map((day) => ({
+      ...day,
+      morning: [...day.morning],
+      afternoon: [...day.afternoon],
+      evening: [...day.evening],
+      food: [...day.food],
+      transport: [...day.transport],
+      notes: [...day.notes],
+      edited: false,
+    })),
+    versionHistory: [
+      {
+        version: 1,
+        summary: "Initial Austria itinerary sample loaded",
+        changeType: "initial_load",
+        affectedDay: null,
+        createdAt: new Date().toISOString(),
+      },
+    ],
+  };
+}
+
+function loadInitialTripState(): ItineraryState {
+  const savedTrip = loadTripFromStorage<ItineraryState>();
+
+  if (savedTrip) {
+    return {
+      ...savedTrip,
+      saveStatus: "saved_locally",
+    };
+  }
+
+  return createInitialTripState();
+}
+
 function createVersionEntry(
   previousLength: number,
-  proposedChange: ProposedChange
+  proposedChange: ProposedChange,
 ): VersionHistoryEntry {
   const selectedOption = proposedChange.options.find(
-    (option) => option.id === proposedChange.selectedOptionId
+    (option) => option.id === proposedChange.selectedOptionId,
   );
 
   return {
@@ -71,12 +123,17 @@ function createVersionEntry(
   };
 }
 
-function updateDayWithProposedChange(
-  day: Day,
-  proposedChange: ProposedChange
-): Day {
+function appendUnique(items: string[], item: string) {
+  if (items.includes(item)) {
+    return items;
+  }
+
+  return [...items, item];
+}
+
+function updateDayWithProposedChange(day: Day, proposedChange: ProposedChange): Day {
   const selectedOption = proposedChange.options.find(
-    (option) => option.id === proposedChange.selectedOptionId
+    (option) => option.id === proposedChange.selectedOptionId,
   );
 
   const selectedLabel = selectedOption?.label ?? "Selected change";
@@ -86,14 +143,15 @@ function updateDayWithProposedChange(
     return {
       ...day,
       edited: true,
-      afternoon: [...day.afternoon, selectedLabel],
-      notes: [...day.notes, updatedNote],
+      afternoon: appendUnique(day.afternoon, selectedLabel),
+      notes: appendUnique(day.notes, updatedNote),
     };
   }
 
   if (proposedChange.type === "replace_activity") {
+    const replacementTarget = proposedChange.currentItem || "Upper Belvedere";
     const replacedAfternoon = day.afternoon.map((item) =>
-      item === "Upper Belvedere" ? selectedLabel : item
+      item === replacementTarget ? selectedLabel : item,
     );
 
     return {
@@ -102,61 +160,66 @@ function updateDayWithProposedChange(
       afternoon: replacedAfternoon.includes(selectedLabel)
         ? replacedAfternoon
         : [...replacedAfternoon, selectedLabel],
-      notes: [...day.notes, updatedNote],
+      notes: appendUnique(day.notes, updatedNote),
+    };
+  }
+
+  if (proposedChange.selectedOptionId === "make-evening-optional") {
+    return {
+      ...day,
+      edited: true,
+      evening: day.evening.map((item, index) =>
+        index === 0 && !item.includes("(optional)") ? `${item} (optional)` : item,
+      ),
+      notes: appendUnique(day.notes, updatedNote),
+    };
+  }
+
+  if (proposedChange.selectedOptionId === "relax-time") {
+    return {
+      ...day,
+      edited: true,
+      afternoon: day.afternoon.slice(0, 1),
+      notes: appendUnique(day.notes, updatedNote),
     };
   }
 
   return {
     ...day,
     edited: true,
-    notes: [...day.notes, updatedNote],
+    afternoon: appendUnique(day.afternoon.slice(0, 1), selectedLabel),
+    notes: appendUnique(day.notes, updatedNote),
   };
 }
 
 export default function Home() {
-  const [tripData, setTripData] = useState<ItineraryState | null>(null);
-  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
-  const [proposedChange, setProposedChange] =
-    useState<ProposedChange | null>(null);
-
-  useEffect(() => {
-    try {
-      const savedTrip = window.localStorage.getItem(STORAGE_KEY);
-
-      if (savedTrip) {
-        setTripData(JSON.parse(savedTrip) as ItineraryState);
-        return;
-      }
-    } catch {
-      window.localStorage.removeItem(STORAGE_KEY);
-    }
-
-    setTripData(austriaData as ItineraryState);
-  }, []);
+  const [tripData, setTripData] = useState<ItineraryState>(() => loadInitialTripState());
+  const [chatMessages, setChatMessages] = useState<ChatMessage[]>(() => [
+    createMessage(
+      "assistant",
+      "I loaded your Austria sample trip. Use the prompt chips to ask about today, tomorrow, food, transport, or local itinerary changes.",
+      "Welcome",
+    ),
+  ]);
+  const [proposedChange, setProposedChange] = useState<ProposedChange | null>(null);
 
   const currentDay = useMemo(() => {
-    if (!tripData) return undefined;
     return tripData.days.find((day) => day.dayNumber === tripData.currentDay);
   }, [tripData]);
 
   const tomorrowDay = useMemo(() => {
-    if (!tripData) return undefined;
-    return tripData.days.find(
-      (day) => day.dayNumber === tripData.currentDay + 1
-    );
+    return tripData.days.find((day) => day.dayNumber === tripData.currentDay + 1);
   }, [tripData]);
 
   const upcomingDays = useMemo(() => {
-    if (!tripData) return [];
     return tripData.days.filter(
       (day) =>
-        day.dayNumber > tripData.currentDay &&
-        day.dayNumber <= tripData.currentDay + 3
+        day.dayNumber > tripData.currentDay && day.dayNumber <= tripData.currentDay + 3,
     );
   }, [tripData]);
 
   const handlePromptChipClick = (prompt: string) => {
-    if (!tripData || !currentDay) return;
+    if (!currentDay) return;
 
     const userMessage = createMessage("user", prompt);
 
@@ -164,14 +227,10 @@ export default function Home() {
       const change = createMockProposedChange(prompt, currentDay);
 
       setProposedChange(change);
-      setTripData((previousTrip) =>
-        previousTrip
-          ? {
-              ...previousTrip,
-              saveStatus: "awaiting_confirmation",
-            }
-          : previousTrip
-      );
+      setTripData((previousTrip) => ({
+        ...previousTrip,
+        saveStatus: "awaiting_confirmation",
+      }));
 
       const assistantMessage = createMessage(
         "assistant",
@@ -179,9 +238,9 @@ export default function Home() {
           "I created a proposed itinerary change for you to review.",
           "",
           "Nothing has been saved yet.",
-          "Please choose an option and confirm or reject the change.",
+          "Choose an option, then confirm or reject the change.",
         ].join("\n"),
-        change.title
+        change.title,
       );
 
       setChatMessages((previousMessages) => [
@@ -193,16 +252,12 @@ export default function Home() {
       return;
     }
 
-    const mockResponse = createMockAssistantResponse(
-      prompt,
-      currentDay,
-      tomorrowDay
-    );
+    const mockResponse = createMockAssistantResponse(prompt, currentDay, tomorrowDay);
 
     const assistantMessage = createMessage(
       "assistant",
       mockResponse.content,
-      mockResponse.title
+      mockResponse.title,
     );
 
     setChatMessages((previousMessages) => [
@@ -219,17 +274,14 @@ export default function Home() {
             ...previousChange,
             selectedOptionId: optionId,
           }
-        : previousChange
+        : previousChange,
     );
   };
 
   const handleConfirmChange = () => {
-    if (!tripData || !proposedChange) return;
+    if (!proposedChange) return;
 
-    const nextVersion = createVersionEntry(
-      tripData.versionHistory.length,
-      proposedChange
-    );
+    const nextVersion = createVersionEntry(tripData.versionHistory.length, proposedChange);
 
     const updatedTrip: ItineraryState = {
       ...tripData,
@@ -237,15 +289,14 @@ export default function Home() {
       days: tripData.days.map((day) =>
         day.dayNumber === proposedChange.affectedDay
           ? updateDayWithProposedChange(day, proposedChange)
-          : day
+          : day,
       ),
       versionHistory: [...tripData.versionHistory, nextVersion],
     };
 
+    saveTripToStorage(updatedTrip);
     setTripData(updatedTrip);
     setProposedChange(null);
-
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedTrip));
 
     setChatMessages((previousMessages) => [
       ...previousMessages,
@@ -257,7 +308,7 @@ export default function Home() {
           "Your itinerary has been updated in this prototype.",
           `Version ${nextVersion.version}: ${nextVersion.summary}`,
         ].join("\n"),
-        "Change confirmed"
+        "Change confirmed",
       ),
     ]);
   };
@@ -265,97 +316,104 @@ export default function Home() {
   const handleRejectChange = () => {
     setProposedChange(null);
 
-    setTripData((previousTrip) =>
-      previousTrip
-        ? {
-            ...previousTrip,
-            saveStatus: "rejected",
-          }
-        : previousTrip
-    );
+    setTripData((previousTrip) => ({
+      ...previousTrip,
+      saveStatus:
+        previousTrip.versionHistory.length > 1 ? "saved_locally" : "using_sample_data",
+    }));
 
     setChatMessages((previousMessages) => [
       ...previousMessages,
+      createMessage("assistant", "No changes were saved. Your itinerary remains unchanged.", "Change rejected"),
+    ]);
+  };
+
+  const handleResetTrip = () => {
+    const confirmed = window.confirm(
+      "Reset the sample trip? This clears local saved changes in this browser.",
+    );
+
+    if (!confirmed) return;
+
+    clearTripStorage();
+
+    const freshTrip = createInitialTripState();
+
+    setTripData(freshTrip);
+    setProposedChange(null);
+    setChatMessages([
       createMessage(
         "assistant",
-        "No changes were saved. Your itinerary remains unchanged.",
-        "Change rejected"
+        "Sample trip reset. All local changes in this browser have been cleared.",
+        "Trip reset",
       ),
     ]);
   };
 
-  if (!tripData) {
-    return (
-      <main className="flex min-h-screen items-center justify-center bg-slate-50">
-        <div className="rounded-3xl border border-slate-200 bg-white px-8 py-6 text-center shadow-xl">
-          <p className="text-sm font-medium text-slate-500">
-            Loading trip data...
-          </p>
-        </div>
-      </main>
-    );
-  }
-
   return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,_#dbeafe,_transparent_35%),linear-gradient(135deg,_#fff7ed,_#f8fafc_45%,_#eef2ff)]">
-      <Header
-        tripName={tripData.tripName}
-        currentDay={tripData.currentDay}
-        saveStatus={tripData.saveStatus}
-      />
+    <main className="min-h-screen bg-slate-50">
+      <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8">
+        <Header
+          tripName={tripData.tripName}
+          currentDay={tripData.currentDay}
+          saveStatus={tripData.saveStatus}
+        />
 
-      <div className="mx-auto grid w-full max-w-7xl gap-6 px-4 py-6 lg:grid-cols-[minmax(0,1fr)_360px] lg:px-8">
-        <section className="space-y-6">
-          {currentDay && (
-            <TodayPlanCard
-              day={currentDay}
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(320px,1fr)]">
+          <section className="space-y-6">
+            {currentDay ? (
+              <TodayPlanCard day={currentDay} onPromptClick={handlePromptChipClick} />
+            ) : (
+              <div className="rounded-2xl border border-red-100 bg-white p-6 text-red-700 shadow-sm">
+                Current day could not be found in the itinerary data.
+              </div>
+            )}
+
+            {tomorrowDay && (
+              <TomorrowPlanCard day={tomorrowDay} onPromptClick={handlePromptChipClick} />
+            )}
+
+            <ChatAssistant
+              messages={chatMessages}
+              prompts={DEFAULT_PROMPT_CHIPS}
               onPromptClick={handlePromptChipClick}
             />
-          )}
 
-          {tomorrowDay && <TomorrowPlanCard day={tomorrowDay} />}
+            {proposedChange && (
+              <ProposedChangeCard
+                proposedChange={proposedChange}
+                onSelectOption={handleSelectProposedOption}
+                onConfirm={handleConfirmChange}
+                onReject={handleRejectChange}
+              />
+            )}
 
-          <ChatAssistant
-            messages={chatMessages}
-            prompts={DEFAULT_PROMPT_CHIPS}
-            onPromptClick={handlePromptChipClick}
-          />
+            <FullItineraryList days={tripData.days} />
+          </section>
 
-          {proposedChange && (
-            <ProposedChangeCard
-              proposedChange={proposedChange}
-              onSelectOption={handleSelectProposedOption}
-              onConfirm={handleConfirmChange}
-              onReject={handleRejectChange}
+          <aside className="space-y-6">
+            <TripDashboard
+              trip={tripData}
+              currentDay={tripData.currentDay}
+              versionHistory={tripData.versionHistory}
+              saveStatus={tripData.saveStatus}
+              upcomingDays={upcomingDays}
+              onResetTrip={handleResetTrip}
             />
-          )}
 
-          <FullItineraryList days={tripData.days} />
-        </section>
-
-        <aside className="space-y-6">
-          <TripDashboard
-            trip={tripData}
-            currentDay={tripData.currentDay}
-            versionHistory={tripData.versionHistory}
-            saveStatus={tripData.saveStatus}
-            upcomingDays={upcomingDays}
-          />
-
-          <div className="rounded-3xl border border-white/70 bg-white/80 p-5 shadow-xl shadow-blue-950/5 backdrop-blur">
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-blue-700">
-              V1 Build Status
-            </p>
-            <h2 className="mt-2 text-xl font-semibold text-slate-950">
-              Mock chat and local edits
-            </h2>
-            <p className="mt-2 text-sm leading-6 text-slate-600">
-              This build uses local sample data, mock assistant responses,
-              proposed changes, confirm/reject behavior, and localStorage.
-              Real AI and backend saving come later.
-            </p>
-          </div>
-        </aside>
+            <div className="rounded-2xl border border-blue-100 bg-white p-5 shadow-sm">
+              <p className="text-sm font-semibold text-blue-900">V1 Build Status</p>
+              <h2 className="mt-2 text-lg font-bold text-slate-900">
+                Local itinerary companion
+              </h2>
+              <p className="mt-2 text-sm leading-6 text-slate-600">
+                This build uses local sample data, mock assistant responses, proposed
+                changes, confirm/reject behavior, and localStorage. Real AI and backend
+                saving come later.
+              </p>
+            </div>
+          </aside>
+        </div>
       </div>
     </main>
   );
