@@ -28,6 +28,8 @@ interface VersionHistoryEntry {
   changeType?: string;
   affectedDay?: number | null;
   createdAt?: string;
+  restoredFromVersion?: number;
+  snapshot?: Day[];
 }
 
 interface ItineraryState {
@@ -59,35 +61,82 @@ function createMessage(
   };
 }
 
-function cloneTrip(trip: ItineraryState): ItineraryState {
-  return JSON.parse(JSON.stringify(trip)) as ItineraryState;
+function cloneJson<TValue>(value: TValue): TValue {
+  return JSON.parse(JSON.stringify(value)) as TValue;
+}
+
+function cloneDays(days: Day[]): Day[] {
+  return days.map((day) => ({
+    ...day,
+    morning: [...day.morning],
+    afternoon: [...day.afternoon],
+    evening: [...day.evening],
+    food: [...day.food],
+    transport: [...day.transport],
+    notes: [...day.notes],
+  }));
+}
+
+function getNextVersionNumber(versionHistory: VersionHistoryEntry[]) {
+  if (versionHistory.length === 0) {
+    return 1;
+  }
+
+  return Math.max(...versionHistory.map((entry) => entry.version)) + 1;
+}
+
+function createInitialVersionEntry(days: Day[]): VersionHistoryEntry {
+  return {
+    version: 1,
+    summary: "Initial Austria itinerary sample loaded",
+    changeType: "initial_load",
+    affectedDay: null,
+    createdAt: new Date().toISOString(),
+    snapshot: cloneDays(days),
+  };
+}
+
+function normalizeTripState(trip: ItineraryState): ItineraryState {
+  const cleanDays = cloneDays(trip.days ?? []);
+
+  const versionHistory =
+    trip.versionHistory && trip.versionHistory.length > 0
+      ? trip.versionHistory
+      : [createInitialVersionEntry(cleanDays)];
+
+  const currentVersionNumber = Math.max(
+    ...versionHistory.map((entry) => entry.version),
+  );
+
+  const normalizedVersionHistory = versionHistory.map((entry) => ({
+    ...entry,
+    snapshot: entry.snapshot
+      ? cloneDays(entry.snapshot)
+      : entry.version === currentVersionNumber
+        ? cloneDays(cleanDays)
+        : undefined,
+  }));
+
+  return {
+    ...trip,
+    days: cleanDays,
+    versionHistory: normalizedVersionHistory,
+  };
 }
 
 function createInitialTripState(): ItineraryState {
-  const sampleTrip = cloneTrip(austriaData as ItineraryState);
+  const sampleTrip = cloneJson(austriaData as ItineraryState);
+
+  const cleanDays = cloneDays(sampleTrip.days).map((day) => ({
+    ...day,
+    edited: false,
+  }));
 
   return {
     ...sampleTrip,
     saveStatus: "using_sample_data",
-    days: sampleTrip.days.map((day) => ({
-      ...day,
-      morning: [...day.morning],
-      afternoon: [...day.afternoon],
-      evening: [...day.evening],
-      food: [...day.food],
-      transport: [...day.transport],
-      notes: [...day.notes],
-      edited: false,
-    })),
-    versionHistory: [
-      {
-        version: 1,
-        summary: "Initial Austria itinerary sample loaded",
-        changeType: "initial_load",
-        affectedDay: null,
-        createdAt: new Date().toISOString(),
-      },
-    ],
+    days: cleanDays,
+    versionHistory: [createInitialVersionEntry(cleanDays)],
   };
 }
 
@@ -96,7 +145,7 @@ function loadInitialTripState(): ItineraryState {
 
   if (savedTrip) {
     return {
-      ...savedTrip,
+      ...normalizeTripState(savedTrip),
       saveStatus: "saved_locally",
     };
   }
@@ -104,22 +153,40 @@ function loadInitialTripState(): ItineraryState {
   return createInitialTripState();
 }
 
-function createVersionEntry(
-  previousLength: number,
+function createChangeVersionEntry(
+  versionHistory: VersionHistoryEntry[],
   proposedChange: ProposedChange,
+  updatedDays: Day[],
 ): VersionHistoryEntry {
   const selectedOption = proposedChange.options.find(
     (option) => option.id === proposedChange.selectedOptionId,
   );
 
   return {
-    version: previousLength + 1,
+    version: getNextVersionNumber(versionHistory),
     changeType: proposedChange.type,
     affectedDay: proposedChange.affectedDay,
     createdAt: new Date().toISOString(),
+    snapshot: cloneDays(updatedDays),
     summary: `Day ${proposedChange.affectedDay}: ${proposedChange.title} → ${
       selectedOption?.label ?? "selected option"
     }`,
+  };
+}
+
+function createRestoreVersionEntry(
+  versionHistory: VersionHistoryEntry[],
+  restoredFromVersion: number,
+  restoredDays: Day[],
+): VersionHistoryEntry {
+  return {
+    version: getNextVersionNumber(versionHistory),
+    summary: `Restored itinerary from version ${restoredFromVersion}`,
+    changeType: "restore_version",
+    affectedDay: null,
+    restoredFromVersion,
+    createdAt: new Date().toISOString(),
+    snapshot: cloneDays(restoredDays),
   };
 }
 
@@ -139,27 +206,11 @@ function updateDayWithProposedChange(day: Day, proposedChange: ProposedChange): 
   const selectedLabel = selectedOption?.label ?? "Selected change";
   const updatedNote = `Updated locally: ${proposedChange.title} — ${selectedLabel}.`;
 
-  if (proposedChange.type === "add_cafe_break") {
+  if (proposedChange.selectedOptionId === "relax-time") {
     return {
       ...day,
       edited: true,
-      afternoon: appendUnique(day.afternoon, selectedLabel),
-      notes: appendUnique(day.notes, updatedNote),
-    };
-  }
-
-  if (proposedChange.type === "replace_activity") {
-    const replacementTarget = proposedChange.currentItem || "Upper Belvedere";
-    const replacedAfternoon = day.afternoon.map((item) =>
-      item === replacementTarget ? selectedLabel : item,
-    );
-
-    return {
-      ...day,
-      edited: true,
-      afternoon: replacedAfternoon.includes(selectedLabel)
-        ? replacedAfternoon
-        : [...replacedAfternoon, selectedLabel],
+      afternoon: day.afternoon.slice(0, 1),
       notes: appendUnique(day.notes, updatedNote),
     };
   }
@@ -175,11 +226,28 @@ function updateDayWithProposedChange(day: Day, proposedChange: ProposedChange): 
     };
   }
 
-  if (proposedChange.selectedOptionId === "relax-time") {
+  if (proposedChange.type === "add_cafe_break") {
     return {
       ...day,
       edited: true,
-      afternoon: day.afternoon.slice(0, 1),
+      afternoon: appendUnique(day.afternoon, selectedLabel),
+      notes: appendUnique(day.notes, updatedNote),
+    };
+  }
+
+  if (proposedChange.type === "replace_activity") {
+    const replacementTarget = proposedChange.currentItem || "Upper Belvedere";
+
+    const replacedAfternoon = day.afternoon.map((item) =>
+      item === replacementTarget ? selectedLabel : item,
+    );
+
+    return {
+      ...day,
+      edited: true,
+      afternoon: replacedAfternoon.includes(selectedLabel)
+        ? replacedAfternoon
+        : [...replacedAfternoon, selectedLabel],
       notes: appendUnique(day.notes, updatedNote),
     };
   }
@@ -194,6 +262,7 @@ function updateDayWithProposedChange(day: Day, proposedChange: ProposedChange): 
 
 export default function Home() {
   const [tripData, setTripData] = useState<ItineraryState>(() => loadInitialTripState());
+
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>(() => [
     createMessage(
       "assistant",
@@ -201,6 +270,7 @@ export default function Home() {
       "Welcome",
     ),
   ]);
+
   const [proposedChange, setProposedChange] = useState<ProposedChange | null>(null);
 
   const currentDay = useMemo(() => {
@@ -281,16 +351,22 @@ export default function Home() {
   const handleConfirmChange = () => {
     if (!proposedChange) return;
 
-    const nextVersion = createVersionEntry(tripData.versionHistory.length, proposedChange);
+    const updatedDays = tripData.days.map((day) =>
+      day.dayNumber === proposedChange.affectedDay
+        ? updateDayWithProposedChange(day, proposedChange)
+        : day,
+    );
+
+    const nextVersion = createChangeVersionEntry(
+      tripData.versionHistory,
+      proposedChange,
+      updatedDays,
+    );
 
     const updatedTrip: ItineraryState = {
       ...tripData,
       saveStatus: "saved_locally",
-      days: tripData.days.map((day) =>
-        day.dayNumber === proposedChange.affectedDay
-          ? updateDayWithProposedChange(day, proposedChange)
-          : day,
-      ),
+      days: updatedDays,
       versionHistory: [...tripData.versionHistory, nextVersion],
     };
 
@@ -324,7 +400,103 @@ export default function Home() {
 
     setChatMessages((previousMessages) => [
       ...previousMessages,
-      createMessage("assistant", "No changes were saved. Your itinerary remains unchanged.", "Change rejected"),
+      createMessage(
+        "assistant",
+        "No changes were saved. Your itinerary remains unchanged.",
+        "Change rejected",
+      ),
+    ]);
+  };
+
+  const handleRestoreVersion = (versionNumber: number) => {
+    const versionToRestore = tripData.versionHistory.find(
+      (entry) => entry.version === versionNumber,
+    );
+
+    if (!versionToRestore) {
+      setChatMessages((previousMessages) => [
+        ...previousMessages,
+        createMessage(
+          "assistant",
+          `I could not find version ${versionNumber}. No changes were made.`,
+          "Restore unavailable",
+        ),
+      ]);
+
+      return;
+    }
+
+    const currentVersionNumber = Math.max(
+      ...tripData.versionHistory.map((entry) => entry.version),
+    );
+
+    if (versionToRestore.version === currentVersionNumber) {
+      setChatMessages((previousMessages) => [
+        ...previousMessages,
+        createMessage(
+          "assistant",
+          `Version ${versionNumber} is already the current version.`,
+          "Already current",
+        ),
+      ]);
+
+      return;
+    }
+
+    if (!versionToRestore.snapshot) {
+      setChatMessages((previousMessages) => [
+        ...previousMessages,
+        createMessage(
+          "assistant",
+          [
+            `Version ${versionNumber} does not have a restorable snapshot.`,
+            "",
+            "This can happen for older saved localStorage data created before version restore was added.",
+            "Use Reset Sample Trip, then create new changes to test full restore behavior.",
+          ].join("\n"),
+          "Restore unavailable",
+        ),
+      ]);
+
+      return;
+    }
+
+    const confirmed = window.confirm(
+      `Restore version ${versionNumber}? This will create a new version from that older itinerary snapshot.`,
+    );
+
+    if (!confirmed) return;
+
+    const restoredDays = cloneDays(versionToRestore.snapshot);
+
+    const restoreVersion = createRestoreVersionEntry(
+      tripData.versionHistory,
+      versionToRestore.version,
+      restoredDays,
+    );
+
+    const updatedTrip: ItineraryState = {
+      ...tripData,
+      saveStatus: "saved_locally",
+      days: restoredDays,
+      versionHistory: [...tripData.versionHistory, restoreVersion],
+    };
+
+    saveTripToStorage(updatedTrip);
+    setTripData(updatedTrip);
+    setProposedChange(null);
+
+    setChatMessages((previousMessages) => [
+      ...previousMessages,
+      createMessage(
+        "assistant",
+        [
+          `Restored version ${versionToRestore.version}.`,
+          "",
+          `I created version ${restoreVersion.version} from that older snapshot, so your history is preserved.`,
+        ].join("\n"),
+        "Version restored",
+      ),
     ]);
   };
 
@@ -399,6 +571,7 @@ export default function Home() {
               saveStatus={tripData.saveStatus}
               upcomingDays={upcomingDays}
               onResetTrip={handleResetTrip}
+              onRestoreVersion={handleRestoreVersion}
             />
 
             <div className="rounded-2xl border border-blue-100 bg-white p-5 shadow-sm">
@@ -408,8 +581,8 @@ export default function Home() {
               </h2>
               <p className="mt-2 text-sm leading-6 text-slate-600">
                 This build uses local sample data, mock assistant responses, proposed
-                changes, confirm/reject behavior, and localStorage. Real AI and backend
-                saving come later.
+                changes, confirm/reject behavior, localStorage, and restorable version
+                history. Real AI and backend saving come later.
               </p>
             </div>
           </aside>
