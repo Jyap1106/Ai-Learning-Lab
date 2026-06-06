@@ -1,23 +1,18 @@
-import { useState, useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Header from "@/components/holiday/Header";
 import TodayPlanCard from "@/components/holiday/TodayPlanCard";
 import TomorrowPlanCard from "@/components/holiday/TomorrowPlanCard";
 import TripDashboard from "@/components/holiday/TripDashboard";
 import FullItineraryList from "@/components/holiday/FullItineraryList";
+import ChatAssistant, {
+  type ChatMessage,
+} from "@/components/holiday/ChatAssistant";
 import austriaData from "@/data/austriaItineraryState.json";
-
-interface Day {
-  dayNumber: number;
-  city: string;
-  theme: string;
-  morning: string[];
-  afternoon: string[];
-  evening: string[];
-  food: string[];
-  transport: string[];
-  notes: string[];
-  edited: boolean;
-}
+import {
+  createMockAssistantResponse,
+  DEFAULT_PROMPT_CHIPS,
+  type Day,
+} from "@/lib/mockResponses";
 
 interface ItineraryState {
   tripId: string;
@@ -33,50 +28,104 @@ interface ItineraryState {
   }>;
 }
 
+function createMessage(
+  role: "user" | "assistant",
+  content: string,
+  title?: string
+): ChatMessage {
+  return {
+    id: `${role}-${Date.now()}-${Math.random().toString(16).slice(2)}`,
+    role,
+    content,
+    title,
+  };
+}
+
 export default function Home() {
   const [tripData, setTripData] = useState<ItineraryState | null>(null);
+  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
 
   useEffect(() => {
-    // Load Austria sample data
     setTripData(austriaData as ItineraryState);
   }, []);
 
+  const currentDay = useMemo(() => {
+    if (!tripData) return undefined;
+    return tripData.days.find((day) => day.dayNumber === tripData.currentDay);
+  }, [tripData]);
+
+  const tomorrowDay = useMemo(() => {
+    if (!tripData) return undefined;
+    return tripData.days.find(
+      (day) => day.dayNumber === tripData.currentDay + 1
+    );
+  }, [tripData]);
+
+  const upcomingDays = useMemo(() => {
+    if (!tripData) return [];
+    return tripData.days.filter(
+      (day) =>
+        day.dayNumber > tripData.currentDay &&
+        day.dayNumber <= tripData.currentDay + 3
+    );
+  }, [tripData]);
+
+  const handlePromptChipClick = (prompt: string) => {
+    if (!tripData || !currentDay) return;
+
+    const mockResponse = createMockAssistantResponse(
+      prompt,
+      currentDay,
+      tomorrowDay
+    );
+
+    const userMessage = createMessage("user", prompt);
+    const assistantMessage = createMessage(
+      "assistant",
+      mockResponse.content,
+      mockResponse.title
+    );
+
+    setChatMessages((previousMessages) => [
+      ...previousMessages,
+      userMessage,
+      assistantMessage,
+    ]);
+  };
+
   if (!tripData) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="text-foreground">Loading trip data...</div>
-      </div>
+      <main className="flex min-h-screen items-center justify-center bg-slate-50">
+        <div className="rounded-3xl border border-slate-200 bg-white px-8 py-6 text-center shadow-xl">
+          <p className="text-sm font-medium text-slate-500">
+            Loading trip data...
+          </p>
+        </div>
+      </main>
     );
   }
 
-  const currentDay = tripData.days.find(
-    (d) => d.dayNumber === tripData.currentDay
-  );
-  const tomorrowDay = tripData.days.find(
-    (d) => d.dayNumber === tripData.currentDay + 1
-  );
-  const upcomingDays = tripData.days.filter(
-    (d) => d.dayNumber > tripData.currentDay && d.dayNumber <= tripData.currentDay + 3
-  );
-
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <main className="min-h-screen bg-[radial-gradient(circle_at_top_left,_#dbeafe,_transparent_35%),linear-gradient(135deg,_#fff7ed,_#f8fafc_45%,_#eef2ff)]">
       <Header
         tripName={tripData.tripName}
         currentDay={tripData.currentDay}
         saveStatus={tripData.saveStatus}
       />
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 p-6 max-w-7xl mx-auto">
-        {/* Main Content Area */}
-        <div className="lg:col-span-2 space-y-6">
+      <div className="mx-auto grid w-full max-w-7xl gap-6 px-4 py-6 lg:grid-cols-[minmax(0,1fr)_360px] lg:px-8">
+        <section className="space-y-6">
           {currentDay && <TodayPlanCard day={currentDay} />}
           {tomorrowDay && <TomorrowPlanCard day={tomorrowDay} />}
+          <ChatAssistant
+            messages={chatMessages}
+            prompts={DEFAULT_PROMPT_CHIPS}
+            onPromptClick={handlePromptChipClick}
+          />
           <FullItineraryList days={tripData.days} />
-        </div>
+        </section>
 
-        {/* Right Trip Dashboard */}
-        <div className="lg:col-span-1">
+        <aside className="space-y-6">
           <TripDashboard
             trip={tripData}
             currentDay={tripData.currentDay}
@@ -84,8 +133,22 @@ export default function Home() {
             saveStatus={tripData.saveStatus}
             upcomingDays={upcomingDays}
           />
-        </div>
+
+          <div className="rounded-3xl border border-white/70 bg-white/80 p-5 shadow-xl shadow-blue-950/5 backdrop-blur">
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-blue-700">
+              V1 Build Status
+            </p>
+            <h2 className="mt-2 text-xl font-semibold text-slate-950">
+              Mock chat added
+            </h2>
+            <p className="mt-2 text-sm leading-6 text-slate-600">
+              This build uses local sample data and mock assistant responses.
+              Real AI, proposed changes, confirm/reject, and localStorage come
+              in later slices.
+            </p>
+          </div>
+        </aside>
       </div>
-    </div>
+    </main>
   );
 }
