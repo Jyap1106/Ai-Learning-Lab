@@ -16,6 +16,26 @@ export interface MockResponse {
   content: string;
 }
 
+export interface ProposedChangeOption {
+  id: string;
+  label: string;
+  description: string;
+}
+
+export interface ProposedChange {
+  id: string;
+  type: "make_lighter" | "add_cafe_break" | "replace_activity";
+  title: string;
+  affectedDay: number;
+  affectedCity: string;
+  currentItem: string;
+  requestedChange: string;
+  impact: string;
+  options: ProposedChangeOption[];
+  selectedOptionId: string;
+  status: "awaiting_confirmation";
+}
+
 export const DEFAULT_PROMPT_CHIPS = [
   "What's today's plan?",
   "What is tomorrow's plan?",
@@ -26,6 +46,16 @@ export const DEFAULT_PROMPT_CHIPS = [
   "Add a cafe break",
   "Replace an activity",
 ];
+
+export function isEditPrompt(prompt: string) {
+  const normalizedPrompt = prompt.toLowerCase();
+
+  return (
+    normalizedPrompt.includes("make today lighter") ||
+    normalizedPrompt.includes("add a cafe") ||
+    normalizedPrompt.includes("replace an activity")
+  );
+}
 
 function formatList(items: string[], fallback: string) {
   if (!items || items.length === 0) {
@@ -155,7 +185,7 @@ export function createMockAssistantResponse(
     return {
       title: "Lighter-day suggestion",
       content: [
-        `Day ${currentDay.dayNumber} looks like this theme: ${currentDay.theme}`,
+        `Day ${currentDay.dayNumber} theme: ${currentDay.theme}`,
         "",
         "A lighter approach could be:",
         "- Keep one main activity as the priority.",
@@ -168,30 +198,123 @@ export function createMockAssistantResponse(
     };
   }
 
-  if (
-    normalizedPrompt.includes("make today lighter") ||
-    normalizedPrompt.includes("add a cafe") ||
-    normalizedPrompt.includes("replace")
-  ) {
-    return {
-      title: "Proposed change placeholder",
-      content: [
-        "This will create a proposed itinerary change in the next build step.",
-        "",
-        "For now, this mock chat layer only explains what would happen.",
-        "",
-        "Next build step:",
-        "- Add ProposedChangeCard",
-        "- Show 2–3 alternatives",
-        "- Include relax/free-time option",
-        "- Add Confirm / Reject buttons",
-      ].join("\n"),
-    };
-  }
-
   return {
     title: "Mock assistant response",
     content:
       "I can currently answer basic itinerary questions using local sample data. Try one of the prompt chips below.",
+  };
+}
+
+export function createMockProposedChange(
+  prompt: string,
+  currentDay: Day
+): ProposedChange {
+  const normalizedPrompt = prompt.toLowerCase();
+
+  if (normalizedPrompt.includes("add a cafe")) {
+    return {
+      id: `change-${Date.now()}`,
+      type: "add_cafe_break",
+      title: "Add a cafe break",
+      affectedDay: currentDay.dayNumber,
+      affectedCity: currentDay.city,
+      currentItem: "Current afternoon plan",
+      requestedChange: "Add one cafe break to today's itinerary.",
+      impact:
+        "This adds a recovery point without changing the whole day. The day becomes more comfortable and less rushed.",
+      selectedOptionId: "cafe-break",
+      status: "awaiting_confirmation",
+      options: [
+        {
+          id: "cafe-break",
+          label: "Add a relaxed cafe break",
+          description:
+            "Add one cafe stop using the food ideas already listed for today.",
+        },
+        {
+          id: "dessert-break",
+          label: "Add a dessert or bakery stop",
+          description:
+            "Use this as a lighter pause between culture or walking activities.",
+        },
+        {
+          id: "relax-time",
+          label: "Leave this time as relax/free time",
+          description:
+            "Keep the schedule open instead of adding a specific activity.",
+        },
+      ],
+    };
+  }
+
+  if (normalizedPrompt.includes("replace")) {
+    return {
+      id: `change-${Date.now()}`,
+      type: "replace_activity",
+      title: "Replace an activity",
+      affectedDay: currentDay.dayNumber,
+      affectedCity: currentDay.city,
+      currentItem: "Upper Belvedere",
+      requestedChange:
+        "Replace one planned activity with something lighter or more flexible.",
+      impact:
+        "This makes the day less museum-heavy and gives more flexibility for food, rest, or slower movement.",
+      selectedOptionId: "relaxed-cafe",
+      status: "awaiting_confirmation",
+      options: [
+        {
+          id: "relaxed-cafe",
+          label: "Relaxed cafe break",
+          description:
+            "Replace the activity with a cafe or tea-time stop from today's food ideas.",
+        },
+        {
+          id: "short-walk",
+          label: "Short scenic walk",
+          description:
+            "Replace the activity with a lighter walk or casual exploration block.",
+        },
+        {
+          id: "relax-time",
+          label: "Leave this time as relax/free time",
+          description:
+            "Do not add anything new. Keep this block open for rest or spontaneous plans.",
+        },
+      ],
+    };
+  }
+
+  return {
+    id: `change-${Date.now()}`,
+    type: "make_lighter",
+    title: "Make today lighter",
+    affectedDay: currentDay.dayNumber,
+    affectedCity: currentDay.city,
+    currentItem: `Day ${currentDay.dayNumber} full plan`,
+    requestedChange: "Reduce today's schedule and make it easier to follow.",
+    impact:
+      "This keeps the core experience but reduces pressure by making some stops optional.",
+    selectedOptionId: "keep-main-plus-cafe",
+    status: "awaiting_confirmation",
+    options: [
+      {
+        id: "keep-main-plus-cafe",
+        label: "Keep one main activity + one cafe break",
+        description:
+          "Prioritize one key experience and add a flexible food or rest stop.",
+      },
+      {
+        id: "make-evening-optional",
+        label: "Make the evening activity optional",
+        description:
+          "Keep the day plan but treat the evening item as optional depending on energy.",
+      },
+      {
+        id: "relax-time",
+        label: "Leave one block as relax/free time",
+        description:
+          "Remove pressure by leaving a time block open instead of filling it.",
+      },
+    ],
   };
 }
