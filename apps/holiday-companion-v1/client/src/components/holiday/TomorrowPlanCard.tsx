@@ -1,7 +1,8 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { CalendarDays, MapPin } from "lucide-react";
+
 import { Badge } from "@/components/ui/badge";
-import { MapPin } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface Day {
   dayNumber: number;
@@ -18,75 +19,77 @@ interface Day {
 
 interface TomorrowPlanCardProps {
   day: Day;
+  onPromptClick?: (prompt: string) => void;
 }
 
-export default function TomorrowPlanCard({ day }: TomorrowPlanCardProps) {
-  const getActivitySummary = () => {
-    const allActivities = [
-      ...day.morning,
-      ...day.afternoon,
-      ...day.evening,
-    ];
-    return allActivities.slice(0, 3);
-  };
+export default function TomorrowPlanCard({ day, onPromptClick }: TomorrowPlanCardProps) {
+  const mainActivities = [...day.morning, ...day.afternoon, ...day.evening].slice(0, 4);
 
   return (
-    <Card className="border-border">
+    <Card className="border-violet-100 shadow-sm">
       <CardHeader>
-        <div className="space-y-2">
-          <CardTitle className="text-xl">
-            Day {day.dayNumber} — {day.city}
-          </CardTitle>
-          <p className="text-sm text-muted-foreground italic">{day.theme}</p>
-        </div>
+        <CardTitle className="flex flex-wrap items-center gap-2 text-lg">
+          <CalendarDays className="h-5 w-5 text-violet-600" />
+          Day {day.dayNumber} — {day.city}
+          {day.edited && <Badge variant="secondary">Edited locally</Badge>}
+        </CardTitle>
+
+        <p className="text-sm text-slate-600">{day.theme}</p>
       </CardHeader>
 
       <CardContent className="space-y-4">
-        {/* Main Activities Summary */}
         <div>
-          <h3 className="font-semibold text-foreground mb-2 text-sm">
-            Main Activities
-          </h3>
-          <ul className="space-y-1 text-sm text-foreground">
-            {getActivitySummary().map((activity, idx) => (
-              <li key={idx} className="flex gap-2">
-                <span className="text-muted-foreground">•</span>
+          <h3 className="mb-2 text-sm font-semibold text-slate-900">Main activities</h3>
+
+          <ul className="space-y-2">
+            {mainActivities.map((activity, index) => (
+              <li key={`${activity}-${index}`} className="flex gap-2 text-sm text-slate-700">
+                <span className="mt-1 h-1.5 w-1.5 rounded-full bg-violet-500" />
                 <span>{activity}</span>
               </li>
             ))}
           </ul>
         </div>
 
-        {/* Food Summary */}
         <div>
-          <h3 className="font-semibold text-foreground mb-2 text-sm">
-            Food Highlights
-          </h3>
-          <div className="flex flex-wrap gap-1">
-            {day.food.slice(0, 3).map((food, idx) => (
-              <Badge key={idx} variant="outline" className="text-xs">
+          <h3 className="mb-2 text-sm font-semibold text-slate-900">Food highlights</h3>
+
+          <div className="flex flex-wrap gap-2">
+            {day.food.slice(0, 4).map((food) => (
+              <Badge key={food} variant="outline">
                 {food}
               </Badge>
             ))}
           </div>
         </div>
 
-        {/* Transport Summary */}
-        <div>
-          <h3 className="font-semibold text-foreground mb-2 text-sm">
+        <div className="rounded-xl bg-slate-50 p-3">
+          <div className="mb-1 flex items-center gap-2 text-sm font-semibold text-slate-900">
+            <MapPin className="h-4 w-4 text-violet-600" />
             Transport
-          </h3>
-          <p className="text-sm text-foreground">
-            {day.transport[0] || "Local transport"}
+          </div>
+
+          <p className="text-sm text-slate-700">
+            {day.transport[0] || "Use local transport and verify routes live."}
           </p>
         </div>
 
-        {/* Quick Actions */}
-        <div className="border-t border-border pt-4 flex flex-wrap gap-2">
-          <Button variant="outline" size="sm">
+        <div className="flex flex-wrap gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => onPromptClick?.("What is tomorrow's plan?")}
+          >
             View tomorrow
           </Button>
-          <Button variant="outline" size="sm">
+
+          <Button
+            type="button"
+            variant="secondary"
+            size="sm"
+            onClick={() => onPromptClick?.("What is tomorrow's plan?")}
+          >
             Ask about tomorrow
           </Button>
         </div>
