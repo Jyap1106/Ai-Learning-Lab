@@ -1,15 +1,26 @@
 import { useEffect, useMemo, useState } from "react";
 
+import ActivityDetailDrawer from "@/components/holiday/ActivityDetailDrawer";
+import AddActivityPanel, {
+  type NewActivityDraft,
+} from "@/components/holiday/AddActivityPanel";
 import type { ChatMessage } from "@/components/holiday/ChatAssistant";
 import FloatingChatPanel from "@/components/holiday/FloatingChatPanel";
 import GuidedActivityChangePanel, {
   type GuidedReplacementOption,
 } from "@/components/holiday/GuidedActivityChangePanel";
 import Header from "@/components/holiday/Header";
+import ManualActivityEditor, {
+  type ManualActivityDraft,
+} from "@/components/holiday/ManualActivityEditor";
+import MoveActivityPanel, {
+  type MoveActivityDraft,
+} from "@/components/holiday/MoveActivityPanel";
 import ProposedChangeCard from "@/components/holiday/ProposedChangeCard";
 import TodayCommandCenter from "@/components/holiday/TodayCommandCenter";
 import TodayTimeline from "@/components/holiday/TodayTimeline";
 import TripToolsPanel from "@/components/holiday/TripToolsPanel";
+import VersionComparePanel from "@/components/holiday/VersionComparePanel";
 import austriaData from "@/data/austriaItineraryState.json";
 import {
   createMockAssistantResponse,
@@ -26,6 +37,7 @@ import {
 import {
   buildTodayTimeline,
   getTimelineStatus,
+  type TimelinePeriod,
   type TodayTimelineItem,
 } from "@/lib/todayTimeline";
 
@@ -54,6 +66,8 @@ interface ItineraryState {
   proposedChange?: unknown;
   metadata?: Record<string, unknown>;
 }
+
+type PeriodField = "morning" | "afternoon" | "evening";
 
 const TODAY_MODE_PROMPTS = [
   "What should I do now?",
@@ -107,6 +121,33 @@ function getNextVersionNumber(versionHistory: VersionHistoryEntry[]) {
   return getCurrentVersionNumber(versionHistory) + 1;
 }
 
+function getPeriodField(period: TimelinePeriod): PeriodField {
+  switch (period) {
+    case "Morning":
+      return "morning";
+    case "Evening":
+      return "evening";
+    default:
+      return "afternoon";
+  }
+}
+
+function updateArrayAtIndex(items: string[], index: number, value: string) {
+  const nextItems = [...items];
+
+  while (nextItems.length <= index) {
+    nextItems.push("");
+  }
+
+  nextItems[index] = value;
+
+  return nextItems.filter((item) => item.trim().length > 0);
+}
+
+function removeArrayAtIndex(items: string[], index: number) {
+  return items.filter((_, itemIndex) => itemIndex !== index);
+}
+
 function createInitialVersionEntry(days: Day[]): VersionHistoryEntry {
   return {
     version: 1,
@@ -115,6 +156,23 @@ function createInitialVersionEntry(days: Day[]): VersionHistoryEntry {
     affectedDay: null,
     createdAt: new Date().toISOString(),
     snapshot: cloneDays(days),
+  };
+}
+
+function createDirectVersionEntry(
+  versionHistory: VersionHistoryEntry[],
+  updatedDays: Day[],
+  summary: string,
+  changeType: string,
+  affectedDay: number | null,
+): VersionHistoryEntry {
+  return {
+    version: getNextVersionNumber(versionHistory),
+    summary,
+    changeType,
+    affectedDay,
+    createdAt: new Date().toISOString(),
+    snapshot: cloneDays(updatedDays),
   };
 }
 
@@ -555,7 +613,12 @@ export default function Home() {
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isTripToolsOpen, setIsTripToolsOpen] = useState(false);
   const [isCommandCenterMinimized, setIsCommandCenterMinimized] = useState(false);
+  const [selectedActivityItem, setSelectedActivityItem] = useState<TodayTimelineItem | null>(null);
   const [activityChangeItem, setActivityChangeItem] = useState<TodayTimelineItem | null>(null);
+  const [manualEditItem, setManualEditItem] = useState<TodayTimelineItem | null>(null);
+  const [moveActivityItem, setMoveActivityItem] = useState<TodayTimelineItem | null>(null);
+  const [isAddActivityOpen, setIsAddActivityOpen] = useState(false);
+  const [versionToCompare, setVersionToCompare] = useState<VersionHistoryEntry | null>(null);
   const [proposedChange, setProposedChange] = useState<ProposedChange | null>(null);
 
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>(() => [
@@ -589,6 +652,33 @@ export default function Home() {
   const timelineStatus = useMemo(() => {
     return getTimelineStatus(todayTimelineItems, now);
   }, [todayTimelineItems, now]);
+
+  const saveUpdatedTrip = (
+    updatedDays: Day[],
+    summary: string,
+    changeType: string,
+    affectedDay: number | null,
+  ) => {
+    const nextVersion = createDirectVersionEntry(
+      tripData.versionHistory,
+      updatedDays,
+      summary,
+      changeType,
+      affectedDay,
+    );
+
+    const updatedTrip: ItineraryState = {
+      ...tripData,
+      saveStatus: "saved_locally",
+      days: updatedDays,
+      versionHistory: [...tripData.versionHistory, nextVersion],
+    };
+
+    saveTripToStorage(updatedTrip);
+    setTripData(updatedTrip);
+
+    return nextVersion;
+  };
 
   const handlePromptChipClick = (prompt: string) => {
     if (!currentDay) return;
@@ -630,6 +720,9 @@ export default function Home() {
       const change = createMockProposedChange(prompt, currentDay);
 
       setActivityChangeItem(null);
+      setManualEditItem(null);
+      setMoveActivityItem(null);
+      setIsAddActivityOpen(false);
       setProposedChange(change);
       setTripData((previousTrip) => ({
         ...previousTrip,
@@ -666,6 +759,7 @@ export default function Home() {
   };
 
   const handleAskAboutItem = (item: TodayTimelineItem) => {
+    setSelectedActivityItem(null);
     handlePromptChipClick(`What should I know about ${item.title} in today's plan?`);
   };
 
@@ -674,6 +768,11 @@ export default function Home() {
     action: "replace" | "skip",
   ) => {
     if (!currentDay) return;
+
+    setSelectedActivityItem(null);
+    setManualEditItem(null);
+    setMoveActivityItem(null);
+    setIsAddActivityOpen(false);
 
     if (action === "replace") {
       setActivityChangeItem(item);
@@ -760,6 +859,188 @@ export default function Home() {
           "Nothing is saved until you confirm.",
         ].join("\n"),
         change.title,
+      ),
+    ]);
+  };
+
+  const handleManualActivitySave = (draft: ManualActivityDraft) => {
+    const periodField = getPeriodField(draft.period);
+
+    const updatedDays = tripData.days.map((day) => {
+      if (day.dayNumber !== draft.dayNumber) {
+        return day;
+      }
+
+      return {
+        ...day,
+        edited: true,
+        [periodField]: updateArrayAtIndex(day[periodField], draft.sourceIndex, draft.title),
+        transport: updateArrayAtIndex(day.transport, draft.sourceIndex, draft.transport),
+        notes: appendUnique(
+          updateArrayAtIndex(day.notes, draft.sourceIndex, draft.remarks),
+          `Manual edit saved: ${draft.title}. Time: ${draft.time}. Location: ${draft.location}.`,
+        ),
+      };
+    });
+
+    const version = saveUpdatedTrip(
+      updatedDays,
+      `Day ${draft.dayNumber}: manually edited ${draft.title}`,
+      "manual_activity_edit",
+      draft.dayNumber,
+    );
+
+    setManualEditItem(null);
+    setSelectedActivityItem(null);
+
+    setChatMessages((previousMessages) => [
+      ...previousMessages,
+      createMessage(
+        "assistant",
+        `Manual edit saved locally as version ${version.version}.`,
+        "Activity edited",
+      ),
+    ]);
+  };
+
+  const handleAddActivitySave = (draft: NewActivityDraft) => {
+    const periodField = getPeriodField(draft.period);
+
+    const updatedDays = tripData.days.map((day) => {
+      if (day.dayNumber !== draft.dayNumber) {
+        return day;
+      }
+
+      return {
+        ...day,
+        edited: true,
+        [periodField]: appendUnique(day[periodField], draft.title),
+        food:
+          draft.category === "food"
+            ? appendUnique(day.food, draft.title)
+            : day.food,
+        transport: appendUnique(day.transport, draft.transport),
+        notes: appendUnique(
+          day.notes,
+          `Added manually at ${draft.time}: ${draft.title}. Location: ${draft.location}. ${draft.remarks}`,
+        ),
+      };
+    });
+
+    const version = saveUpdatedTrip(
+      updatedDays,
+      `Day ${draft.dayNumber}: added ${draft.title}`,
+      "add_activity",
+      draft.dayNumber,
+    );
+
+    setIsAddActivityOpen(false);
+
+    setChatMessages((previousMessages) => [
+      ...previousMessages,
+      createMessage(
+        "assistant",
+        `Added ${draft.title} and saved it locally as version ${version.version}.`,
+        "Activity added",
+      ),
+    ]);
+  };
+
+  const handleMoveActivitySave = (draft: MoveActivityDraft) => {
+    if (!moveActivityItem) return;
+
+    const sourcePeriodField = getPeriodField(moveActivityItem.period);
+    const targetPeriodField = getPeriodField(draft.targetPeriod);
+
+    const updatedDays = tripData.days.map((day) => {
+      let nextDay = { ...day };
+
+      if (day.dayNumber === moveActivityItem.dayNumber) {
+        nextDay = {
+          ...nextDay,
+          edited: true,
+          [sourcePeriodField]: removeArrayAtIndex(
+            nextDay[sourcePeriodField],
+            moveActivityItem.sourceIndex,
+          ),
+          notes: appendUnique(
+            nextDay.notes,
+            `Moved out: ${moveActivityItem.title} from ${moveActivityItem.period}.`,
+          ),
+        };
+      }
+
+      if (day.dayNumber === draft.targetDayNumber) {
+        nextDay = {
+          ...nextDay,
+          edited: true,
+          [targetPeriodField]: appendUnique(
+            nextDay[targetPeriodField],
+            moveActivityItem.title,
+          ),
+          notes: appendUnique(
+            nextDay.notes,
+            `Moved in: ${moveActivityItem.title} to ${draft.targetPeriod} around ${draft.targetTime}.`,
+          ),
+        };
+      }
+
+      return nextDay;
+    });
+
+    const version = saveUpdatedTrip(
+      updatedDays,
+      `Moved ${moveActivityItem.title} to Day ${draft.targetDayNumber}`,
+      "move_activity",
+      draft.targetDayNumber,
+    );
+
+    setMoveActivityItem(null);
+    setSelectedActivityItem(null);
+
+    setChatMessages((previousMessages) => [
+      ...previousMessages,
+      createMessage(
+        "assistant",
+        `Moved ${moveActivityItem.title} and saved it locally as version ${version.version}.`,
+        "Activity moved",
+      ),
+    ]);
+  };
+
+  const handleMarkActivityDone = (item: TodayTimelineItem) => {
+    const periodField = getPeriodField(item.period);
+
+    const updatedDays = tripData.days.map((day) => {
+      if (day.dayNumber !== item.dayNumber) {
+        return day;
+      }
+
+      const doneTitle = item.title.startsWith("Done:") ? item.title : `Done: ${item.title}`;
+
+      return {
+        ...day,
+        edited: true,
+        [periodField]: updateArrayAtIndex(day[periodField], item.sourceIndex, doneTitle),
+        notes: appendUnique(day.notes, `Marked done: ${item.title}.`),
+      };
+    });
+
+    const version = saveUpdatedTrip(
+      updatedDays,
+      `Day ${item.dayNumber}: marked ${item.title} as done`,
+      "mark_activity_done",
+      item.dayNumber,
+    );
+
+    setSelectedActivityItem(null);
+
+    setChatMessages((previousMessages) => [
+      ...previousMessages,
+      createMessage(
+        "assistant",
+        `Marked ${item.title} as done and saved version ${version.version}.`,
+        "Activity done",
       ),
     ]);
   };
@@ -913,6 +1194,10 @@ export default function Home() {
     setTripData(updatedTrip);
     setProposedChange(null);
     setActivityChangeItem(null);
+    setManualEditItem(null);
+    setMoveActivityItem(null);
+    setSelectedActivityItem(null);
+    setVersionToCompare(null);
 
     setChatMessages((previousMessages) => [
       ...previousMessages,
@@ -942,6 +1227,11 @@ export default function Home() {
     setTripData(freshTrip);
     setProposedChange(null);
     setActivityChangeItem(null);
+    setManualEditItem(null);
+    setMoveActivityItem(null);
+    setSelectedActivityItem(null);
+    setIsAddActivityOpen(false);
+    setVersionToCompare(null);
     setIsTripToolsOpen(false);
     setIsCommandCenterMinimized(false);
     setChatMessages([
@@ -982,6 +1272,36 @@ export default function Home() {
               onSkipItem={(item) => handleStartTimelineChange(item, "skip")}
             />
 
+            {isAddActivityOpen && (
+              <AddActivityPanel
+                dayNumber={currentDay.dayNumber}
+                city={currentDay.city}
+                onCancel={() => setIsAddActivityOpen(false)}
+                onSave={handleAddActivitySave}
+              />
+            )}
+
+            {manualEditItem && (
+              <ManualActivityEditor
+                item={manualEditItem}
+                onCancel={() => setManualEditItem(null)}
+                onSave={handleManualActivitySave}
+              />
+            )}
+
+            {moveActivityItem && (
+              <MoveActivityPanel
+                item={moveActivityItem}
+                availableDays={tripData.days.map((day) => ({
+                  dayNumber: day.dayNumber,
+                  city: day.city,
+                  theme: day.theme,
+                }))}
+                onCancel={() => setMoveActivityItem(null)}
+                onSave={handleMoveActivitySave}
+              />
+            )}
+
             {activityChangeItem && (
               <div className="scroll-mt-28">
                 <GuidedActivityChangePanel
@@ -1009,6 +1329,15 @@ export default function Home() {
               timelineItems={todayTimelineItems}
               currentItemId={timelineStatus.currentItem?.id}
               nextItemId={timelineStatus.nextItem?.id}
+              onAddActivity={() => {
+                setSelectedActivityItem(null);
+                setActivityChangeItem(null);
+                setManualEditItem(null);
+                setMoveActivityItem(null);
+                setProposedChange(null);
+                setIsAddActivityOpen(true);
+              }}
+              onViewItemDetails={setSelectedActivityItem}
               onAskAboutItem={handleAskAboutItem}
               onChangeItem={(item) => handleStartTimelineChange(item, "replace")}
               onSkipItem={(item) => handleStartTimelineChange(item, "skip")}
@@ -1020,6 +1349,27 @@ export default function Home() {
           </div>
         )}
       </div>
+
+      <ActivityDetailDrawer
+        item={selectedActivityItem}
+        isOpen={Boolean(selectedActivityItem)}
+        isCurrent={selectedActivityItem?.id === timelineStatus.currentItem?.id}
+        isNext={selectedActivityItem?.id === timelineStatus.nextItem?.id}
+        onClose={() => setSelectedActivityItem(null)}
+        onAskAboutItem={handleAskAboutItem}
+        onReplaceItem={(item) => handleStartTimelineChange(item, "replace")}
+        onKeepFreeTime={(item) => handleStartTimelineChange(item, "skip")}
+        onEditItem={(item) => {
+          setSelectedActivityItem(null);
+          setManualEditItem(item);
+        }}
+        onMoveItem={(item) => {
+          setSelectedActivityItem(null);
+          setMoveActivityItem(item);
+        }}
+        onMarkDone={handleMarkActivityDone}
+        onSkipItem={(item) => handleStartTimelineChange(item, "skip")}
+      />
 
       <FloatingChatPanel
         isOpen={isChatOpen}
@@ -1038,6 +1388,18 @@ export default function Home() {
         versionHistory={tripData.versionHistory}
         onClose={() => setIsTripToolsOpen(false)}
         onResetTrip={handleResetTrip}
+        onRestoreVersion={handleRestoreVersion}
+        onCompareVersion={(version) => {
+          setVersionToCompare(version);
+          setIsTripToolsOpen(false);
+        }}
+      />
+
+      <VersionComparePanel
+        isOpen={Boolean(versionToCompare)}
+        version={versionToCompare}
+        currentDays={tripData.days}
+        onClose={() => setVersionToCompare(null)}
         onRestoreVersion={handleRestoreVersion}
       />
     </main>
