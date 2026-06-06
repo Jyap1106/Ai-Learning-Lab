@@ -20,6 +20,7 @@ The app now supports the main local V1 flow:
 - Confirm or reject proposed changes
 - Save confirmed changes to localStorage
 - Show local version history
+- Restore previous itinerary versions
 - Reset the sample trip
 
 No real AI API is used yet.
