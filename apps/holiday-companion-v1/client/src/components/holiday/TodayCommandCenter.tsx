@@ -1,5 +1,7 @@
 import {
   CalendarDays,
+  ChevronDown,
+  ChevronUp,
   Clock3,
   MapPin,
   MessageCircle,
@@ -31,6 +33,8 @@ interface TodayCommandCenterProps {
   now: Date;
   timelineStatus: TimelineStatus;
   saveStatus: string;
+  isMinimized: boolean;
+  onToggleMinimized: () => void;
   onPromptClick: (prompt: string) => void;
   onOpenChat: () => void;
   onOpenTools: () => void;
@@ -89,6 +93,8 @@ export default function TodayCommandCenter({
   now,
   timelineStatus,
   saveStatus,
+  isMinimized,
+  onToggleMinimized,
   onPromptClick,
   onOpenChat,
   onOpenTools,
@@ -107,8 +113,56 @@ export default function TodayCommandCenter({
     onPromptClick("I'm running late. What should I skip or adjust?");
   };
 
+  if (isMinimized) {
+    return (
+      <Card className="sticky top-2 z-30 overflow-hidden border-blue-100 bg-white/95 shadow-lg backdrop-blur">
+        <CardContent className="p-3">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="min-w-0">
+              <div className="mb-1 flex flex-wrap items-center gap-2">
+                <Badge variant="secondary">Day {day.dayNumber}</Badge>
+
+                <Badge variant="outline">
+                  <Clock3 className="mr-1 h-3 w-3" />
+                  {formatDeviceTime(now)}
+                </Badge>
+
+                {day.edited && <Badge variant="default">Edited</Badge>}
+              </div>
+
+              <p className="truncate text-sm font-semibold text-slate-950">
+                Now: {getCurrentTitle(timelineStatus)}
+              </p>
+
+              <p className="truncate text-xs text-slate-500">
+                Next: {getNextTitle(timelineStatus)}
+              </p>
+            </div>
+
+            <div className="flex flex-wrap gap-2 sm:shrink-0">
+              <Button type="button" size="sm" variant="outline" onClick={handleAskNow}>
+                <MessageCircle className="h-4 w-4" />
+                Ask
+              </Button>
+
+              <Button type="button" size="sm" variant="outline" onClick={onOpenTools}>
+                <SlidersHorizontal className="h-4 w-4" />
+                Tools
+              </Button>
+
+              <Button type="button" size="sm" onClick={onToggleMinimized}>
+                <ChevronDown className="h-4 w-4" />
+                Expand
+              </Button>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
-    <Card className="sticky top-3 z-30 overflow-hidden border-blue-100 bg-white/95 shadow-lg backdrop-blur">
+    <Card className="sticky top-2 z-30 overflow-hidden border-blue-100 bg-white/95 shadow-lg backdrop-blur">
       <CardContent className="space-y-4 p-4 sm:p-5">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
@@ -133,10 +187,17 @@ export default function TodayCommandCenter({
             <p className="mt-1 text-sm leading-6 text-slate-600">{day.theme}</p>
           </div>
 
-          <Button type="button" variant="outline" size="sm" onClick={onOpenTools}>
-            <SlidersHorizontal className="h-4 w-4" />
-            Trip tools
-          </Button>
+          <div className="flex flex-wrap gap-2">
+            <Button type="button" variant="outline" size="sm" onClick={onOpenTools}>
+              <SlidersHorizontal className="h-4 w-4" />
+              Trip tools
+            </Button>
+
+            <Button type="button" variant="secondary" size="sm" onClick={onToggleMinimized}>
+              <ChevronUp className="h-4 w-4" />
+              Minimize
+            </Button>
+          </div>
         </div>
 
         <div className="grid gap-3 sm:grid-cols-2">
