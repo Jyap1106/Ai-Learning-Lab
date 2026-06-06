@@ -1,4 +1,4 @@
-import { Clock3, MapPin, Navigation, StickyNote } from "lucide-react";
+import { Clock3, Eye, MapPin, Navigation, StickyNote } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,7 @@ interface TimelineItemCardProps {
   item: TodayTimelineItem;
   isCurrent: boolean;
   isNext: boolean;
+  onViewDetails: (item: TodayTimelineItem) => void;
   onAskAboutItem: (item: TodayTimelineItem) => void;
   onChangeItem: (item: TodayTimelineItem) => void;
   onSkipItem: (item: TodayTimelineItem) => void;
@@ -30,6 +31,7 @@ export default function TimelineItemCard({
   item,
   isCurrent,
   isNext,
+  onViewDetails,
   onAskAboutItem,
   onChangeItem,
   onSkipItem,
@@ -45,7 +47,11 @@ export default function TimelineItemCard({
       }`}
     >
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-        <div className="flex gap-3">
+        <button
+          type="button"
+          className="flex flex-1 gap-3 text-left"
+          onClick={() => onViewDetails(item)}
+        >
           <div
             className={`flex min-w-20 flex-col items-center rounded-2xl px-3 py-2 text-center ${
               isCurrent ? "bg-blue-50 text-blue-700" : "bg-slate-50 text-slate-700"
@@ -82,9 +88,14 @@ export default function TimelineItemCard({
               </p>
             </div>
           </div>
-        </div>
+        </button>
 
         <div className="flex flex-wrap gap-2 sm:justify-end">
+          <Button type="button" size="sm" variant="outline" onClick={() => onViewDetails(item)}>
+            <Eye className="h-4 w-4" />
+            Details
+          </Button>
+
           <Button type="button" size="sm" variant="outline" onClick={() => onAskAboutItem(item)}>
             Ask
           </Button>
