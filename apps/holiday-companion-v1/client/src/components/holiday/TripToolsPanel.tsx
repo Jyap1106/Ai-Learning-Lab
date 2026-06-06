@@ -1,5 +1,6 @@
 import {
   CalendarDays,
+  GitCompareArrows,
   History,
   RotateCcw,
   Settings,
@@ -56,6 +57,7 @@ interface TripToolsPanelProps {
   onClose: () => void;
   onResetTrip: () => void;
   onRestoreVersion: (versionNumber: number) => void;
+  onCompareVersion: (version: VersionHistoryEntry) => void;
 }
 
 type ToolTab = "full" | "tomorrow" | "food" | "versions" | "settings";
@@ -146,6 +148,7 @@ export default function TripToolsPanel({
   onClose,
   onResetTrip,
   onRestoreVersion,
+  onCompareVersion,
 }: TripToolsPanelProps) {
   const [activeTab, setActiveTab] = useState<ToolTab>("full");
 
@@ -203,10 +206,7 @@ export default function TripToolsPanel({
 
         <div className="overflow-y-auto p-4">
           {activeTab === "full" && (
-            <FullTripExplorer
-              days={trip.days}
-              currentDayNumber={trip.currentDay}
-            />
+            <FullTripExplorer days={trip.days} currentDayNumber={trip.currentDay} />
           )}
 
           {activeTab === "tomorrow" && (
@@ -335,14 +335,14 @@ export default function TripToolsPanel({
                 </h3>
 
                 <p className="mt-1 text-sm leading-6 text-slate-600">
-                  Versions are hidden from the main Today screen, but changes are
-                  still saved locally.
+                  Compare previous versions, restore snapshots, or check what changed.
                 </p>
               </div>
 
               {sortedVersions.map((version) => {
                 const isCurrentVersion = version.version === currentVersionNumber;
                 const canRestore = Boolean(version.snapshot) && !isCurrentVersion;
+                const canCompare = Boolean(version.snapshot);
                 const formattedTime = formatVersionTime(version.createdAt);
 
                 return (
@@ -369,15 +369,28 @@ export default function TripToolsPanel({
                         )}
                       </div>
 
-                      <Button
-                        type="button"
-                        size="sm"
-                        variant="outline"
-                        disabled={!canRestore}
-                        onClick={() => onRestoreVersion(version.version)}
-                      >
-                        {isCurrentVersion ? "Current" : canRestore ? "Restore" : "No snapshot"}
-                      </Button>
+                      <div className="flex flex-wrap gap-2">
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="outline"
+                          disabled={!canCompare}
+                          onClick={() => onCompareVersion(version)}
+                        >
+                          <GitCompareArrows className="h-4 w-4" />
+                          Compare
+                        </Button>
+
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="outline"
+                          disabled={!canRestore}
+                          onClick={() => onRestoreVersion(version.version)}
+                        >
+                          {isCurrentVersion ? "Current" : canRestore ? "Restore" : "No snapshot"}
+                        </Button>
+                      </div>
                     </div>
 
                     <p className="text-sm leading-6 text-slate-700">
