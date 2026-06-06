@@ -2,6 +2,9 @@ import { useEffect, useMemo, useState } from "react";
 
 import type { ChatMessage } from "@/components/holiday/ChatAssistant";
 import FloatingChatPanel from "@/components/holiday/FloatingChatPanel";
+import GuidedActivityChangePanel, {
+  type GuidedReplacementOption,
+} from "@/components/holiday/GuidedActivityChangePanel";
 import Header from "@/components/holiday/Header";
 import ProposedChangeCard from "@/components/holiday/ProposedChangeCard";
 import TodayCommandCenter from "@/components/holiday/TodayCommandCenter";
@@ -403,8 +406,38 @@ function createTimelineProposedChange(
   item: TodayTimelineItem,
   currentDay: Day,
   action: "replace" | "skip",
+  guidedOption?: GuidedReplacementOption,
 ): ProposedChange {
   const isSkipAction = action === "skip";
+
+  if (guidedOption) {
+    return {
+      id: `change-${Date.now()}`,
+      type: "replace_activity",
+      title: `Replace ${item.title}`,
+      affectedDay: currentDay.dayNumber,
+      affectedCity: currentDay.city,
+      currentItem: item.title,
+      requestedChange: `Replace ${item.title} with ${guidedOption.label}.`,
+      impact:
+        "This replaces one timeline item while keeping the rest of today's itinerary intact.",
+      selectedOptionId: guidedOption.id,
+      status: "awaiting_confirmation",
+      options: [
+        {
+          id: guidedOption.id,
+          label: guidedOption.label,
+          description: guidedOption.description,
+        },
+        {
+          id: "relax-time",
+          label: "Keep this time free and easy",
+          description:
+            "Remove the activity and leave the time open for rest or spontaneous plans.",
+        },
+      ],
+    };
+  }
 
   return {
     id: `change-${Date.now()}`,
@@ -522,6 +555,7 @@ export default function Home() {
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isTripToolsOpen, setIsTripToolsOpen] = useState(false);
   const [isCommandCenterMinimized, setIsCommandCenterMinimized] = useState(false);
+  const [activityChangeItem, setActivityChangeItem] = useState<TodayTimelineItem | null>(null);
   const [proposedChange, setProposedChange] = useState<ProposedChange | null>(null);
 
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>(() => [
@@ -595,6 +629,7 @@ export default function Home() {
     if (isEditPrompt(prompt)) {
       const change = createMockProposedChange(prompt, currentDay);
 
+      setActivityChangeItem(null);
       setProposedChange(change);
       setTripData((previousTrip) => ({
         ...previousTrip,
@@ -640,8 +675,16 @@ export default function Home() {
   ) => {
     if (!currentDay) return;
 
-    const change = createTimelineProposedChange(item, currentDay, action);
+    if (action === "replace") {
+      setActivityChangeItem(item);
+      setProposedChange(null);
+      setIsChatOpen(false);
+      return;
+    }
 
+    const change = createTimelineProposedChange(item, currentDay, "skip");
+
+    setActivityChangeItem(null);
     setProposedChange(change);
     setIsChatOpen(false);
 
@@ -652,16 +695,68 @@ export default function Home() {
 
     setChatMessages((previousMessages) => [
       ...previousMessages,
-      createMessage(
-        "user",
-        action === "skip" ? `Keep ${item.title} as free time` : `Replace ${item.title}`,
-      ),
+      createMessage("user", `Keep ${item.title} as free time`),
       createMessage(
         "assistant",
         [
           "I created a focused change for this timeline item.",
           "",
-          "Choose whether to keep the time free or replace it with food, a lighter activity, or a nearby stop.",
+          "Nothing is saved until you confirm.",
+        ].join("\n"),
+        change.title,
+      ),
+    ]);
+  };
+
+  const handleGuidedKeepFreeTime = (item: TodayTimelineItem) => {
+    if (!currentDay) return;
+
+    const change = createTimelineProposedChange(item, currentDay, "skip");
+
+    setActivityChangeItem(null);
+    setProposedChange(change);
+
+    setTripData((previousTrip) => ({
+      ...previousTrip,
+      saveStatus: "awaiting_confirmation",
+    }));
+
+    setChatMessages((previousMessages) => [
+      ...previousMessages,
+      createMessage("user", `Remove ${item.title} and keep the time free`),
+      createMessage(
+        "assistant",
+        "I prepared a free-time change for review. Confirm it if you want to save it.",
+        change.title,
+      ),
+    ]);
+  };
+
+  const handleGuidedReplacement = (
+    item: TodayTimelineItem,
+    option: GuidedReplacementOption,
+  ) => {
+    if (!currentDay) return;
+
+    const change = createTimelineProposedChange(item, currentDay, "replace", option);
+
+    setActivityChangeItem(null);
+    setProposedChange(change);
+
+    setTripData((previousTrip) => ({
+      ...previousTrip,
+      saveStatus: "awaiting_confirmation",
+    }));
+
+    setChatMessages((previousMessages) => [
+      ...previousMessages,
+      createMessage("user", `Replace ${item.title} with ${option.label}`),
+      createMessage(
+        "assistant",
+        [
+          "I prepared a replacement for review.",
+          "",
+          `Suggested replacement: ${option.label}`,
           "Nothing is saved until you confirm.",
         ].join("\n"),
         change.title,
@@ -705,6 +800,7 @@ export default function Home() {
     saveTripToStorage(updatedTrip);
     setTripData(updatedTrip);
     setProposedChange(null);
+    setActivityChangeItem(null);
 
     setChatMessages((previousMessages) => [
       ...previousMessages,
@@ -723,6 +819,7 @@ export default function Home() {
 
   const handleRejectChange = () => {
     setProposedChange(null);
+    setActivityChangeItem(null);
 
     setTripData((previousTrip) => ({
       ...previousTrip,
@@ -815,6 +912,7 @@ export default function Home() {
     saveTripToStorage(updatedTrip);
     setTripData(updatedTrip);
     setProposedChange(null);
+    setActivityChangeItem(null);
 
     setChatMessages((previousMessages) => [
       ...previousMessages,
@@ -843,6 +941,7 @@ export default function Home() {
 
     setTripData(freshTrip);
     setProposedChange(null);
+    setActivityChangeItem(null);
     setIsTripToolsOpen(false);
     setIsCommandCenterMinimized(false);
     setChatMessages([
@@ -882,6 +981,18 @@ export default function Home() {
               onChangeItem={(item) => handleStartTimelineChange(item, "replace")}
               onSkipItem={(item) => handleStartTimelineChange(item, "skip")}
             />
+
+            {activityChangeItem && (
+              <div className="scroll-mt-28">
+                <GuidedActivityChangePanel
+                  item={activityChangeItem}
+                  day={currentDay}
+                  onClose={() => setActivityChangeItem(null)}
+                  onKeepFreeTime={handleGuidedKeepFreeTime}
+                  onSelectReplacement={handleGuidedReplacement}
+                />
+              </div>
+            )}
 
             {proposedChange && (
               <div className="scroll-mt-28">
