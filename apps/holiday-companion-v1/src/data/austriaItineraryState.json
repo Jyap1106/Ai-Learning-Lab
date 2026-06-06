@@ -1,0 +1,185 @@
+{
+  "tripId": "austria-trip-mvp",
+  "tripName": "Austria Trip",
+  "destination": "Austria",
+  "duration": "13 days",
+  "currentDay": 2,
+  "saveStatus": "saved_locally",
+  "shareStatus": "private",
+  "source": "sanitized_sample_state",
+  "tripStyle": ["culture", "cafes", "city exploration", "scenic views", "relaxed pacing"],
+  "days": [
+    {
+      "dayNumber": 1,
+      "city": "Vienna",
+      "theme": "Arrival and city orientation",
+      "morning": ["Travel or arrival preparation"],
+      "afternoon": ["Arrive in Vienna", "Check in or store luggage", "Light city orientation"],
+      "evening": ["Explore central Vienna casually", "Simple dinner near accommodation"],
+      "food": ["Simple arrival meal", "Cafe or bakery near accommodation"],
+      "transport": ["Use local Vienna transport", "Keep travel light on arrival day"],
+      "notes": ["Avoid overpacking the first day", "Verify transport and check-in timing live"],
+      "edited": false
+    },
+    {
+      "dayNumber": 2,
+      "city": "Vienna",
+      "theme": "Schönbrunn, Belvedere, Karlskirche, and classic Vienna museums",
+      "morning": ["Schönbrunn Palace and gardens"],
+      "afternoon": ["Upper Belvedere", "Wien Museum", "Tea time near Belvedere or Karlsplatz"],
+      "evening": ["Karlskirche", "Dinner around Wieden or Karlsplatz"],
+      "food": ["Cafe Goldegg", "Ahrnst Bakery", "Cafe Museum", "Wiener Melange", "Gugelhupf", "Apfelstrudel", "Schnitzel", "Goulash"],
+      "transport": ["Use local Vienna transport", "Check route live before leaving"],
+      "notes": ["This is a culture-heavy day", "Verify ticket availability, opening hours, weather, and transport disruptions live"],
+      "edited": false
+    },
+    {
+      "dayNumber": 3,
+      "city": "Vienna",
+      "theme": "Flexible Vienna exploration and lighter city day",
+      "morning": ["Flexible city walk", "Optional cafe stop"],
+      "afternoon": ["Museum, shopping, or relaxed exploration option"],
+      "evening": ["Dinner and relaxed evening"],
+      "food": ["Cafe option", "Local dinner option", "Dessert or bakery stop"],
+      "transport": ["Use local Vienna transport"],
+      "notes": ["Keep this day flexible", "Useful as a recovery or adjustment day"],
+      "edited": false
+    },
+    {
+      "dayNumber": 4,
+      "city": "Salzburg",
+      "theme": "Transfer to Salzburg and old town introduction",
+      "morning": ["Travel from Vienna to Salzburg"],
+      "afternoon": ["Check in or store luggage", "Explore Salzburg old town"],
+      "evening": ["Dinner in Salzburg", "Relaxed evening walk"],
+      "food": ["Local Austrian meal", "Cafe or dessert option"],
+      "transport": ["Intercity train or transfer", "Local walking in Salzburg"],
+      "notes": ["This is an intercity travel day", "Verify train schedule and luggage plan live"],
+      "edited": false
+    },
+    {
+      "dayNumber": 5,
+      "city": "Salzburg",
+      "theme": "Salzburg culture, viewpoints, and relaxed exploration",
+      "morning": ["Explore Salzburg historic areas"],
+      "afternoon": ["Viewpoint, museum, or palace option"],
+      "evening": ["Dinner and flexible evening"],
+      "food": ["Cafe option", "Local dessert", "Relaxed dinner"],
+      "transport": ["Walk or use local Salzburg transport"],
+      "notes": ["Good day for culture and scenic views", "Keep weather-sensitive options flexible"],
+      "edited": false
+    },
+    {
+      "dayNumber": 6,
+      "city": "Obertraun / Hallstatt area",
+      "theme": "Move toward lake and mountain scenery",
+      "morning": ["Travel toward Obertraun or Hallstatt area"],
+      "afternoon": ["Settle in and explore nearby scenic area"],
+      "evening": ["Quiet dinner and rest"],
+      "food": ["Simple local meal", "Cafe or bakery option if available"],
+      "transport": ["Intercity or regional transport", "Check route and luggage plan live"],
+      "notes": ["This is a travel and scenery transition day", "Weather may affect scenic activities"],
+      "edited": false
+    },
+    {
+      "dayNumber": 7,
+      "city": "Hallstatt / Obertraun area",
+      "theme": "Lake views, scenic walking, and nature-focused day",
+      "morning": ["Scenic lake area exploration"],
+      "afternoon": ["Optional viewpoint, walk, or relaxed village exploration"],
+      "evening": ["Restful dinner"],
+      "food": ["Local meal", "Cafe or snack option"],
+      "transport": ["Regional transport or walking", "Verify weather and local connections live"],
+      "notes": ["Nature and scenery day", "Keep backup plan for bad weather"],
+      "edited": false
+    },
+    {
+      "dayNumber": 8,
+      "city": "Innsbruck",
+      "theme": "Transfer to Innsbruck and mountain-city introduction",
+      "morning": ["Travel toward Innsbruck"],
+      "afternoon": ["Check in or store luggage", "Explore old town or central area"],
+      "evening": ["Dinner in Innsbruck"],
+      "food": ["Cafe option", "Local dinner"],
+      "transport": ["Intercity train or regional transfer", "Local walking"],
+      "notes": ["This is an intercity travel day", "Verify train timing and luggage plan live"],
+      "edited": false
+    },
+    {
+      "dayNumber": 9,
+      "city": "Innsbruck",
+      "theme": "Mountain views and city exploration",
+      "morning": ["Mountain or viewpoint option"],
+      "afternoon": ["Old town, museum, or city-card activity"],
+      "evening": ["Relaxed dinner"],
+      "food": ["Cafe option", "Local dinner option"],
+      "transport": ["Local Innsbruck transport", "Verify weather before mountain activities"],
+      "notes": ["Weather-sensitive day", "Keep city alternative if mountain visibility is poor"],
+      "edited": false
+    },
+    {
+      "dayNumber": 10,
+      "city": "Innsbruck",
+      "theme": "Flexible Innsbruck activity day",
+      "morning": ["Optional scenic activity"],
+      "afternoon": ["Cafe, shopping, museum, or relaxed city activity"],
+      "evening": ["Dinner and rest"],
+      "food": ["Cafe option", "Dessert or bakery stop", "Dinner option"],
+      "transport": ["Local transport or walking"],
+      "notes": ["Good buffer day for weather or energy adjustment"],
+      "edited": false
+    },
+    {
+      "dayNumber": 11,
+      "city": "Vienna",
+      "theme": "Return to Vienna",
+      "morning": ["Travel from Innsbruck back to Vienna"],
+      "afternoon": ["Check in or settle back in Vienna", "Light city activity"],
+      "evening": ["Dinner in Vienna"],
+      "food": ["Simple meal", "Cafe or dessert option"],
+      "transport": ["Intercity train", "Local Vienna transport"],
+      "notes": ["This is an intercity return day", "Keep schedule flexible"],
+      "edited": false
+    },
+    {
+      "dayNumber": 12,
+      "city": "Vienna",
+      "theme": "Vienna food, market, museum, and city wrap-up",
+      "morning": ["Naschmarkt or relaxed brunch-style start"],
+      "afternoon": ["Museum, Ringstrasse, or city activity"],
+      "evening": ["Evening event or final Vienna dinner option"],
+      "food": ["Naschmarkt option", "Cafe option", "Austrian dinner option"],
+      "transport": ["Local Vienna transport"],
+      "notes": ["Good day for food, cafes, and final city experiences", "Verify event timing live"],
+      "edited": false
+    },
+    {
+      "dayNumber": 13,
+      "city": "Vienna",
+      "theme": "Final day, flexible wrap-up, and departure preparation",
+      "morning": ["Packing or relaxed final walk"],
+      "afternoon": ["Last cafe, shopping, or flexible activity"],
+      "evening": ["Departure preparation or final dinner if time allows"],
+      "food": ["Final cafe option", "Simple meal option"],
+      "transport": ["Local Vienna transport", "Airport or departure transfer if needed"],
+      "notes": ["Keep final day flexible", "Verify departure timing and transport live"],
+      "edited": false
+    }
+  ],
+  "versionHistory": [
+    {
+      "version": 1,
+      "summary": "Initial Austria itinerary sample loaded",
+      "changeType": "initial_load",
+      "affectedDay": null,
+      "createdAt": "2026-06-04T09:00:00Z"
+    }
+  ],
+  "proposedChange": null,
+  "metadata": {
+    "privateDataRemoved": true,
+    "requiresLiveVerification": true,
+    "prototypeOnly": true,
+    "notes": "This JSON is a simplified state sample for the frontend MVP. It should not replace the full sanitized Markdown itinerary."
+  }
+}
