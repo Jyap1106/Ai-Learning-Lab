@@ -295,7 +295,7 @@ See `NEXT_STEPS.md` for detailed breakdown.
 4. **Keep Components Small**: Follow the pattern established in V1
 5. **Document Changes**: Update BUILD_LOG.md as you build
 
-## Post-Build Bug Fixes (June 6, 2026)
+## Post-Build Bug Fixes & Cleanup (June 6, 2026)
 
 **Actions**:
 - Checked for `client/src/lib/utils.ts` and confirmed it was missing.
@@ -304,6 +304,7 @@ See `NEXT_STEPS.md` for detailed breakdown.
 - Checked `@` path alias configurations in `vite.config.ts` and `tsconfig.json` and verified they correctly resolve to `client/src`.
 - Found and removed `%VITE_ANALYTICS_ENDPOINT%` and `%VITE_ANALYTICS_WEBSITE_ID%` placeholders/script block in `client/index.html` to eliminate dev server warnings.
 - Ran `pnpm install` and verified everything compiles and bundles cleanly with `pnpm run build`.
+- Cleaned up repository: confirmed `apps/holiday-companion-v1/node_modules/` is untracked by Git, verified root and app `.gitignore` files, and replaced the default project README with an app-specific overview README.
 
 ## Build Completion Summary
 

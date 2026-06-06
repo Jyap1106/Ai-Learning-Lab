@@ -9,9 +9,11 @@
 **Build Type**: First Manus Run - Static Dashboard Slice  
 **Duration**: Single session
 
-**Bug Fixes Applied (Post-Build)**:
+**Bug Fixes & Cleanup Applied (Post-Build)**:
 - ✅ **Fixed missing `@/lib/utils` import**: Created `client/src/lib/utils.ts` to export the `cn` utility function compatible with all shadcn/ui components.
 - ✅ **Fixed analytics placeholder warnings**: Removed the Google/Umami analytics script and `%VITE_ANALYTICS_*%` placeholders from `client/index.html` since V1 does not use analytics yet.
+- ✅ **Repository Cleanup**: Confirmed `node_modules` is untracked, updated local and root `.gitignore` parameters, and replaced the default README with a custom Holiday Companion Bot V1 README.
+
 
 ## What Was Built
 

@@ -5,7 +5,7 @@
 This document outlines the recommended tasks for the next Manus build run. The V1 static dashboard slice is complete and functional. The next priority is to add interactive features that allow users to request changes to their itinerary.
 
 > [!NOTE]
-> **Post-Build Fixes**: The compile issues due to the missing `@/lib/utils` component and dev server warnings due to `%VITE_ANALYTICS_*%` placeholders have been successfully resolved by creating `client/src/lib/utils.ts` and removing the analytics script block from `client/index.html`. The app now compiles and runs cleanly local out-of-the-box.
+> **Post-Build Fixes & Cleanup**: The compile issues due to the missing `@/lib/utils` component and dev server warnings due to `%VITE_ANALYTICS_*%` placeholders have been successfully resolved by creating `client/src/lib/utils.ts` and removing the analytics script block from `client/index.html`. In addition, repository cleanup has been completed—confirming `node_modules` is untracked by Git, verifying `.gitignore` configurations, and replacing the default README with a clean app-specific README. The app now compiles and runs cleanly local out-of-the-box.
 
 ## Recommended Build Sequence
 
