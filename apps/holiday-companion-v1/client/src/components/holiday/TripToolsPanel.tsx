@@ -1,8 +1,17 @@
-import { CalendarDays, History, RotateCcw, Utensils, X } from "lucide-react";
-import { useState } from "react";
+import {
+  CalendarDays,
+  History,
+  RotateCcw,
+  Settings,
+  Utensils,
+  X,
+} from "lucide-react";
+import { type ReactNode, useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+
+import FullTripExplorer from "./FullTripExplorer";
 
 interface Day {
   dayNumber: number;
@@ -49,7 +58,7 @@ interface TripToolsPanelProps {
   onRestoreVersion: (versionNumber: number) => void;
 }
 
-type ToolTab = "tomorrow" | "food" | "full" | "versions" | "settings";
+type ToolTab = "full" | "tomorrow" | "food" | "versions" | "settings";
 
 function formatVersionTime(createdAt?: string) {
   if (!createdAt) return null;
@@ -79,18 +88,27 @@ function getCurrentVersionNumber(versionHistory: VersionHistoryEntry[]) {
 function ActivityList({ title, items }: { title: string; items: string[] }) {
   return (
     <div>
-      <p className="mb-2 text-sm font-semibold text-slate-900">{title}</p>
+      <div className="mb-2 flex items-center justify-between gap-2">
+        <p className="text-sm font-semibold text-slate-900">{title}</p>
+
+        <Badge variant="outline">{items.length}</Badge>
+      </div>
 
       {items.length > 0 ? (
         <ul className="space-y-2">
           {items.map((item, index) => (
-            <li key={`${item}-${index}`} className="rounded-xl bg-slate-50 p-3 text-sm text-slate-700">
+            <li
+              key={`${title}-${item}-${index}`}
+              className="rounded-xl bg-slate-50 p-3 text-sm leading-6 text-slate-700"
+            >
               {item}
             </li>
           ))}
         </ul>
       ) : (
-        <p className="text-sm text-slate-500">No items listed.</p>
+        <p className="rounded-xl bg-slate-50 p-3 text-sm text-slate-500">
+          No items listed.
+        </p>
       )}
     </div>
   );
@@ -104,7 +122,7 @@ function ToolButton({
 }: {
   tab: ToolTab;
   activeTab: ToolTab;
-  children: React.ReactNode;
+  children: ReactNode;
   onClick: (tab: ToolTab) => void;
 }) {
   return (
@@ -129,7 +147,7 @@ export default function TripToolsPanel({
   onResetTrip,
   onRestoreVersion,
 }: TripToolsPanelProps) {
-  const [activeTab, setActiveTab] = useState<ToolTab>("tomorrow");
+  const [activeTab, setActiveTab] = useState<ToolTab>("full");
 
   if (!isOpen) {
     return null;
@@ -142,13 +160,16 @@ export default function TripToolsPanel({
     <section className="fixed inset-0 z-40">
       <div className="absolute inset-0 bg-slate-950/30" onClick={onClose} />
 
-      <div className="absolute inset-x-3 top-5 mx-auto flex max-h-[90vh] max-w-4xl flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl">
+      <div className="absolute inset-x-3 top-5 mx-auto flex max-h-[90vh] max-w-5xl flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl">
         <div className="flex items-start justify-between gap-3 border-b border-slate-100 p-4">
           <div>
             <p className="text-sm font-semibold text-blue-700">Trip tools</p>
+
             <h2 className="text-xl font-bold text-slate-950">{trip.tripName}</h2>
-            <p className="text-sm text-slate-500">
-              Hidden tools for tomorrow, food, full trip, versions, and reset.
+
+            <p className="text-sm leading-6 text-slate-500">
+              Review the full trip, tomorrow, food ideas, version history, and
+              local prototype settings.
             </p>
           </div>
 
@@ -159,16 +180,16 @@ export default function TripToolsPanel({
         </div>
 
         <div className="flex flex-wrap gap-2 border-b border-slate-100 p-4">
+          <ToolButton tab="full" activeTab={activeTab} onClick={setActiveTab}>
+            Full trip
+          </ToolButton>
+
           <ToolButton tab="tomorrow" activeTab={activeTab} onClick={setActiveTab}>
             Tomorrow
           </ToolButton>
 
           <ToolButton tab="food" activeTab={activeTab} onClick={setActiveTab}>
             Food
-          </ToolButton>
-
-          <ToolButton tab="full" activeTab={activeTab} onClick={setActiveTab}>
-            Full trip
           </ToolButton>
 
           <ToolButton tab="versions" activeTab={activeTab} onClick={setActiveTab}>
@@ -181,6 +202,13 @@ export default function TripToolsPanel({
         </div>
 
         <div className="overflow-y-auto p-4">
+          {activeTab === "full" && (
+            <FullTripExplorer
+              days={trip.days}
+              currentDayNumber={trip.currentDay}
+            />
+          )}
+
           {activeTab === "tomorrow" && (
             <div className="space-y-4">
               <div className="rounded-2xl border border-violet-100 bg-violet-50 p-4">
@@ -194,6 +222,7 @@ export default function TripToolsPanel({
                     <h3 className="text-lg font-bold text-slate-950">
                       Day {tomorrowDay.dayNumber} — {tomorrowDay.city}
                     </h3>
+
                     <p className="mt-1 text-sm leading-6 text-slate-600">
                       {tomorrowDay.theme}
                     </p>
@@ -204,11 +233,19 @@ export default function TripToolsPanel({
               </div>
 
               {tomorrowDay && (
-                <div className="grid gap-4 md:grid-cols-3">
-                  <ActivityList title="Morning" items={tomorrowDay.morning} />
-                  <ActivityList title="Afternoon" items={tomorrowDay.afternoon} />
-                  <ActivityList title="Evening" items={tomorrowDay.evening} />
-                </div>
+                <>
+                  <div className="grid gap-4 md:grid-cols-3">
+                    <ActivityList title="Morning" items={tomorrowDay.morning} />
+                    <ActivityList title="Afternoon" items={tomorrowDay.afternoon} />
+                    <ActivityList title="Evening" items={tomorrowDay.evening} />
+                  </div>
+
+                  <div className="grid gap-4 md:grid-cols-3">
+                    <ActivityList title="Food" items={tomorrowDay.food} />
+                    <ActivityList title="Transport" items={tomorrowDay.transport} />
+                    <ActivityList title="Notes" items={tomorrowDay.notes} />
+                  </div>
+                </>
               )}
             </div>
           )}
@@ -220,54 +257,67 @@ export default function TripToolsPanel({
                   <Utensils className="h-4 w-4" />
                   Food ideas
                 </p>
+
                 <h3 className="text-lg font-bold text-slate-950">
-                  {currentDay ? `Day ${currentDay.dayNumber} — ${currentDay.city}` : "Today"}
+                  Trip food overview
                 </h3>
-                <p className="mt-1 text-sm text-slate-600">
-                  Food options are still sample-data suggestions. Verify opening hours live.
+
+                <p className="mt-1 text-sm leading-6 text-slate-600">
+                  Food ideas come from the app-friendly sample data. Verify opening
+                  hours, distance, and availability live.
                 </p>
               </div>
 
-              {currentDay && currentDay.food.length > 0 ? (
-                <div className="grid gap-3 sm:grid-cols-2">
-                  {currentDay.food.map((food) => (
-                    <div key={food} className="rounded-2xl border border-slate-100 bg-white p-4">
-                      <p className="font-semibold text-slate-950">{food}</p>
-                      <p className="mt-1 text-sm text-slate-500">
-                        Check distance, opening hours, and current availability.
+              {currentDay && (
+                <div className="rounded-2xl border border-blue-100 bg-blue-50 p-4">
+                  <p className="text-sm font-semibold text-blue-900">
+                    Today — Day {currentDay.dayNumber}, {currentDay.city}
+                  </p>
+
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {currentDay.food.length > 0 ? (
+                      currentDay.food.map((food) => (
+                        <Badge key={food} variant="secondary">
+                          {food}
+                        </Badge>
+                      ))
+                    ) : (
+                      <p className="text-sm text-blue-800">
+                        No food ideas listed for today.
                       </p>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-sm text-slate-600">No food ideas listed for today.</p>
-              )}
-            </div>
-          )}
-
-          {activeTab === "full" && (
-            <div className="space-y-3">
-              <div>
-                <h3 className="text-lg font-bold text-slate-950">Full trip overview</h3>
-                <p className="text-sm text-slate-600">
-                  Kept here so the main Today screen stays simple.
-                </p>
-              </div>
-
-              {trip.days.map((day) => (
-                <div key={day.dayNumber} className="rounded-2xl border border-slate-100 bg-white p-4">
-                  <div className="mb-2 flex flex-wrap items-center gap-2">
-                    <p className="font-bold text-slate-950">
-                      Day {day.dayNumber} — {day.city}
-                    </p>
-
-                    {day.dayNumber === trip.currentDay && <Badge variant="default">Today</Badge>}
-                    {day.edited && <Badge variant="secondary">Edited</Badge>}
+                    )}
                   </div>
-
-                  <p className="text-sm leading-6 text-slate-600">{day.theme}</p>
                 </div>
-              ))}
+              )}
+
+              <div className="grid gap-3 md:grid-cols-2">
+                {trip.days.map((day) => (
+                  <div
+                    key={`food-${day.dayNumber}`}
+                    className="rounded-2xl border border-slate-100 bg-white p-4"
+                  >
+                    <div className="mb-2 flex flex-wrap items-center gap-2">
+                      <Badge variant={day.dayNumber === trip.currentDay ? "default" : "outline"}>
+                        Day {day.dayNumber}
+                      </Badge>
+
+                      <p className="font-semibold text-slate-950">{day.city}</p>
+                    </div>
+
+                    {day.food.length > 0 ? (
+                      <div className="flex flex-wrap gap-2">
+                        {day.food.map((food) => (
+                          <Badge key={`${day.dayNumber}-${food}`} variant="secondary">
+                            {food}
+                          </Badge>
+                        ))}
+                      </div>
+                    ) : (
+                      <p className="text-sm text-slate-500">No food ideas listed.</p>
+                    )}
+                  </div>
+                ))}
+              </div>
             </div>
           )}
 
@@ -278,12 +328,15 @@ export default function TripToolsPanel({
                   <History className="h-4 w-4" />
                   Version history
                 </p>
+
                 <h3 className="text-lg font-bold text-slate-950">
                   {versionHistory.length} local version
                   {versionHistory.length !== 1 ? "s" : ""}
                 </h3>
-                <p className="mt-1 text-sm text-slate-600">
-                  Versions are hidden from the main screen, but changes are still saved locally.
+
+                <p className="mt-1 text-sm leading-6 text-slate-600">
+                  Versions are hidden from the main Today screen, but changes are
+                  still saved locally.
                 </p>
               </div>
 
@@ -310,7 +363,9 @@ export default function TripToolsPanel({
                         )}
 
                         {formattedTime && (
-                          <span className="text-xs text-slate-400">{formattedTime}</span>
+                          <span className="text-xs text-slate-400">
+                            {formattedTime}
+                          </span>
                         )}
                       </div>
 
@@ -325,7 +380,9 @@ export default function TripToolsPanel({
                       </Button>
                     </div>
 
-                    <p className="text-sm leading-6 text-slate-700">{version.summary}</p>
+                    <p className="text-sm leading-6 text-slate-700">
+                      {version.summary}
+                    </p>
 
                     {version.restoredFromVersion && (
                       <p className="mt-1 text-xs text-emerald-700">
@@ -342,13 +399,17 @@ export default function TripToolsPanel({
             <div className="space-y-4">
               <div className="rounded-2xl border border-orange-100 bg-orange-50 p-4">
                 <p className="mb-1 flex items-center gap-2 text-sm font-semibold text-orange-700">
-                  <RotateCcw className="h-4 w-4" />
+                  <Settings className="h-4 w-4" />
                   Local prototype controls
                 </p>
-                <h3 className="text-lg font-bold text-slate-950">Reset sample trip</h3>
+
+                <h3 className="text-lg font-bold text-slate-950">
+                  Reset sample trip
+                </h3>
+
                 <p className="mt-1 text-sm leading-6 text-slate-600">
-                  This clears local saved changes from this browser and reloads the Austria sample
-                  trip.
+                  This clears local saved changes from this browser and reloads the
+                  Austria sample trip from the app-friendly JSON data.
                 </p>
               </div>
 
