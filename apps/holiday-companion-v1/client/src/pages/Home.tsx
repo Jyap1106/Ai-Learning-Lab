@@ -1,15 +1,13 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
-import ChatAssistant, { type ChatMessage } from "@/components/holiday/ChatAssistant";
-import FullItineraryList from "@/components/holiday/FullItineraryList";
+import FloatingChatPanel from "@/components/holiday/FloatingChatPanel";
 import Header from "@/components/holiday/Header";
 import ProposedChangeCard from "@/components/holiday/ProposedChangeCard";
-import TodayPlanCard from "@/components/holiday/TodayPlanCard";
-import TomorrowPlanCard from "@/components/holiday/TomorrowPlanCard";
-import TripDashboard from "@/components/holiday/TripDashboard";
+import TodayCommandCenter from "@/components/holiday/TodayCommandCenter";
+import TodayTimeline from "@/components/holiday/TodayTimeline";
+import TripToolsPanel from "@/components/holiday/TripToolsPanel";
 import austriaData from "@/data/austriaItineraryState.json";
 import {
-  DEFAULT_PROMPT_CHIPS,
   createMockAssistantResponse,
   createMockProposedChange,
   isEditPrompt,
@@ -17,10 +15,16 @@ import {
   type ProposedChange,
 } from "@/lib/mockResponses";
 import {
+  buildTodayTimeline,
+  getTimelineStatus,
+  type TodayTimelineItem,
+} from "@/lib/todayTimeline";
+import {
   clearTripStorage,
   loadTripFromStorage,
   saveTripToStorage,
 } from "@/lib/storage";
+import type { ChatMessage } from "@/components/holiday/ChatAssistant";
 
 interface VersionHistoryEntry {
   version: number;
@@ -47,6 +51,17 @@ interface ItineraryState {
   proposedChange?: unknown;
   metadata?: Record<string, unknown>;
 }
+
+const TODAY_MODE_PROMPTS = [
+  "What should I do now?",
+  "What's today's plan?",
+  "I'm running late. What should I skip or adjust?",
+  "What food is planned today?",
+  "What transport notes should I know?",
+  "Make today lighter",
+  "Add a cafe break",
+  "Replace an activity",
+];
 
 function createMessage(
   role: "user" | "assistant",
@@ -77,12 +92,16 @@ function cloneDays(days: Day[]): Day[] {
   }));
 }
 
-function getNextVersionNumber(versionHistory: VersionHistoryEntry[]) {
+function getCurrentVersionNumber(versionHistory: VersionHistoryEntry[]) {
   if (versionHistory.length === 0) {
-    return 1;
+    return 0;
   }
 
-  return Math.max(...versionHistory.map((entry) => entry.version)) + 1;
+  return Math.max(...versionHistory.map((entry) => entry.version));
+}
+
+function getNextVersionNumber(versionHistory: VersionHistoryEntry[]) {
+  return getCurrentVersionNumber(versionHistory) + 1;
 }
 
 function createInitialVersionEntry(days: Day[]): VersionHistoryEntry {
@@ -99,16 +118,14 @@ function createInitialVersionEntry(days: Day[]): VersionHistoryEntry {
 function normalizeTripState(trip: ItineraryState): ItineraryState {
   const cleanDays = cloneDays(trip.days ?? []);
 
-  const versionHistory =
+  const existingVersionHistory =
     trip.versionHistory && trip.versionHistory.length > 0
       ? trip.versionHistory
       : [createInitialVersionEntry(cleanDays)];
 
-  const currentVersionNumber = Math.max(
-    ...versionHistory.map((entry) => entry.version),
-  );
+  const currentVersionNumber = getCurrentVersionNumber(existingVersionHistory);
 
-  const normalizedVersionHistory = versionHistory.map((entry) => ({
+  const normalizedVersionHistory = existingVersionHistory.map((entry) => ({
     ...entry,
     snapshot: entry.snapshot
       ? cloneDays(entry.snapshot)
@@ -198,19 +215,126 @@ function appendUnique(items: string[], item: string) {
   return [...items, item];
 }
 
+function replaceMatchingActivity(
+  items: string[],
+  currentItem: string,
+  replacementItem: string,
+) {
+  let didReplace = false;
+
+  const updatedItems = items.map((item) => {
+    if (item === currentItem) {
+      didReplace = true;
+      return replacementItem;
+    }
+
+    return item;
+  });
+
+  return {
+    didReplace,
+    items: Array.from(new Set(updatedItems)),
+  };
+}
+
+function getSelectedReplacementLabel(day: Day, proposedChange: ProposedChange) {
+  const selectedOption = proposedChange.options.find(
+    (option) => option.id === proposedChange.selectedOptionId,
+  );
+
+  switch (proposedChange.selectedOptionId) {
+    case "replace-food":
+      return `Food / cafe break: ${day.food[0] ?? "nearby food option"}`;
+
+    case "replace-activity":
+      return `Lighter activity in ${day.city}`;
+
+    case "replace-nearby":
+      return `Nearby flexible stop in ${day.city}`;
+
+    case "cafe-break":
+      return `Cafe break: ${day.food[0] ?? "nearby cafe"}`;
+
+    case "dessert-break":
+      return `Dessert or bakery stop: ${day.food[1] ?? day.food[0] ?? "nearby bakery"}`;
+
+    case "relaxed-cafe":
+      return `Relaxed cafe break: ${day.food[0] ?? "nearby cafe"}`;
+
+    case "short-walk":
+      return `Short scenic walk in ${day.city}`;
+
+    case "relax-time":
+      return "Free and easy time";
+
+    default:
+      return selectedOption?.label ?? "Selected change";
+  }
+}
+
+function updateSpecificActivity(day: Day, proposedChange: ProposedChange) {
+  const currentItem = proposedChange.currentItem;
+  const replacementLabel = getSelectedReplacementLabel(day, proposedChange);
+
+  const morningResult = replaceMatchingActivity(day.morning, currentItem, replacementLabel);
+  const afternoonResult = replaceMatchingActivity(day.afternoon, currentItem, replacementLabel);
+  const eveningResult = replaceMatchingActivity(day.evening, currentItem, replacementLabel);
+
+  const didReplace =
+    morningResult.didReplace || afternoonResult.didReplace || eveningResult.didReplace;
+
+  if (!didReplace) {
+    return {
+      didReplace: false,
+      day,
+    };
+  }
+
+  return {
+    didReplace: true,
+    day: {
+      ...day,
+      edited: true,
+      morning: morningResult.items,
+      afternoon: afternoonResult.items,
+      evening: eveningResult.items,
+      notes: appendUnique(
+        day.notes,
+        `Updated locally: ${proposedChange.title} — ${replacementLabel}.`,
+      ),
+    },
+  };
+}
+
 function updateDayWithProposedChange(day: Day, proposedChange: ProposedChange): Day {
   const selectedOption = proposedChange.options.find(
     (option) => option.id === proposedChange.selectedOptionId,
   );
 
-  const selectedLabel = selectedOption?.label ?? "Selected change";
-  const updatedNote = `Updated locally: ${proposedChange.title} — ${selectedLabel}.`;
+  const selectedLabel = getSelectedReplacementLabel(day, proposedChange);
+  const updatedNote = `Updated locally: ${proposedChange.title} — ${
+    selectedOption?.label ?? selectedLabel
+  }.`;
+
+  if (
+    proposedChange.currentItem &&
+    !proposedChange.currentItem.toLowerCase().includes("full plan")
+  ) {
+    const specificActivityUpdate = updateSpecificActivity(day, proposedChange);
+
+    if (specificActivityUpdate.didReplace) {
+      return specificActivityUpdate.day;
+    }
+  }
 
   if (proposedChange.selectedOptionId === "relax-time") {
     return {
       ...day,
       edited: true,
-      afternoon: day.afternoon.slice(0, 1),
+      afternoon:
+        day.afternoon.length > 0
+          ? Array.from(new Set([day.afternoon[0], "Free and easy time"]))
+          : ["Free and easy time"],
       notes: appendUnique(day.notes, updatedNote),
     };
   }
@@ -238,16 +362,31 @@ function updateDayWithProposedChange(day: Day, proposedChange: ProposedChange): 
   if (proposedChange.type === "replace_activity") {
     const replacementTarget = proposedChange.currentItem || "Upper Belvedere";
 
+    const replacedMorning = day.morning.map((item) =>
+      item === replacementTarget ? selectedLabel : item,
+    );
+
     const replacedAfternoon = day.afternoon.map((item) =>
       item === replacementTarget ? selectedLabel : item,
     );
 
+    const replacedEvening = day.evening.map((item) =>
+      item === replacementTarget ? selectedLabel : item,
+    );
+
+    const replacementAlreadyExists =
+      replacedMorning.includes(selectedLabel) ||
+      replacedAfternoon.includes(selectedLabel) ||
+      replacedEvening.includes(selectedLabel);
+
     return {
       ...day,
       edited: true,
-      afternoon: replacedAfternoon.includes(selectedLabel)
+      morning: replacedMorning,
+      afternoon: replacementAlreadyExists
         ? replacedAfternoon
-        : [...replacedAfternoon, selectedLabel],
+        : appendUnique(replacedAfternoon, selectedLabel),
+      evening: replacedEvening,
       notes: appendUnique(day.notes, updatedNote),
     };
   }
@@ -260,18 +399,145 @@ function updateDayWithProposedChange(day: Day, proposedChange: ProposedChange): 
   };
 }
 
+function createTimelineProposedChange(
+  item: TodayTimelineItem,
+  currentDay: Day,
+  action: "replace" | "skip",
+): ProposedChange {
+  const isSkipAction = action === "skip";
+
+  return {
+    id: `change-${Date.now()}`,
+    type: isSkipAction ? "make_lighter" : "replace_activity",
+    title: isSkipAction ? `Remove ${item.title}` : `Replace ${item.title}`,
+    affectedDay: currentDay.dayNumber,
+    affectedCity: currentDay.city,
+    currentItem: item.title,
+    requestedChange: isSkipAction
+      ? `Remove ${item.title} from today's plan and keep the time flexible.`
+      : `Replace ${item.title} with another option.`,
+    impact: isSkipAction
+      ? "This keeps the time block open so the day feels less rushed."
+      : "This changes one activity while keeping the rest of today's itinerary intact.",
+    selectedOptionId: isSkipAction ? "relax-time" : "replace-food",
+    status: "awaiting_confirmation",
+    options: [
+      {
+        id: "relax-time",
+        label: "Keep this time free and easy",
+        description: "Remove the activity and leave the time open for rest or spontaneous plans.",
+      },
+      {
+        id: "replace-food",
+        label: "Replace with food or cafe",
+        description: `Use a food option such as ${
+          currentDay.food[0] ?? "a nearby cafe or meal stop"
+        }.`,
+      },
+      {
+        id: "replace-activity",
+        label: "Replace with a lighter activity",
+        description: "Swap this for something easier and less time-sensitive.",
+      },
+      {
+        id: "replace-nearby",
+        label: "Replace with a nearby location",
+        description: "Choose a flexible nearby stop so travel time stays low.",
+      },
+    ],
+  };
+}
+
+function createNowResponse(
+  timelineStatus: ReturnType<typeof getTimelineStatus>,
+  currentDay: Day,
+) {
+  if (timelineStatus.currentItem) {
+    return {
+      title: "What to do now",
+      content: [
+        `You are on Day ${currentDay.dayNumber} in ${currentDay.city}.`,
+        "",
+        `Now: ${timelineStatus.currentItem.title}`,
+        `Location: ${timelineStatus.currentItem.location}`,
+        `Transport: ${timelineStatus.currentItem.transport}`,
+        `Remark: ${timelineStatus.currentItem.remarks}`,
+        "",
+        timelineStatus.nextItem
+          ? `Next: ${timelineStatus.nextItem.title}`
+          : "There are no more planned activities after this.",
+      ].join("\n"),
+    };
+  }
+
+  if (timelineStatus.nextItem) {
+    return {
+      title: "Before the next activity",
+      content: [
+        `You are on Day ${currentDay.dayNumber} in ${currentDay.city}.`,
+        "",
+        "The first upcoming activity is:",
+        `${timelineStatus.nextItem.title}`,
+        `Transport: ${timelineStatus.nextItem.transport}`,
+        "",
+        "Use the remaining time to prepare, travel, or keep things relaxed.",
+      ].join("\n"),
+    };
+  }
+
+  return {
+    title: "No current activity",
+    content: "I could not find a current or upcoming activity for today.",
+  };
+}
+
+function createRunningLateResponse(
+  timelineStatus: ReturnType<typeof getTimelineStatus>,
+  currentDay: Day,
+) {
+  const bestItemToAdjust = timelineStatus.currentItem ?? timelineStatus.nextItem;
+
+  return {
+    title: "Running late suggestion",
+    content: [
+      `Day ${currentDay.dayNumber} in ${currentDay.city} looks adjustable.`,
+      "",
+      bestItemToAdjust
+        ? `Best item to adjust: ${bestItemToAdjust.title}`
+        : "I could not detect a specific item to adjust.",
+      "",
+      "Suggested approach:",
+      "- Keep the main must-do activity.",
+      "- Replace one time-sensitive stop with free time.",
+      "- Use the timeline's Free time or Replace button to save the change.",
+      "",
+      "No itinerary changes have been saved yet.",
+    ].join("\n"),
+  };
+}
+
 export default function Home() {
   const [tripData, setTripData] = useState<ItineraryState>(() => loadInitialTripState());
+  const [now, setNow] = useState(() => new Date());
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [isTripToolsOpen, setIsTripToolsOpen] = useState(false);
+  const [proposedChange, setProposedChange] = useState<ProposedChange | null>(null);
 
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>(() => [
     createMessage(
       "assistant",
-      "I loaded your Austria sample trip. Use the prompt chips to ask about today, tomorrow, food, transport, or local itinerary changes.",
+      "I loaded your Austria sample trip. Today Mode is ready: check Now, Coming up, the timeline, or ask me what to do next.",
       "Welcome",
     ),
   ]);
 
-  const [proposedChange, setProposedChange] = useState<ProposedChange | null>(null);
+  useEffect(() => {
+    const intervalId = window.setInterval(() => {
+      setNow(new Date());
+    }, 60_000);
+
+    return () => window.clearInterval(intervalId);
+  }, []);
 
   const currentDay = useMemo(() => {
     return tripData.days.find((day) => day.dayNumber === tripData.currentDay);
@@ -281,17 +547,49 @@ export default function Home() {
     return tripData.days.find((day) => day.dayNumber === tripData.currentDay + 1);
   }, [tripData]);
 
-  const upcomingDays = useMemo(() => {
-    return tripData.days.filter(
-      (day) =>
-        day.dayNumber > tripData.currentDay && day.dayNumber <= tripData.currentDay + 3,
-    );
-  }, [tripData]);
+  const todayTimelineItems = useMemo(() => {
+    return currentDay ? buildTodayTimeline(currentDay) : [];
+  }, [currentDay]);
+
+  const timelineStatus = useMemo(() => {
+    return getTimelineStatus(todayTimelineItems, now);
+  }, [todayTimelineItems, now]);
 
   const handlePromptChipClick = (prompt: string) => {
     if (!currentDay) return;
 
+    setIsChatOpen(true);
+
     const userMessage = createMessage("user", prompt);
+    const normalizedPrompt = prompt.toLowerCase();
+
+    if (
+      normalizedPrompt.includes("what should i do now") ||
+      normalizedPrompt.includes("what do i do now") ||
+      normalizedPrompt.includes("do now")
+    ) {
+      const nowResponse = createNowResponse(timelineStatus, currentDay);
+
+      setChatMessages((previousMessages) => [
+        ...previousMessages,
+        userMessage,
+        createMessage("assistant", nowResponse.content, nowResponse.title),
+      ]);
+
+      return;
+    }
+
+    if (normalizedPrompt.includes("running late") || normalizedPrompt.includes("late")) {
+      const lateResponse = createRunningLateResponse(timelineStatus, currentDay);
+
+      setChatMessages((previousMessages) => [
+        ...previousMessages,
+        userMessage,
+        createMessage("assistant", lateResponse.content, lateResponse.title),
+      ]);
+
+      return;
+    }
 
     if (isEditPrompt(prompt)) {
       const change = createMockProposedChange(prompt, currentDay);
@@ -324,16 +622,51 @@ export default function Home() {
 
     const mockResponse = createMockAssistantResponse(prompt, currentDay, tomorrowDay);
 
-    const assistantMessage = createMessage(
-      "assistant",
-      mockResponse.content,
-      mockResponse.title,
-    );
-
     setChatMessages((previousMessages) => [
       ...previousMessages,
       userMessage,
-      assistantMessage,
+      createMessage("assistant", mockResponse.content, mockResponse.title),
+    ]);
+  };
+
+  const handleAskAboutItem = (item: TodayTimelineItem) => {
+    handlePromptChipClick(`What should I know about ${item.title} in today's plan?`);
+  };
+
+  const handleStartTimelineChange = (
+    item: TodayTimelineItem,
+    action: "replace" | "skip",
+  ) => {
+    if (!currentDay) return;
+
+    const change = createTimelineProposedChange(item, currentDay, action);
+
+    setProposedChange(change);
+    setIsChatOpen(false);
+
+    setTripData((previousTrip) => ({
+      ...previousTrip,
+      saveStatus: "awaiting_confirmation",
+    }));
+
+    setChatMessages((previousMessages) => [
+      ...previousMessages,
+      createMessage(
+        "user",
+        action === "skip"
+          ? `Keep ${item.title} as free time`
+          : `Replace ${item.title}`,
+      ),
+      createMessage(
+        "assistant",
+        [
+          "I created a focused change for this timeline item.",
+          "",
+          "Choose whether to keep the time free or replace it with food, a lighter activity, or a nearby stop.",
+          "Nothing is saved until you confirm.",
+        ].join("\n"),
+        change.title,
+      ),
     ]);
   };
 
@@ -381,8 +714,8 @@ export default function Home() {
         [
           "Saved locally.",
           "",
-          "Your itinerary has been updated in this prototype.",
-          `Version ${nextVersion.version}: ${nextVersion.summary}`,
+          "Today’s plan has been updated.",
+          "Version history is available inside Trip tools.",
         ].join("\n"),
         "Change confirmed",
       ),
@@ -426,9 +759,7 @@ export default function Home() {
       return;
     }
 
-    const currentVersionNumber = Math.max(
-      ...tripData.versionHistory.map((entry) => entry.version),
-    );
+    const currentVersionNumber = getCurrentVersionNumber(tripData.versionHistory);
 
     if (versionToRestore.version === currentVersionNumber) {
       setChatMessages((previousMessages) => [
@@ -451,7 +782,7 @@ export default function Home() {
           [
             `Version ${versionNumber} does not have a restorable snapshot.`,
             "",
-            "This can happen for older saved localStorage data created before version restore was added.",
+            "This can happen for older localStorage data created before version restore was added.",
             "Use Reset Sample Trip, then create new changes to test full restore behavior.",
           ].join("\n"),
           "Restore unavailable",
@@ -462,7 +793,7 @@ export default function Home() {
     }
 
     const confirmed = window.confirm(
-      `Restore version ${versionNumber}? This will create a new version from that older itinerary snapshot.`,
+      `Restore version ${versionNumber}? This creates a new version from that older itinerary snapshot.`,
     );
 
     if (!confirmed) return;
@@ -513,6 +844,7 @@ export default function Home() {
 
     setTripData(freshTrip);
     setProposedChange(null);
+    setIsTripToolsOpen(false);
     setChatMessages([
       createMessage(
         "assistant",
@@ -523,71 +855,76 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen bg-slate-50">
-      <div className="mx-auto flex max-w-7xl flex-col gap-6 px-4 py-6 sm:px-6 lg:px-8">
-        <Header
-          tripName={tripData.tripName}
-          currentDay={tripData.currentDay}
-          saveStatus={tripData.saveStatus}
-        />
+    <main className="min-h-screen bg-slate-50 pb-28">
+      <Header
+        tripName={tripData.tripName}
+        currentDay={tripData.currentDay}
+        saveStatus={tripData.saveStatus}
+        onOpenTools={() => setIsTripToolsOpen(true)}
+      />
 
-        <div className="grid gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(320px,1fr)]">
-          <section className="space-y-6">
-            {currentDay ? (
-              <TodayPlanCard day={currentDay} onPromptClick={handlePromptChipClick} />
-            ) : (
-              <div className="rounded-2xl border border-red-100 bg-white p-6 text-red-700 shadow-sm">
-                Current day could not be found in the itinerary data.
-              </div>
-            )}
-
-            {tomorrowDay && (
-              <TomorrowPlanCard day={tomorrowDay} onPromptClick={handlePromptChipClick} />
-            )}
-
-            <ChatAssistant
-              messages={chatMessages}
-              prompts={DEFAULT_PROMPT_CHIPS}
+      <div className="mx-auto flex max-w-5xl flex-col gap-5 px-4 py-5 sm:px-6">
+        {currentDay ? (
+          <>
+            <TodayCommandCenter
+              tripName={tripData.tripName}
+              day={currentDay}
+              now={now}
+              timelineStatus={timelineStatus}
+              saveStatus={tripData.saveStatus}
               onPromptClick={handlePromptChipClick}
+              onOpenChat={() => setIsChatOpen(true)}
+              onOpenTools={() => setIsTripToolsOpen(true)}
+              onChangeItem={(item) => handleStartTimelineChange(item, "replace")}
+              onSkipItem={(item) => handleStartTimelineChange(item, "skip")}
             />
 
             {proposedChange && (
-              <ProposedChangeCard
-                proposedChange={proposedChange}
-                onSelectOption={handleSelectProposedOption}
-                onConfirm={handleConfirmChange}
-                onReject={handleRejectChange}
-              />
+              <div className="scroll-mt-28">
+                <ProposedChangeCard
+                  proposedChange={proposedChange}
+                  onSelectOption={handleSelectProposedOption}
+                  onConfirm={handleConfirmChange}
+                  onReject={handleRejectChange}
+                />
+              </div>
             )}
 
-            <FullItineraryList days={tripData.days} />
-          </section>
-
-          <aside className="space-y-6">
-            <TripDashboard
-              trip={tripData}
-              currentDay={tripData.currentDay}
-              versionHistory={tripData.versionHistory}
-              saveStatus={tripData.saveStatus}
-              upcomingDays={upcomingDays}
-              onResetTrip={handleResetTrip}
-              onRestoreVersion={handleRestoreVersion}
+            <TodayTimeline
+              timelineItems={todayTimelineItems}
+              currentItemId={timelineStatus.currentItem?.id}
+              nextItemId={timelineStatus.nextItem?.id}
+              onAskAboutItem={handleAskAboutItem}
+              onChangeItem={(item) => handleStartTimelineChange(item, "replace")}
+              onSkipItem={(item) => handleStartTimelineChange(item, "skip")}
             />
-
-            <div className="rounded-2xl border border-blue-100 bg-white p-5 shadow-sm">
-              <p className="text-sm font-semibold text-blue-900">V1 Build Status</p>
-              <h2 className="mt-2 text-lg font-bold text-slate-900">
-                Local itinerary companion
-              </h2>
-              <p className="mt-2 text-sm leading-6 text-slate-600">
-                This build uses local sample data, mock assistant responses, proposed
-                changes, confirm/reject behavior, localStorage, and restorable version
-                history. Real AI and backend saving come later.
-              </p>
-            </div>
-          </aside>
-        </div>
+          </>
+        ) : (
+          <div className="rounded-2xl border border-red-100 bg-white p-6 text-red-700 shadow-sm">
+            Current day could not be found in the itinerary data.
+          </div>
+        )}
       </div>
+
+      <FloatingChatPanel
+        isOpen={isChatOpen}
+        messages={chatMessages}
+        prompts={TODAY_MODE_PROMPTS}
+        onPromptClick={handlePromptChipClick}
+        onOpen={() => setIsChatOpen(true)}
+        onClose={() => setIsChatOpen(false)}
+      />
+
+      <TripToolsPanel
+        isOpen={isTripToolsOpen}
+        trip={tripData}
+        currentDay={currentDay}
+        tomorrowDay={tomorrowDay}
+        versionHistory={tripData.versionHistory}
+        onClose={() => setIsTripToolsOpen(false)}
+        onResetTrip={handleResetTrip}
+        onRestoreVersion={handleRestoreVersion}
+      />
     </main>
   );
 }
