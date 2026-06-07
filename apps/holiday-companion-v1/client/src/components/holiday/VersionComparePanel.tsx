@@ -114,18 +114,25 @@ function SectionCompare({
   const isDifferent = arraysAreDifferent(versionItems, currentItems);
 
   return (
-    <div className="rounded-2xl border border-slate-100 bg-white p-4">
+    <div className="rounded-3xl border border-[var(--vamo-border)] bg-[var(--vamo-card)] p-4">
       <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-        <p className="font-semibold text-slate-950">{title}</p>
+        <p className="font-black text-[var(--vamo-text)]">{title}</p>
 
-        <Badge variant={isDifferent ? "secondary" : "outline"}>
+        <Badge
+          variant="outline"
+          className={
+            isDifferent
+              ? "border-blue-400/30 bg-blue-400/10 text-blue-200"
+              : "border-[var(--vamo-border)] text-[var(--vamo-muted)]"
+          }
+        >
           {isDifferent ? "Changed" : "Same"}
         </Badge>
       </div>
 
       <div className="grid gap-3 md:grid-cols-2">
         <div>
-          <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
+          <p className="mb-2 text-xs font-black uppercase tracking-[0.18em] text-[var(--vamo-muted)]">
             Selected version
           </p>
 
@@ -134,21 +141,21 @@ function SectionCompare({
               {versionItems.map((item, index) => (
                 <li
                   key={`${item}-${index}`}
-                  className="rounded-xl bg-blue-50 p-3 text-sm text-blue-900"
+                  className="rounded-2xl border border-blue-400/20 bg-blue-400/10 p-3 text-sm leading-6 text-blue-100"
                 >
                   {item}
                 </li>
               ))}
             </ul>
           ) : (
-            <p className="rounded-xl bg-slate-50 p-3 text-sm text-slate-500">
+            <p className="rounded-2xl bg-[var(--vamo-card-strong)] p-3 text-sm text-[var(--vamo-muted)]">
               No items.
             </p>
           )}
         </div>
 
         <div>
-          <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-slate-500">
+          <p className="mb-2 text-xs font-black uppercase tracking-[0.18em] text-[var(--vamo-muted)]">
             Current itinerary
           </p>
 
@@ -157,14 +164,14 @@ function SectionCompare({
               {currentItems.map((item, index) => (
                 <li
                   key={`${item}-${index}`}
-                  className="rounded-xl bg-slate-50 p-3 text-sm text-slate-700"
+                  className="rounded-2xl border border-[var(--vamo-border)] bg-[var(--vamo-card-strong)] p-3 text-sm leading-6 text-[var(--vamo-text)]"
                 >
                   {item}
                 </li>
               ))}
             </ul>
           ) : (
-            <p className="rounded-xl bg-slate-50 p-3 text-sm text-slate-500">
+            <p className="rounded-2xl bg-[var(--vamo-card-strong)] p-3 text-sm text-[var(--vamo-muted)]">
               No items.
             </p>
           )}
@@ -191,49 +198,62 @@ export default function VersionComparePanel({
 
   return (
     <section className="fixed inset-0 z-50">
-      <div className="absolute inset-0 bg-slate-950/35" onClick={onClose} />
+      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
 
-      <div className="absolute inset-x-3 top-5 mx-auto flex max-h-[90vh] max-w-5xl flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl">
-        <div className="flex items-start justify-between gap-3 border-b border-slate-100 p-4">
+      <div className="absolute inset-x-3 top-5 mx-auto flex max-h-[90vh] max-w-5xl flex-col overflow-hidden rounded-[2rem] border border-[var(--vamo-border)] bg-[var(--vamo-bg)] text-[var(--vamo-text)] shadow-2xl">
+        <div className="flex items-start justify-between gap-3 border-b border-[var(--vamo-border)] bg-[var(--vamo-card)] p-4">
           <div>
             <div className="mb-2 flex flex-wrap items-center gap-2">
-              <Badge variant="secondary">Version compare</Badge>
-              <Badge variant="outline">v{version.version}</Badge>
-              <Badge variant="outline">{formatVersionTime(version.createdAt)}</Badge>
+              <Badge className="bg-[var(--vamo-primary)] text-[var(--vamo-primary-text)] hover:bg-[var(--vamo-primary)]">
+                Version compare
+              </Badge>
+
+              <Badge variant="outline" className="border-[var(--vamo-border)] text-[var(--vamo-muted)]">
+                v{version.version}
+              </Badge>
+
+              <Badge variant="outline" className="border-[var(--vamo-border)] text-[var(--vamo-muted)]">
+                {formatVersionTime(version.createdAt)}
+              </Badge>
             </div>
 
-            <h2 className="flex items-center gap-2 text-xl font-bold text-slate-950">
-              <GitCompareArrows className="h-5 w-5 text-blue-600" />
+            <h2 className="flex items-center gap-2 text-xl font-black text-[var(--vamo-text)]">
+              <GitCompareArrows className="h-5 w-5 text-[var(--vamo-primary)]" />
               Compare selected version
             </h2>
 
-            <p className="mt-1 text-sm leading-6 text-slate-600">
+            <p className="mt-1 text-sm leading-6 text-[var(--vamo-muted)]">
               {version.summary}
             </p>
           </div>
 
-          <Button type="button" size="sm" variant="outline" onClick={onClose}>
+          <Button
+            type="button"
+            size="sm"
+            variant="outline"
+            className="rounded-full border-[var(--vamo-border)] bg-[var(--vamo-card-strong)] text-[var(--vamo-text)] hover:bg-[var(--vamo-card)]"
+            onClick={onClose}
+          >
             <X className="h-4 w-4" />
-            Close
           </Button>
         </div>
 
         <div className="overflow-y-auto p-4">
           {!canCompare ? (
-            <div className="rounded-2xl border border-orange-100 bg-orange-50 p-4">
-              <p className="font-semibold text-orange-900">Comparison unavailable</p>
-              <p className="mt-1 text-sm leading-6 text-orange-800">
+            <div className="rounded-3xl border border-orange-400/20 bg-orange-400/10 p-4">
+              <p className="font-black text-orange-100">Comparison unavailable</p>
+              <p className="mt-1 text-sm leading-6 text-orange-100/80">
                 This version does not have enough snapshot data to compare against
                 the current itinerary.
               </p>
             </div>
           ) : (
             <div className="space-y-4">
-              <div className="rounded-2xl border border-blue-100 bg-blue-50 p-4">
-                <p className="text-sm font-semibold text-blue-900">
+              <div className="rounded-3xl border border-blue-400/20 bg-blue-400/10 p-4">
+                <p className="text-sm font-black text-blue-100">
                   Comparing Day {versionDay?.dayNumber} — {versionDay?.city}
                 </p>
-                <p className="mt-1 text-sm leading-6 text-blue-800">
+                <p className="mt-1 text-sm leading-6 text-blue-100/80">
                   Left side shows the selected version. Right side shows your
                   current itinerary.
                 </p>
@@ -266,14 +286,20 @@ export default function VersionComparePanel({
           )}
         </div>
 
-        <div className="flex flex-wrap justify-end gap-2 border-t border-slate-100 p-4">
-          <Button type="button" variant="outline" onClick={onClose}>
+        <div className="flex flex-wrap justify-end gap-2 border-t border-[var(--vamo-border)] bg-[var(--vamo-card)] p-4">
+          <Button
+            type="button"
+            variant="outline"
+            className="rounded-full border-[var(--vamo-border)] bg-[var(--vamo-card-strong)] text-[var(--vamo-text)] hover:bg-[var(--vamo-card)]"
+            onClick={onClose}
+          >
             Close
           </Button>
 
           <Button
             type="button"
             disabled={!canRestore}
+            className="rounded-full bg-[var(--vamo-primary)] text-[var(--vamo-primary-text)] hover:opacity-90"
             onClick={() => onRestoreVersion(version.version)}
           >
             <RotateCcw className="h-4 w-4" />
