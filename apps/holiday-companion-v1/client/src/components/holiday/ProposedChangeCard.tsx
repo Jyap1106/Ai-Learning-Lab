@@ -41,7 +41,7 @@ export default function ProposedChangeCard({
   );
 
   return (
-    <section className="rounded-[2rem] border border-[var(--vamo-border)] bg-[var(--vamo-card)] text-[var(--vamo-text)] shadow-2xl">
+    <section className="rounded-[2rem] border border-[var(--vamo-border)] bg-[var(--vamo-card)] text-[var(--vamo-text)] shadow-[var(--vamo-shadow)]">
       <div className="border-b border-[var(--vamo-border)] p-4">
         <div className="mb-3 flex flex-wrap items-center gap-2">
           <Badge className="bg-[var(--vamo-primary)] text-[var(--vamo-primary-text)] hover:bg-[var(--vamo-primary)]">
