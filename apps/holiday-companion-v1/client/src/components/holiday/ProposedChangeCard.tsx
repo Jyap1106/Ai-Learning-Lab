@@ -48,11 +48,17 @@ export default function ProposedChangeCard({
             Proposed change
           </Badge>
 
-          <Badge variant="outline" className="border-[var(--vamo-border)] text-[var(--vamo-muted)]">
+          <Badge
+            variant="outline"
+            className="border-[var(--vamo-border)] text-[var(--vamo-muted-strong)]"
+          >
             Day {proposedChange.affectedDay}
           </Badge>
 
-          <Badge variant="outline" className="border-[var(--vamo-border)] text-[var(--vamo-muted)]">
+          <Badge
+            variant="outline"
+            className="border-[var(--vamo-border)] text-[var(--vamo-muted-strong)]"
+          >
             {proposedChange.affectedCity}
           </Badge>
         </div>
@@ -76,11 +82,11 @@ export default function ProposedChangeCard({
           </div>
         )}
 
-        <div className="rounded-3xl border border-blue-400/20 bg-blue-400/10 p-4">
-          <p className="text-xs font-black uppercase tracking-[0.18em] text-blue-200">
+        <div className="rounded-3xl border border-[var(--vamo-info)] bg-[var(--vamo-info-soft)] p-4">
+          <p className="text-xs font-black uppercase tracking-[0.18em] text-[var(--vamo-info-text)]">
             Impact
           </p>
-          <p className="mt-2 text-sm leading-6 text-blue-100">
+          <p className="mt-2 text-sm leading-6 text-[var(--vamo-info-text)]">
             {proposedChange.impact}
           </p>
         </div>
@@ -124,12 +130,12 @@ export default function ProposedChangeCard({
         </div>
 
         {selectedOption && (
-          <div className="rounded-3xl border border-emerald-400/20 bg-emerald-400/10 p-4">
-            <p className="text-xs font-black uppercase tracking-[0.18em] text-emerald-200">
+          <div className="rounded-3xl border border-[var(--vamo-success)] bg-[var(--vamo-success-soft)] p-4">
+            <p className="text-xs font-black uppercase tracking-[0.18em] text-[var(--vamo-success-text)]">
               Selected
             </p>
-            <p className="mt-2 font-black text-emerald-100">{selectedOption.label}</p>
-            <p className="mt-1 text-sm leading-6 text-emerald-100/80">
+            <p className="mt-2 font-black text-[var(--vamo-success-text)]">{selectedOption.label}</p>
+            <p className="mt-1 text-sm leading-6 text-[var(--vamo-success-text)]">
               Nothing changes until you confirm.
             </p>
           </div>
