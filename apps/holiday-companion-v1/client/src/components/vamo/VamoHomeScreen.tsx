@@ -2,8 +2,6 @@ import {
   Clock3,
   Edit3,
   MapPin,
-  MessageCircle,
-  Navigation,
   Share2,
   Sparkles,
   Zap,
@@ -72,6 +70,10 @@ function getSaveStatusDisplay(status: string) {
     default:
       return status.replace(/_/g, " ");
   }
+}
+
+function getCompactTime(date: Date) {
+  return formatDeviceTime(date).replace(" ", "").toLowerCase();
 }
 
 function getCurrentTitle(timelineStatus: TimelineStatus) {
@@ -149,54 +151,49 @@ export default function VamoHomeScreen({
 
   return (
     <section className="min-h-screen px-4 pb-8 pt-4">
-      <header className="mb-5 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-white text-black">
+      <header className="mb-4 grid grid-cols-3 items-center">
+        <div className="flex items-center gap-2">
+          <div className="flex h-9 w-9 items-center justify-center rounded-2xl bg-white text-black">
             <Zap className="h-5 w-5" />
           </div>
 
           <div>
-            <p className="text-sm font-semibold text-white">Vamo</p>
-            <p className="text-xs text-zinc-400">{trip.tripName}</p>
+            <p className="text-sm font-black leading-none text-white">Vamo</p>
+            <p className="mt-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-zinc-500">
+              Austria
+            </p>
           </div>
         </div>
 
-        <div className="h-10 w-10 rounded-full border border-white/15 bg-gradient-to-br from-slate-200 to-slate-500" />
-      </header>
-
-      <div className="mb-5 grid grid-cols-2 gap-3">
-        <div className="rounded-3xl border border-white/10 bg-white/10 p-4">
-          <p className="mb-1 flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.18em] text-zinc-400">
-            <Clock3 className="h-3.5 w-3.5 text-blue-300" />
-            Current time
-          </p>
-
-          <p className="text-2xl font-black tracking-tight text-white">
-            {formatDeviceTime(now)}
-          </p>
-        </div>
-
-        <div className="rounded-3xl border border-white/10 bg-white/10 p-4 text-right">
-          <p className="mb-1 text-xs font-semibold uppercase tracking-[0.18em] text-zinc-400">
+        <div className="text-center">
+          <p className="text-xs font-black uppercase tracking-[0.18em] text-zinc-500">
             {currentDay.city}
           </p>
-
-          <p className="text-2xl font-black tracking-tight text-white">24°C</p>
-          <p className="text-xs text-zinc-400">Trip mode</p>
+          <p className="mt-1 text-sm font-black text-white">24°C</p>
         </div>
-      </div>
+
+        <p className="text-right text-sm font-black text-white">
+          {getCompactTime(now)}
+        </p>
+      </header>
 
       <div className="mb-5">
         <p className="text-xs font-semibold uppercase tracking-[0.22em] text-zinc-500">
           Today in {currentDay.city}
         </p>
 
-        <h1 className="mt-1 text-4xl font-black leading-none tracking-tight text-white">
-          Day {currentDay.dayNumber}
-        </h1>
+        <div className="mt-1 flex items-end justify-between gap-3">
+          <h1 className="text-4xl font-black leading-none tracking-tight text-white">
+            Day {currentDay.dayNumber}
+          </h1>
+
+          <Badge variant="outline" className="border-white/10 bg-white/10 text-zinc-300">
+            {getSaveStatusDisplay(trip.saveStatus)}
+          </Badge>
+        </div>
 
         <p className="mt-2 text-sm leading-6 text-zinc-400">
-          {timelineItems.length} activities planned · {getSaveStatusDisplay(trip.saveStatus)}
+          {timelineItems.length} activities planned · {currentDay.theme}
         </p>
       </div>
 
