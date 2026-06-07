@@ -30,25 +30,25 @@ function SuggestionCard({
   return (
     <button
       type="button"
-      className="relative min-h-36 overflow-hidden rounded-[1.75rem] border border-white/10 bg-white/[0.07] p-4 text-left shadow-lg"
+      className="relative min-h-36 overflow-hidden rounded-[1.75rem] border border-[var(--vamo-border)] bg-[var(--vamo-card)] p-4 text-left shadow-[var(--vamo-shadow)]"
       onClick={onClick}
     >
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(96,165,250,0.25),transparent_34%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,var(--vamo-primary-soft),transparent_34%)]" />
 
       <div className="relative z-10">
-        <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-2xl bg-white/10 text-blue-300">
+        <div className="mb-4 flex h-10 w-10 items-center justify-center rounded-2xl bg-[var(--vamo-card-strong)] text-[var(--vamo-primary)]">
           {icon}
         </div>
 
-        <p className="text-xs font-black uppercase tracking-[0.18em] text-blue-300">
+        <p className="text-xs font-black uppercase tracking-[0.18em] text-[var(--vamo-primary)]">
           {label}
         </p>
 
-        <h3 className="mt-2 text-lg font-black leading-tight text-white">
+        <h3 className="mt-2 text-lg font-black leading-tight text-[var(--vamo-text)]">
           {title}
         </h3>
 
-        <p className="mt-2 text-sm leading-5 text-zinc-400">{description}</p>
+        <p className="mt-2 text-sm leading-5 text-[var(--vamo-muted)]">{description}</p>
       </div>
     </button>
   );
@@ -66,14 +66,14 @@ export default function VamoSuggestionCards({
   return (
     <section className="space-y-3">
       <div className="flex items-center justify-between">
-        <h2 className="flex items-center gap-2 text-sm font-black uppercase tracking-[0.2em] text-zinc-400">
-          <Sparkles className="h-4 w-4 text-blue-300" />
+        <h2 className="flex items-center gap-2 text-sm font-black uppercase tracking-[0.2em] text-[var(--vamo-muted)]">
+          <Sparkles className="h-4 w-4 text-[var(--vamo-primary)]" />
           Smart suggestions
         </h2>
 
         <button
           type="button"
-          className="text-sm font-semibold text-blue-300"
+          className="text-sm font-semibold text-[var(--vamo-primary)]"
           onClick={onOpenPlanner}
         >
           View all
