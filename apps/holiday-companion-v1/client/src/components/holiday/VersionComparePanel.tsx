@@ -198,7 +198,7 @@ export default function VersionComparePanel({
 
   return (
     <section className="fixed inset-0 z-50">
-      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
+      <div className="absolute inset-0 bg-[var(--vamo-overlay)] backdrop-blur-sm" onClick={onClose} />
 
       <div className="absolute inset-x-3 top-5 mx-auto flex max-h-[90vh] max-w-5xl flex-col overflow-hidden rounded-[2rem] border border-[var(--vamo-border)] bg-[var(--vamo-bg)] text-[var(--vamo-text)] shadow-2xl">
         <div className="flex items-start justify-between gap-3 border-b border-[var(--vamo-border)] bg-[var(--vamo-card)] p-4">
