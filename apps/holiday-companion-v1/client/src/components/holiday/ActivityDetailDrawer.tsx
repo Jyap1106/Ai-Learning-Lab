@@ -57,17 +57,17 @@ function getStatusClassName(status: TodayTimelineItem["status"]) {
 
   switch (tone) {
     case "green":
-      return "border-green-400/30 bg-green-400/15 text-green-100";
+      return "border-[var(--vamo-success)] bg-[var(--vamo-success-soft)] text-[var(--vamo-success-text)]";
     case "red":
-      return "border-red-400/30 bg-red-400/15 text-red-100";
+      return "border-[var(--vamo-danger)] bg-[var(--vamo-danger-soft)] text-[var(--vamo-danger-text)]";
     case "violet":
-      return "border-violet-400/30 bg-violet-400/15 text-violet-100";
+      return "border-[var(--vamo-primary)] bg-[var(--vamo-primary-soft)] text-[var(--vamo-info-text)]";
     case "blue":
-      return "border-blue-400/30 bg-blue-400/15 text-blue-100";
+      return "border-[var(--vamo-info)] bg-[var(--vamo-info-soft)] text-[var(--vamo-info-text)]";
     case "orange":
-      return "border-orange-400/30 bg-orange-400/15 text-orange-100";
+      return "border-[var(--vamo-warning)] bg-[var(--vamo-warning-soft)] text-[var(--vamo-warning-text)]";
     default:
-      return "border-[var(--vamo-border)] bg-[var(--vamo-card-strong)] text-[var(--vamo-muted)]";
+      return "border-[var(--vamo-border)] bg-[var(--vamo-card-strong)] text-[var(--vamo-muted-strong)]";
   }
 }
 
@@ -91,7 +91,10 @@ export default function ActivityDetailDrawer({
 
   return (
     <section className="fixed inset-0 z-50">
-      <div className="absolute inset-0 bg-[var(--vamo-overlay)] backdrop-blur-sm" onClick={onClose} />
+      <div
+        className="absolute inset-0 bg-[var(--vamo-overlay)] backdrop-blur-sm"
+        onClick={onClose}
+      />
 
       <div className="absolute inset-x-3 bottom-3 mx-auto max-w-2xl overflow-hidden rounded-[2rem] border border-[var(--vamo-border)] bg-[var(--vamo-bg)] text-[var(--vamo-text)] shadow-2xl">
         <div className="flex items-start justify-between gap-3 border-b border-[var(--vamo-border)] bg-[var(--vamo-card)] p-4">
@@ -104,17 +107,23 @@ export default function ActivityDetailDrawer({
               )}
 
               {isNext && (
-                <Badge className="bg-[var(--vamo-success)] text-black hover:bg-[var(--vamo-success)]">
+                <Badge className="bg-[var(--vamo-success)] text-[var(--vamo-text-inverse)] hover:bg-[var(--vamo-success)]">
                   Next
                 </Badge>
               )}
 
-              <Badge variant="outline" className="border-[var(--vamo-border)] bg-[var(--vamo-card-strong)] text-[var(--vamo-muted)]">
+              <Badge
+                variant="outline"
+                className="border-[var(--vamo-border)] bg-[var(--vamo-card-strong)] text-[var(--vamo-muted-strong)]"
+              >
                 <Clock3 className="mr-1 h-3 w-3" />
                 {formatTimelineRange(item)}
               </Badge>
 
-              <Badge variant="outline" className="border-[var(--vamo-border)] bg-[var(--vamo-card-strong)] text-[var(--vamo-muted)]">
+              <Badge
+                variant="outline"
+                className="border-[var(--vamo-border)] bg-[var(--vamo-card-strong)] text-[var(--vamo-muted-strong)]"
+              >
                 {getCategoryLabel(item.category)}
               </Badge>
 
@@ -170,9 +179,9 @@ export default function ActivityDetailDrawer({
             </div>
           </div>
 
-          <div className="rounded-3xl border border-blue-400/20 bg-blue-400/10 p-4">
-            <p className="text-sm font-black text-blue-100">Quick decision</p>
-            <p className="mt-1 text-sm leading-6 text-blue-100/80">
+          <div className="rounded-3xl border border-[var(--vamo-info)] bg-[var(--vamo-info-soft)] p-4">
+            <p className="text-sm font-black text-[var(--vamo-info-text)]">Quick decision</p>
+            <p className="mt-1 text-sm leading-6 text-[var(--vamo-info-text)]">
               Use these actions when your timing changes, you are tired, or you want
               Vamo to explain this stop.
             </p>
@@ -232,7 +241,7 @@ export default function ActivityDetailDrawer({
               <Button
                 type="button"
                 variant="outline"
-                className="rounded-full border-green-300/20 bg-green-400/10 text-green-100 hover:bg-green-400/20 hover:text-green-50"
+                className="rounded-full border-[var(--vamo-success)] bg-[var(--vamo-success-soft)] text-[var(--vamo-success-text)] hover:bg-[var(--vamo-success-soft)]"
                 onClick={() => onMarkDone(item)}
               >
                 <CheckCircle2 className="h-4 w-4" />
@@ -244,7 +253,7 @@ export default function ActivityDetailDrawer({
               <Button
                 type="button"
                 variant="outline"
-                className="rounded-full border-red-300/20 bg-red-400/10 text-red-100 hover:bg-red-400/20 hover:text-red-50"
+                className="rounded-full border-[var(--vamo-danger)] bg-[var(--vamo-danger-soft)] text-[var(--vamo-danger-text)] hover:bg-[var(--vamo-danger-soft)]"
                 onClick={() => onSkipItem(item)}
               >
                 <Ban className="h-4 w-4" />
