@@ -47,6 +47,10 @@ function getDefaultTime(period: TimelinePeriod) {
   }
 }
 
+function fieldClassName() {
+  return "w-full rounded-2xl border border-[var(--vamo-border)] bg-[var(--vamo-input)] px-3 py-2 text-sm text-[var(--vamo-text)] outline-none placeholder:text-[var(--vamo-muted)] focus:border-[var(--vamo-primary)]";
+}
+
 export default function AddActivityPanel({
   dayNumber,
   city,
@@ -85,34 +89,43 @@ export default function AddActivityPanel({
   };
 
   return (
-    <section className="rounded-3xl border border-emerald-100 bg-white shadow-lg">
-      <div className="flex items-start justify-between gap-3 border-b border-slate-100 p-4">
+    <section className="rounded-[2rem] border border-[var(--vamo-border)] bg-[var(--vamo-card)] text-[var(--vamo-text)] shadow-[var(--vamo-shadow)]">
+      <div className="flex items-start justify-between gap-3 border-b border-[var(--vamo-border)] p-4">
         <div>
           <div className="mb-2 flex flex-wrap items-center gap-2">
-            <Badge variant="secondary">Add activity</Badge>
-            <Badge variant="outline">Day {dayNumber}</Badge>
+            <Badge className="bg-[var(--vamo-primary)] text-[var(--vamo-primary-text)] hover:bg-[var(--vamo-primary)]">
+              Add activity
+            </Badge>
+            <Badge variant="outline" className="border-[var(--vamo-border)] text-[var(--vamo-muted)]">
+              Day {dayNumber}
+            </Badge>
           </div>
 
-          <h2 className="text-xl font-bold text-slate-950">Add something to today</h2>
-          <p className="mt-1 text-sm text-slate-500">
+          <h2 className="text-xl font-black text-[var(--vamo-text)]">Add something to today</h2>
+          <p className="mt-1 text-sm text-[var(--vamo-muted)]">
             Add a new stop, food break, transport note, or free-time block.
           </p>
         </div>
 
-        <Button type="button" size="sm" variant="outline" onClick={onCancel}>
+        <Button
+          type="button"
+          size="sm"
+          variant="outline"
+          className="rounded-full border-[var(--vamo-border)] bg-[var(--vamo-card-strong)] text-[var(--vamo-text)] hover:bg-[var(--vamo-card)]"
+          onClick={onCancel}
+        >
           <X className="h-4 w-4" />
-          Cancel
         </Button>
       </div>
 
       <div className="space-y-4 p-4">
         <div className="grid gap-4 sm:grid-cols-3">
           <label className="block">
-            <span className="mb-1 text-sm font-semibold text-slate-900">Period</span>
+            <span className="mb-1 text-sm font-black text-[var(--vamo-text)]">Period</span>
             <select
               value={period}
               onChange={(event) => handlePeriodChange(event.target.value as TimelinePeriod)}
-              className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-emerald-400"
+              className={fieldClassName()}
             >
               {periodOptions.map((option) => (
                 <option key={option} value={option}>
@@ -123,24 +136,24 @@ export default function AddActivityPanel({
           </label>
 
           <label className="block">
-            <span className="mb-1 flex items-center gap-2 text-sm font-semibold text-slate-900">
-              <Clock3 className="h-4 w-4 text-emerald-600" />
+            <span className="mb-1 flex items-center gap-2 text-sm font-black text-[var(--vamo-text)]">
+              <Clock3 className="h-4 w-4 text-[var(--vamo-primary)]" />
               Time
             </span>
             <input
               type="time"
               value={time}
               onChange={(event) => setTime(event.target.value)}
-              className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-emerald-400"
+              className={fieldClassName()}
             />
           </label>
 
           <label className="block">
-            <span className="mb-1 text-sm font-semibold text-slate-900">Category</span>
+            <span className="mb-1 text-sm font-black text-[var(--vamo-text)]">Category</span>
             <select
               value={category}
               onChange={(event) => setCategory(event.target.value as TimelineCategory)}
-              className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-emerald-400"
+              className={fieldClassName()}
             >
               {categoryOptions.map((option) => (
                 <option key={option.value} value={option.value}>
@@ -152,65 +165,75 @@ export default function AddActivityPanel({
         </div>
 
         <label className="block">
-          <span className="mb-1 flex items-center gap-2 text-sm font-semibold text-slate-900">
-            <Plus className="h-4 w-4 text-emerald-600" />
+          <span className="mb-1 flex items-center gap-2 text-sm font-black text-[var(--vamo-text)]">
+            <Plus className="h-4 w-4 text-[var(--vamo-primary)]" />
             Activity title
           </span>
           <input
             type="text"
             value={title}
             onChange={(event) => setTitle(event.target.value)}
-            className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-emerald-400"
+            className={fieldClassName()}
             placeholder="Example: Coffee break near the museum"
           />
         </label>
 
         <label className="block">
-          <span className="mb-1 flex items-center gap-2 text-sm font-semibold text-slate-900">
-            <MapPin className="h-4 w-4 text-emerald-600" />
+          <span className="mb-1 flex items-center gap-2 text-sm font-black text-[var(--vamo-text)]">
+            <MapPin className="h-4 w-4 text-[var(--vamo-primary)]" />
             Location
           </span>
           <input
             type="text"
             value={location}
             onChange={(event) => setLocation(event.target.value)}
-            className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-emerald-400"
+            className={fieldClassName()}
             placeholder="City, place, or area"
           />
         </label>
 
         <label className="block">
-          <span className="mb-1 flex items-center gap-2 text-sm font-semibold text-slate-900">
-            <Navigation className="h-4 w-4 text-emerald-600" />
+          <span className="mb-1 flex items-center gap-2 text-sm font-black text-[var(--vamo-text)]">
+            <Navigation className="h-4 w-4 text-[var(--vamo-primary)]" />
             Transport
           </span>
           <textarea
             value={transport}
             onChange={(event) => setTransport(event.target.value)}
             rows={3}
-            className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-emerald-400"
+            className={fieldClassName()}
           />
         </label>
 
         <label className="block">
-          <span className="mb-1 flex items-center gap-2 text-sm font-semibold text-slate-900">
-            <StickyNote className="h-4 w-4 text-emerald-600" />
+          <span className="mb-1 flex items-center gap-2 text-sm font-black text-[var(--vamo-text)]">
+            <StickyNote className="h-4 w-4 text-[var(--vamo-primary)]" />
             Remarks
           </span>
           <textarea
             value={remarks}
             onChange={(event) => setRemarks(event.target.value)}
             rows={3}
-            className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none focus:border-emerald-400"
+            className={fieldClassName()}
           />
         </label>
 
         <div className="flex flex-wrap justify-end gap-2">
-          <Button type="button" variant="outline" onClick={onCancel}>
+          <Button
+            type="button"
+            variant="outline"
+            className="rounded-full border-[var(--vamo-border)] bg-[var(--vamo-card-strong)] text-[var(--vamo-text)] hover:bg-[var(--vamo-card)]"
+            onClick={onCancel}
+          >
             Cancel
           </Button>
 
-          <Button type="button" disabled={!canSave} onClick={handleSave}>
+          <Button
+            type="button"
+            disabled={!canSave}
+            className="rounded-full bg-[var(--vamo-primary)] text-[var(--vamo-primary-text)] hover:opacity-90"
+            onClick={handleSave}
+          >
             <CheckCircle2 className="h-4 w-4" />
             Add activity
           </Button>
