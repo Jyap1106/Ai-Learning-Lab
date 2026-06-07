@@ -9,7 +9,6 @@ import FloatingChatPanel from "@/components/holiday/FloatingChatPanel";
 import GuidedActivityChangePanel, {
   type GuidedReplacementOption,
 } from "@/components/holiday/GuidedActivityChangePanel";
-import Header from "@/components/holiday/Header";
 import ManualActivityEditor, {
   type ManualActivityDraft,
 } from "@/components/holiday/ManualActivityEditor";
@@ -17,10 +16,12 @@ import MoveActivityPanel, {
   type MoveActivityDraft,
 } from "@/components/holiday/MoveActivityPanel";
 import ProposedChangeCard from "@/components/holiday/ProposedChangeCard";
-import TodayCommandCenter from "@/components/holiday/TodayCommandCenter";
-import TodayTimeline from "@/components/holiday/TodayTimeline";
-import TripToolsPanel from "@/components/holiday/TripToolsPanel";
 import VersionComparePanel from "@/components/holiday/VersionComparePanel";
+import VamoAppShell from "@/components/vamo/VamoAppShell";
+import { type VamoTab } from "@/components/vamo/VamoBottomNav";
+import VamoHomeScreen from "@/components/vamo/VamoHomeScreen";
+import VamoPlannerScreen from "@/components/vamo/VamoPlannerScreen";
+import VamoProfileScreen from "@/components/vamo/VamoProfileScreen";
 import austriaData from "@/data/austriaItineraryState.json";
 import {
   createMockAssistantResponse,
@@ -212,6 +213,7 @@ function createInitialTripState(): ItineraryState {
 
   return {
     ...sampleTrip,
+    tripName: sampleTrip.tripName || "Austria Trip",
     saveStatus: "using_sample_data",
     days: cleanDays,
     versionHistory: [createInitialVersionEntry(cleanDays)],
@@ -609,10 +611,9 @@ function createRunningLateResponse(
 
 export default function Home() {
   const [tripData, setTripData] = useState<ItineraryState>(() => loadInitialTripState());
+  const [activeTab, setActiveTab] = useState<VamoTab>("home");
   const [now, setNow] = useState(() => new Date());
   const [isChatOpen, setIsChatOpen] = useState(false);
-  const [isTripToolsOpen, setIsTripToolsOpen] = useState(false);
-  const [isCommandCenterMinimized, setIsCommandCenterMinimized] = useState(false);
   const [selectedActivityItem, setSelectedActivityItem] = useState<TodayTimelineItem | null>(null);
   const [activityChangeItem, setActivityChangeItem] = useState<TodayTimelineItem | null>(null);
   const [manualEditItem, setManualEditItem] = useState<TodayTimelineItem | null>(null);
@@ -624,8 +625,8 @@ export default function Home() {
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>(() => [
     createMessage(
       "assistant",
-      "I loaded your Austria sample trip. Today Mode is ready: check Now, Coming up, the timeline, or ask me what to do next.",
-      "Welcome",
+      "Welcome to Vamo. Your Austria trip is loaded. Ask me about today, your next stop, food, transport, or changes.",
+      "Vamo ready",
     ),
   ]);
 
@@ -680,6 +681,28 @@ export default function Home() {
     return nextVersion;
   };
 
+  const clearActivePanels = () => {
+    setSelectedActivityItem(null);
+    setActivityChangeItem(null);
+    setManualEditItem(null);
+    setMoveActivityItem(null);
+    setIsAddActivityOpen(false);
+    setProposedChange(null);
+  };
+
+  const handleShareComingSoon = () => {
+    setIsChatOpen(true);
+
+    setChatMessages((previousMessages) => [
+      ...previousMessages,
+      createMessage(
+        "assistant",
+        "Sharing is planned for V2. For now, Vamo keeps your Austria itinerary saved locally in this browser.",
+        "Share coming soon",
+      ),
+    ]);
+  };
+
   const handlePromptChipClick = (prompt: string) => {
     if (!currentDay) return;
 
@@ -719,10 +742,7 @@ export default function Home() {
     if (isEditPrompt(prompt)) {
       const change = createMockProposedChange(prompt, currentDay);
 
-      setActivityChangeItem(null);
-      setManualEditItem(null);
-      setMoveActivityItem(null);
-      setIsAddActivityOpen(false);
+      clearActivePanels();
       setProposedChange(change);
       setTripData((previousTrip) => ({
         ...previousTrip,
@@ -1091,7 +1111,7 @@ export default function Home() {
           "Saved locally.",
           "",
           "Today's plan has been updated.",
-          "Version history is available inside Trip tools.",
+          "Version history is available in Profile.",
         ].join("\n"),
         "Change confirmed",
       ),
@@ -1232,8 +1252,7 @@ export default function Home() {
     setSelectedActivityItem(null);
     setIsAddActivityOpen(false);
     setVersionToCompare(null);
-    setIsTripToolsOpen(false);
-    setIsCommandCenterMinimized(false);
+    setActiveTab("home");
     setChatMessages([
       createMessage(
         "assistant",
@@ -1243,67 +1262,70 @@ export default function Home() {
     ]);
   };
 
+  const openAddActivity = () => {
+    clearActivePanels();
+    setIsAddActivityOpen(true);
+  };
+
+  const openEditDay = () => {
+    const itemToEdit = timelineStatus.currentItem ?? timelineStatus.nextItem ?? todayTimelineItems[0];
+
+    if (itemToEdit) {
+      clearActivePanels();
+      setManualEditItem(itemToEdit);
+    }
+  };
+
+  const hasActiveEditor =
+    isAddActivityOpen ||
+    Boolean(manualEditItem) ||
+    Boolean(moveActivityItem) ||
+    Boolean(activityChangeItem) ||
+    Boolean(proposedChange);
+
   return (
-    <main className="min-h-screen bg-slate-50 pb-28">
-      <Header
-        tripName={tripData.tripName}
-        currentDay={tripData.currentDay}
-        saveStatus={tripData.saveStatus}
-        onOpenTools={() => setIsTripToolsOpen(true)}
-      />
+    <VamoAppShell activeTab={activeTab} onTabChange={setActiveTab}>
+      {!currentDay ? (
+        <div className="p-4">
+          <div className="rounded-3xl border border-red-500/20 bg-red-500/10 p-5 text-red-100">
+            Current day could not be found in the itinerary data.
+          </div>
+        </div>
+      ) : (
+        <>
+          {hasActiveEditor && (
+            <div className="space-y-4 px-4 py-4">
+              {isAddActivityOpen && (
+                <AddActivityPanel
+                  dayNumber={currentDay.dayNumber}
+                  city={currentDay.city}
+                  onCancel={() => setIsAddActivityOpen(false)}
+                  onSave={handleAddActivitySave}
+                />
+              )}
 
-      <div className="mx-auto flex max-w-5xl flex-col gap-5 px-4 py-5 sm:px-6">
-        {currentDay ? (
-          <>
-            <TodayCommandCenter
-              tripName={tripData.tripName}
-              day={currentDay}
-              now={now}
-              timelineStatus={timelineStatus}
-              saveStatus={tripData.saveStatus}
-              isMinimized={isCommandCenterMinimized}
-              onToggleMinimized={() =>
-                setIsCommandCenterMinimized((previousValue) => !previousValue)
-              }
-              onPromptClick={handlePromptChipClick}
-              onOpenChat={() => setIsChatOpen(true)}
-              onOpenTools={() => setIsTripToolsOpen(true)}
-              onChangeItem={(item) => handleStartTimelineChange(item, "replace")}
-              onSkipItem={(item) => handleStartTimelineChange(item, "skip")}
-            />
+              {manualEditItem && (
+                <ManualActivityEditor
+                  item={manualEditItem}
+                  onCancel={() => setManualEditItem(null)}
+                  onSave={handleManualActivitySave}
+                />
+              )}
 
-            {isAddActivityOpen && (
-              <AddActivityPanel
-                dayNumber={currentDay.dayNumber}
-                city={currentDay.city}
-                onCancel={() => setIsAddActivityOpen(false)}
-                onSave={handleAddActivitySave}
-              />
-            )}
+              {moveActivityItem && (
+                <MoveActivityPanel
+                  item={moveActivityItem}
+                  availableDays={tripData.days.map((day) => ({
+                    dayNumber: day.dayNumber,
+                    city: day.city,
+                    theme: day.theme,
+                  }))}
+                  onCancel={() => setMoveActivityItem(null)}
+                  onSave={handleMoveActivitySave}
+                />
+              )}
 
-            {manualEditItem && (
-              <ManualActivityEditor
-                item={manualEditItem}
-                onCancel={() => setManualEditItem(null)}
-                onSave={handleManualActivitySave}
-              />
-            )}
-
-            {moveActivityItem && (
-              <MoveActivityPanel
-                item={moveActivityItem}
-                availableDays={tripData.days.map((day) => ({
-                  dayNumber: day.dayNumber,
-                  city: day.city,
-                  theme: day.theme,
-                }))}
-                onCancel={() => setMoveActivityItem(null)}
-                onSave={handleMoveActivitySave}
-              />
-            )}
-
-            {activityChangeItem && (
-              <div className="scroll-mt-28">
+              {activityChangeItem && (
                 <GuidedActivityChangePanel
                   item={activityChangeItem}
                   day={currentDay}
@@ -1311,97 +1333,99 @@ export default function Home() {
                   onKeepFreeTime={handleGuidedKeepFreeTime}
                   onSelectReplacement={handleGuidedReplacement}
                 />
-              </div>
-            )}
+              )}
 
-            {proposedChange && (
-              <div className="scroll-mt-28">
+              {proposedChange && (
                 <ProposedChangeCard
                   proposedChange={proposedChange}
                   onSelectOption={handleSelectProposedOption}
                   onConfirm={handleConfirmChange}
                   onReject={handleRejectChange}
                 />
-              </div>
-            )}
+              )}
+            </div>
+          )}
 
-            <TodayTimeline
+          {!hasActiveEditor && activeTab === "home" && (
+            <VamoHomeScreen
+              trip={tripData}
+              currentDay={currentDay}
+              now={now}
               timelineItems={todayTimelineItems}
-              currentItemId={timelineStatus.currentItem?.id}
-              nextItemId={timelineStatus.nextItem?.id}
-              onAddActivity={() => {
-                setSelectedActivityItem(null);
-                setActivityChangeItem(null);
-                setManualEditItem(null);
-                setMoveActivityItem(null);
-                setProposedChange(null);
-                setIsAddActivityOpen(true);
-              }}
+              timelineStatus={timelineStatus}
+              onOpenChat={() => setIsChatOpen(true)}
+              onOpenPlanner={() => setActiveTab("planner")}
+              onShareComingSoon={handleShareComingSoon}
+              onEditDay={openEditDay}
               onViewItemDetails={setSelectedActivityItem}
               onAskAboutItem={handleAskAboutItem}
               onChangeItem={(item) => handleStartTimelineChange(item, "replace")}
               onSkipItem={(item) => handleStartTimelineChange(item, "skip")}
             />
-          </>
-        ) : (
-          <div className="rounded-2xl border border-red-100 bg-white p-6 text-red-700 shadow-sm">
-            Current day could not be found in the itinerary data.
-          </div>
-        )}
-      </div>
+          )}
 
-      <ActivityDetailDrawer
-        item={selectedActivityItem}
-        isOpen={Boolean(selectedActivityItem)}
-        isCurrent={selectedActivityItem?.id === timelineStatus.currentItem?.id}
-        isNext={selectedActivityItem?.id === timelineStatus.nextItem?.id}
-        onClose={() => setSelectedActivityItem(null)}
-        onAskAboutItem={handleAskAboutItem}
-        onReplaceItem={(item) => handleStartTimelineChange(item, "replace")}
-        onKeepFreeTime={(item) => handleStartTimelineChange(item, "skip")}
-        onEditItem={(item) => {
-          setSelectedActivityItem(null);
-          setManualEditItem(item);
-        }}
-        onMoveItem={(item) => {
-          setSelectedActivityItem(null);
-          setMoveActivityItem(item);
-        }}
-        onMarkDone={handleMarkActivityDone}
-        onSkipItem={(item) => handleStartTimelineChange(item, "skip")}
-      />
+          {!hasActiveEditor && activeTab === "planner" && (
+            <VamoPlannerScreen
+              trip={tripData}
+              onAddActivity={openAddActivity}
+              onViewItemDetails={setSelectedActivityItem}
+              onAskAboutItem={handleAskAboutItem}
+              onChangeItem={(item) => handleStartTimelineChange(item, "replace")}
+              onSkipItem={(item) => handleStartTimelineChange(item, "skip")}
+              onShareComingSoon={handleShareComingSoon}
+            />
+          )}
 
-      <FloatingChatPanel
-        isOpen={isChatOpen}
-        messages={chatMessages}
-        prompts={TODAY_MODE_PROMPTS}
-        onPromptClick={handlePromptChipClick}
-        onOpen={() => setIsChatOpen(true)}
-        onClose={() => setIsChatOpen(false)}
-      />
+          {!hasActiveEditor && activeTab === "profile" && (
+            <VamoProfileScreen
+              trip={tripData}
+              versionHistory={tripData.versionHistory}
+              onResetTrip={handleResetTrip}
+              onRestoreVersion={handleRestoreVersion}
+              onCompareVersion={setVersionToCompare}
+              onShareComingSoon={handleShareComingSoon}
+            />
+          )}
 
-      <TripToolsPanel
-        isOpen={isTripToolsOpen}
-        trip={tripData}
-        currentDay={currentDay}
-        tomorrowDay={tomorrowDay}
-        versionHistory={tripData.versionHistory}
-        onClose={() => setIsTripToolsOpen(false)}
-        onResetTrip={handleResetTrip}
-        onRestoreVersion={handleRestoreVersion}
-        onCompareVersion={(version) => {
-          setVersionToCompare(version);
-          setIsTripToolsOpen(false);
-        }}
-      />
+          <ActivityDetailDrawer
+            item={selectedActivityItem}
+            isOpen={Boolean(selectedActivityItem)}
+            isCurrent={selectedActivityItem?.id === timelineStatus.currentItem?.id}
+            isNext={selectedActivityItem?.id === timelineStatus.nextItem?.id}
+            onClose={() => setSelectedActivityItem(null)}
+            onAskAboutItem={handleAskAboutItem}
+            onReplaceItem={(item) => handleStartTimelineChange(item, "replace")}
+            onKeepFreeTime={(item) => handleStartTimelineChange(item, "skip")}
+            onEditItem={(item) => {
+              setSelectedActivityItem(null);
+              setManualEditItem(item);
+            }}
+            onMoveItem={(item) => {
+              setSelectedActivityItem(null);
+              setMoveActivityItem(item);
+            }}
+            onMarkDone={handleMarkActivityDone}
+            onSkipItem={(item) => handleStartTimelineChange(item, "skip")}
+          />
 
-      <VersionComparePanel
-        isOpen={Boolean(versionToCompare)}
-        version={versionToCompare}
-        currentDays={tripData.days}
-        onClose={() => setVersionToCompare(null)}
-        onRestoreVersion={handleRestoreVersion}
-      />
-    </main>
+          <FloatingChatPanel
+            isOpen={isChatOpen}
+            messages={chatMessages}
+            prompts={TODAY_MODE_PROMPTS}
+            onPromptClick={handlePromptChipClick}
+            onOpen={() => setIsChatOpen(true)}
+            onClose={() => setIsChatOpen(false)}
+          />
+
+          <VersionComparePanel
+            isOpen={Boolean(versionToCompare)}
+            version={versionToCompare}
+            currentDays={tripData.days}
+            onClose={() => setVersionToCompare(null)}
+            onRestoreVersion={handleRestoreVersion}
+          />
+        </>
+      )}
+    </VamoAppShell>
   );
 }
