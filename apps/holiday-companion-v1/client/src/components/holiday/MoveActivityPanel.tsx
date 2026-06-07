@@ -75,7 +75,10 @@ export default function MoveActivityPanel({
               Move activity
             </Badge>
 
-            <Badge variant="outline" className="border-[var(--vamo-border)] text-[var(--vamo-muted)]">
+            <Badge
+              variant="outline"
+              className="border-[var(--vamo-border)] text-[var(--vamo-muted)]"
+            >
               <Clock3 className="mr-1 h-3 w-3" />
               Current: {formatTimelineTime(item.time)}
             </Badge>
@@ -152,19 +155,19 @@ export default function MoveActivityPanel({
           </label>
         </div>
 
-        <div className="rounded-3xl border border-blue-400/20 bg-blue-400/10 p-4">
-          <p className="mb-1 flex items-center gap-2 text-sm font-black text-blue-100">
+        <div className="rounded-3xl border border-[var(--vamo-info)] bg-[var(--vamo-info-soft)] p-4">
+          <p className="mb-1 flex items-center gap-2 text-sm font-black text-[var(--vamo-info-text)]">
             <ArrowRightLeft className="h-4 w-4" />
             Move preview
           </p>
-          <p className="text-sm leading-6 text-blue-100/80">
+          <p className="text-sm leading-6 text-[var(--vamo-info-text)]">
             {item.title} will move from Day {item.dayNumber} / {item.period} /{" "}
             {formatTimelineTime(item.time)} to Day {targetDayNumber} / {targetPeriod} /{" "}
             {formatTimelineTime(targetTime)}.
           </p>
 
           {selectedDay?.theme && (
-            <p className="mt-2 text-xs leading-5 text-blue-100/70">
+            <p className="mt-2 text-xs leading-5 text-[var(--vamo-info-text)]">
               Target day theme: {selectedDay.theme}
             </p>
           )}
