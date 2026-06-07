@@ -343,7 +343,7 @@ export default function VamoDataRecoveryPanel({
         <Button
           type="button"
           variant="outline"
-          className="rounded-full border-red-300/30 bg-red-500/10 text-red-100 hover:bg-red-500/20 hover:text-red-50"
+          className="rounded-full border-[var(--vamo-danger)] bg-[var(--vamo-danger-soft)] text-[var(--vamo-danger-text)] hover:bg-[var(--vamo-danger-soft)]"
           onClick={onResetTrip}
         >
           <RotateCcw className="h-4 w-4" />
