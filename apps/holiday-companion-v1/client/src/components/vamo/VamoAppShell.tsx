@@ -20,10 +20,11 @@ export default function VamoAppShell({
   return (
     <main
       style={getVamoThemeStyle(theme)}
+      data-vamo-theme={theme}
       className="min-h-screen bg-[var(--vamo-bg)] text-[var(--vamo-text)]"
     >
       <div className="mx-auto min-h-screen max-w-md overflow-hidden bg-[var(--vamo-bg)] pb-24 shadow-2xl">
-        <div className="min-h-screen bg-[radial-gradient(circle_at_top_left,rgba(148,163,184,0.16),transparent_34%),radial-gradient(circle_at_top_right,rgba(59,130,246,0.14),transparent_28%),var(--vamo-bg-soft)]">
+        <div className="min-h-screen bg-[radial-gradient(circle_at_top_left,rgba(148,163,184,0.13),transparent_34%),radial-gradient(circle_at_top_right,rgba(59,130,246,0.12),transparent_28%),var(--vamo-bg-soft)]">
           {children}
         </div>
       </div>
