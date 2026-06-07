@@ -1,3 +1,8 @@
+import {
+  getActivityStatusFromTitle,
+  type ActivityStatus,
+} from "@/lib/activityStatus";
+
 export interface TimelineSourceDay {
   dayNumber: number;
   city: string;
@@ -27,6 +32,7 @@ export interface TodayTimelineItem {
   transport: string;
   remarks: string;
   category: TimelineCategory;
+  status: ActivityStatus;
   sourceIndex: number;
 }
 
@@ -152,6 +158,7 @@ function buildPeriodItems(
       transport: day.transport[index] ?? day.transport[0] ?? "Verify route live",
       remarks: day.notes[index] ?? day.notes[0] ?? "Verify timing, tickets, and opening hours live",
       category,
+      status: getActivityStatusFromTitle(safeTitle),
       sourceIndex: index,
     };
   });
