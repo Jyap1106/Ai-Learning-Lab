@@ -4,7 +4,6 @@ import {
   Database,
   GitCompareArrows,
   History,
-  RotateCcw,
   Settings,
   Shield,
   Sparkles,
@@ -15,6 +14,9 @@ import {
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { VAMO_THEME_OPTIONS } from "@/lib/vamoTheme";
+
+import VamoDataRecoveryPanel from "./VamoDataRecoveryPanel";
 
 interface DaySnapshot {
   dayNumber: number;
@@ -217,17 +219,28 @@ export default function VamoProfileScreen({
 
       <div className="mb-6">
         <h2 className="mb-3 text-sm font-black uppercase tracking-[0.2em] text-zinc-500">
+          Appearance
+        </h2>
+
+        <div className="space-y-3">
+          {VAMO_THEME_OPTIONS.map((themeOption) => (
+            <SettingRow
+              key={themeOption.id}
+              icon={<Zap className="h-5 w-5" />}
+              title={themeOption.label}
+              description={themeOption.description}
+              rightLabel={themeOption.status === "active" ? "On" : "Soon"}
+            />
+          ))}
+        </div>
+      </div>
+
+      <div className="mb-6">
+        <h2 className="mb-3 text-sm font-black uppercase tracking-[0.2em] text-zinc-500">
           System & privacy
         </h2>
 
         <div className="space-y-3">
-          <SettingRow
-            icon={<Zap className="h-5 w-5" />}
-            title="Dark mode"
-            description="Default Vamo theme for V1. Light mode is planned for early V2."
-            rightLabel="On"
-          />
-
           <SettingRow
             icon={<Shield className="h-5 w-5" />}
             title="External suggestions"
@@ -250,6 +263,10 @@ export default function VamoProfileScreen({
             onClick={onShareComingSoon}
           />
         </div>
+      </div>
+
+      <div className="mb-6">
+        <VamoDataRecoveryPanel trip={trip} onResetTrip={onResetTrip} />
       </div>
 
       <div className="mb-6">
@@ -319,24 +336,6 @@ export default function VamoProfileScreen({
             );
           })}
         </div>
-      </div>
-
-      <div className="rounded-[2rem] border border-red-500/20 bg-red-500/10 p-4">
-        <p className="mb-2 text-sm font-black text-red-200">Local prototype controls</p>
-
-        <p className="mb-4 text-sm leading-6 text-red-100/80">
-          Reset clears local saved changes in this browser and reloads the Austria sample trip.
-        </p>
-
-        <Button
-          type="button"
-          variant="outline"
-          className="w-full rounded-full border-red-300/30 bg-red-500/10 text-red-100 hover:bg-red-500/20 hover:text-red-50"
-          onClick={onResetTrip}
-        >
-          <RotateCcw className="h-4 w-4" />
-          Reset sample trip
-        </Button>
       </div>
     </section>
   );
