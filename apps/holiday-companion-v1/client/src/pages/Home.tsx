@@ -1361,6 +1361,7 @@ export default function Home() {
               onAskAboutItem={handleAskAboutItem}
               onChangeItem={(item) => handleStartTimelineChange(item, "replace")}
               onSkipItem={(item) => handleStartTimelineChange(item, "skip")}
+              onPromptClick={handlePromptChipClick}
             />
           )}
 
