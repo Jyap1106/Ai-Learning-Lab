@@ -122,7 +122,7 @@ function SectionCompare({
           variant="outline"
           className={
             isDifferent
-              ? "border-blue-400/30 bg-blue-400/10 text-blue-200"
+              ? "border-[var(--vamo-info)] bg-[var(--vamo-info-soft)] text-[var(--vamo-info-text)]"
               : "border-[var(--vamo-border)] text-[var(--vamo-muted)]"
           }
         >
@@ -141,7 +141,7 @@ function SectionCompare({
               {versionItems.map((item, index) => (
                 <li
                   key={`${item}-${index}`}
-                  className="rounded-2xl border border-blue-400/20 bg-blue-400/10 p-3 text-sm leading-6 text-blue-100"
+                  className="rounded-2xl border border-[var(--vamo-info)] bg-[var(--vamo-info-soft)] p-3 text-sm leading-6 text-[var(--vamo-info-text)]"
                 >
                   {item}
                 </li>
@@ -198,7 +198,10 @@ export default function VersionComparePanel({
 
   return (
     <section className="fixed inset-0 z-50">
-      <div className="absolute inset-0 bg-[var(--vamo-overlay)] backdrop-blur-sm" onClick={onClose} />
+      <div
+        className="absolute inset-0 bg-[var(--vamo-overlay)] backdrop-blur-sm"
+        onClick={onClose}
+      />
 
       <div className="absolute inset-x-3 top-5 mx-auto flex max-h-[90vh] max-w-5xl flex-col overflow-hidden rounded-[2rem] border border-[var(--vamo-border)] bg-[var(--vamo-bg)] text-[var(--vamo-text)] shadow-2xl">
         <div className="flex items-start justify-between gap-3 border-b border-[var(--vamo-border)] bg-[var(--vamo-card)] p-4">
@@ -208,11 +211,17 @@ export default function VersionComparePanel({
                 Version compare
               </Badge>
 
-              <Badge variant="outline" className="border-[var(--vamo-border)] text-[var(--vamo-muted)]">
+              <Badge
+                variant="outline"
+                className="border-[var(--vamo-border)] text-[var(--vamo-muted)]"
+              >
                 v{version.version}
               </Badge>
 
-              <Badge variant="outline" className="border-[var(--vamo-border)] text-[var(--vamo-muted)]">
+              <Badge
+                variant="outline"
+                className="border-[var(--vamo-border)] text-[var(--vamo-muted)]"
+              >
                 {formatVersionTime(version.createdAt)}
               </Badge>
             </div>
@@ -240,20 +249,20 @@ export default function VersionComparePanel({
 
         <div className="overflow-y-auto p-4">
           {!canCompare ? (
-            <div className="rounded-3xl border border-orange-400/20 bg-orange-400/10 p-4">
-              <p className="font-black text-orange-100">Comparison unavailable</p>
-              <p className="mt-1 text-sm leading-6 text-orange-100/80">
+            <div className="rounded-3xl border border-[var(--vamo-warning)] bg-[var(--vamo-warning-soft)] p-4">
+              <p className="font-black text-[var(--vamo-warning-text)]">Comparison unavailable</p>
+              <p className="mt-1 text-sm leading-6 text-[var(--vamo-warning-text)]">
                 This version does not have enough snapshot data to compare against
                 the current itinerary.
               </p>
             </div>
           ) : (
             <div className="space-y-4">
-              <div className="rounded-3xl border border-blue-400/20 bg-blue-400/10 p-4">
-                <p className="text-sm font-black text-blue-100">
+              <div className="rounded-3xl border border-[var(--vamo-info)] bg-[var(--vamo-info-soft)] p-4">
+                <p className="text-sm font-black text-[var(--vamo-info-text)]">
                   Comparing Day {versionDay?.dayNumber} — {versionDay?.city}
                 </p>
-                <p className="mt-1 text-sm leading-6 text-blue-100/80">
+                <p className="mt-1 text-sm leading-6 text-[var(--vamo-info-text)]">
                   Left side shows the selected version. Right side shows your
                   current itinerary.
                 </p>
