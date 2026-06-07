@@ -34,7 +34,7 @@ export default function VamoBottomNav({
   onTabChange,
 }: VamoBottomNavProps) {
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-white/10 bg-black/90 backdrop-blur">
+    <nav className="fixed inset-x-0 bottom-0 z-40 border-t border-[var(--vamo-border)] bg-[var(--vamo-bottom-nav)] backdrop-blur">
       <div className="mx-auto grid max-w-md grid-cols-3 px-4 py-2">
         {navItems.map((item) => {
           const Icon = item.icon;
@@ -46,8 +46,8 @@ export default function VamoBottomNav({
               type="button"
               className={`flex flex-col items-center justify-center gap-1 rounded-2xl px-3 py-2 text-xs font-semibold transition ${
                 isActive
-                  ? "bg-white text-black"
-                  : "text-zinc-400 hover:bg-white/10 hover:text-white"
+                  ? "bg-[var(--vamo-primary)] text-[var(--vamo-primary-text)]"
+                  : "text-[var(--vamo-muted)] hover:bg-[var(--vamo-card)] hover:text-[var(--vamo-text)]"
               }`}
               onClick={() => onTabChange(item.id)}
             >
