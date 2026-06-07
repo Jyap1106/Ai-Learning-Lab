@@ -1,7 +1,27 @@
+import { CheckCircle2, GitBranch, RotateCcw, X } from "lucide-react";
+
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CheckCircle2, GitBranch, RotateCcw, XCircle } from "lucide-react";
-import type { ProposedChange } from "@/lib/mockResponses";
+
+interface ProposedChangeOption {
+  id: string;
+  label: string;
+  description: string;
+}
+
+interface ProposedChange {
+  id: string;
+  type: string;
+  title: string;
+  affectedDay: number;
+  affectedCity: string;
+  currentItem?: string;
+  requestedChange: string;
+  impact: string;
+  selectedOptionId: string;
+  status: string;
+  options: ProposedChangeOption[];
+}
 
 interface ProposedChangeCardProps {
   proposedChange: ProposedChange;
@@ -17,144 +37,125 @@ export default function ProposedChangeCard({
   onReject,
 }: ProposedChangeCardProps) {
   const selectedOption = proposedChange.options.find(
-    (option) => option.id === proposedChange.selectedOptionId
+    (option) => option.id === proposedChange.selectedOptionId,
   );
 
   return (
-    <Card className="border-emerald-100 bg-white/95 shadow-xl shadow-emerald-950/5 backdrop-blur">
-      <CardHeader className="space-y-2">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500 to-blue-600 text-white shadow-md">
-            <GitBranch className="h-5 w-5" />
-          </div>
-          <div>
-            <CardTitle className="text-xl text-slate-950">
-              Proposed itinerary change
-            </CardTitle>
-            <p className="text-sm text-slate-500">
-              Review before saving. Nothing changes until you confirm.
-            </p>
-          </div>
+    <section className="rounded-[2rem] border border-[var(--vamo-border)] bg-[var(--vamo-card)] text-[var(--vamo-text)] shadow-2xl">
+      <div className="border-b border-[var(--vamo-border)] p-4">
+        <div className="mb-3 flex flex-wrap items-center gap-2">
+          <Badge className="bg-[var(--vamo-primary)] text-[var(--vamo-primary-text)] hover:bg-[var(--vamo-primary)]">
+            Proposed change
+          </Badge>
+
+          <Badge variant="outline" className="border-[var(--vamo-border)] text-[var(--vamo-muted)]">
+            Day {proposedChange.affectedDay}
+          </Badge>
+
+          <Badge variant="outline" className="border-[var(--vamo-border)] text-[var(--vamo-muted)]">
+            {proposedChange.affectedCity}
+          </Badge>
         </div>
-      </CardHeader>
 
-      <CardContent className="space-y-5">
-        <div className="grid gap-3 md:grid-cols-2">
-          <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
-              Affected day
-            </p>
-            <p className="mt-2 font-semibold text-slate-950">
-              Day {proposedChange.affectedDay} —{" "}
-              {proposedChange.affectedCity}
-            </p>
-          </div>
+        <h2 className="text-xl font-black text-[var(--vamo-text)]">{proposedChange.title}</h2>
 
-          <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+        <p className="mt-2 text-sm leading-6 text-[var(--vamo-muted)]">
+          {proposedChange.requestedChange}
+        </p>
+      </div>
+
+      <div className="space-y-4 p-4">
+        {proposedChange.currentItem && (
+          <div className="rounded-3xl border border-[var(--vamo-border)] bg-[var(--vamo-card-strong)] p-4">
+            <p className="text-xs font-black uppercase tracking-[0.18em] text-[var(--vamo-muted)]">
               Current item
             </p>
-            <p className="mt-2 font-semibold text-slate-950">
+            <p className="mt-2 font-black text-[var(--vamo-text)]">
               {proposedChange.currentItem}
             </p>
           </div>
+        )}
+
+        <div className="rounded-3xl border border-blue-400/20 bg-blue-400/10 p-4">
+          <p className="text-xs font-black uppercase tracking-[0.18em] text-blue-200">
+            Impact
+          </p>
+          <p className="mt-2 text-sm leading-6 text-blue-100">
+            {proposedChange.impact}
+          </p>
         </div>
 
-        <div className="rounded-2xl border border-blue-100 bg-blue-50 p-4">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-blue-700">
-            Request
-          </p>
-          <p className="mt-2 text-sm leading-6 text-blue-950">
-            {proposedChange.requestedChange}
-          </p>
-        </div>
-
-        <div className="space-y-3">
-          <p className="text-sm font-semibold text-slate-950">
+        <div>
+          <p className="mb-3 flex items-center gap-2 text-sm font-black uppercase tracking-[0.18em] text-[var(--vamo-muted)]">
+            <GitBranch className="h-4 w-4" />
             Choose an option
           </p>
 
-          <div className="grid gap-3">
+          <div className="space-y-3">
             {proposedChange.options.map((option) => {
-              const isSelected =
-                option.id === proposedChange.selectedOptionId;
+              const isSelected = option.id === proposedChange.selectedOptionId;
 
               return (
                 <button
                   key={option.id}
                   type="button"
-                  onClick={() => onSelectOption(option.id)}
-                  className={`rounded-2xl border p-4 text-left transition ${
+                  className={`w-full rounded-3xl border p-4 text-left transition ${
                     isSelected
-                      ? "border-emerald-300 bg-emerald-50 shadow-sm"
-                      : "border-slate-100 bg-white hover:border-blue-200 hover:bg-blue-50"
+                      ? "border-[var(--vamo-primary)] bg-[var(--vamo-card-strong)]"
+                      : "border-[var(--vamo-border)] bg-[var(--vamo-card)]"
                   }`}
+                  onClick={() => onSelectOption(option.id)}
                 >
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <p className="font-semibold text-slate-950">
-                        {option.label}
-                      </p>
-                      <p className="mt-1 text-sm leading-6 text-slate-600">
-                        {option.description}
-                      </p>
-                    </div>
+                  <div className="mb-1 flex items-center justify-between gap-3">
+                    <p className="font-black text-[var(--vamo-text)]">{option.label}</p>
 
                     {isSelected && (
-                      <CheckCircle2 className="mt-1 h-5 w-5 shrink-0 text-emerald-600" />
+                      <CheckCircle2 className="h-5 w-5 text-[var(--vamo-primary)]" />
                     )}
                   </div>
+
+                  <p className="text-sm leading-6 text-[var(--vamo-muted)]">
+                    {option.description}
+                  </p>
                 </button>
               );
             })}
           </div>
         </div>
 
-        <div className="rounded-2xl border border-amber-100 bg-amber-50 p-4">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-amber-700">
-            Impact
-          </p>
-          <p className="mt-2 text-sm leading-6 text-amber-950">
-            {proposedChange.impact}
-          </p>
-          {selectedOption && (
-            <p className="mt-3 text-sm font-medium text-amber-950">
-              Selected: {selectedOption.label}
+        {selectedOption && (
+          <div className="rounded-3xl border border-emerald-400/20 bg-emerald-400/10 p-4">
+            <p className="text-xs font-black uppercase tracking-[0.18em] text-emerald-200">
+              Selected
             </p>
-          )}
-        </div>
+            <p className="mt-2 font-black text-emerald-100">{selectedOption.label}</p>
+            <p className="mt-1 text-sm leading-6 text-emerald-100/80">
+              Nothing changes until you confirm.
+            </p>
+          </div>
+        )}
 
-        <div className="flex flex-col gap-3 sm:flex-row">
-          <Button
-            type="button"
-            className="rounded-full bg-emerald-600 px-5 text-white hover:bg-emerald-700"
-            onClick={onConfirm}
-          >
-            <CheckCircle2 className="mr-2 h-4 w-4" />
-            Confirm change
-          </Button>
-
+        <div className="grid gap-2 sm:grid-cols-2">
           <Button
             type="button"
             variant="outline"
-            className="rounded-full border-slate-200 px-5"
+            className="rounded-full border-[var(--vamo-border)] bg-[var(--vamo-card-strong)] text-[var(--vamo-text)] hover:bg-[var(--vamo-card)]"
             onClick={onReject}
           >
-            <XCircle className="mr-2 h-4 w-4" />
+            <X className="h-4 w-4" />
             Reject
           </Button>
 
           <Button
             type="button"
-            variant="ghost"
-            className="rounded-full px-5 text-slate-500"
-            disabled
+            className="rounded-full bg-[var(--vamo-primary)] text-[var(--vamo-primary-text)] hover:opacity-90"
+            onClick={onConfirm}
           >
-            <RotateCcw className="mr-2 h-4 w-4" />
-            Revise later
+            <RotateCcw className="h-4 w-4" />
+            Confirm change
           </Button>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </section>
   );
 }
