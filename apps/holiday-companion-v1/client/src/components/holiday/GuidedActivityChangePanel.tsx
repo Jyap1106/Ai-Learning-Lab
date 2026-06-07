@@ -159,7 +159,10 @@ export default function GuidedActivityChangePanel({
                 Change activity
               </Badge>
 
-              <Badge variant="outline" className="border-[var(--vamo-border)] text-[var(--vamo-muted)]">
+              <Badge
+                variant="outline"
+                className="border-[var(--vamo-border)] text-[var(--vamo-muted)]"
+              >
                 <Clock3 className="mr-1 h-3 w-3" />
                 {formatTimelineTime(item.time)}
               </Badge>
@@ -209,14 +212,14 @@ export default function GuidedActivityChangePanel({
         <Button
           type="button"
           variant="outline"
-          className="h-auto w-full justify-start rounded-3xl border-orange-400/30 bg-orange-400/10 p-4 text-left text-orange-100 hover:bg-orange-400/20"
+          className="h-auto w-full justify-start rounded-3xl border border-[var(--vamo-warning)] bg-[var(--vamo-warning-soft)] p-4 text-left text-[var(--vamo-warning-text)] hover:bg-[var(--vamo-warning-soft)]"
           onClick={() => onKeepFreeTime(item)}
         >
           <Coffee className="h-5 w-5 shrink-0" />
 
           <span>
             <span className="block font-black">Keep this time free</span>
-            <span className="block text-xs font-normal text-orange-100/80">
+            <span className="block text-xs font-normal text-[var(--vamo-warning-text)]">
               Remove this activity and leave the block relaxed.
             </span>
           </span>
@@ -270,7 +273,10 @@ export default function GuidedActivityChangePanel({
                     <Badge className="bg-[var(--vamo-primary)] text-[var(--vamo-primary-text)] hover:bg-[var(--vamo-primary)]">
                       {option.category}
                     </Badge>
-                    <Badge variant="outline" className="border-[var(--vamo-border)] text-[var(--vamo-muted)]">
+                    <Badge
+                      variant="outline"
+                      className="border-[var(--vamo-border)] text-[var(--vamo-muted)]"
+                    >
                       Review before saving
                     </Badge>
                   </div>
