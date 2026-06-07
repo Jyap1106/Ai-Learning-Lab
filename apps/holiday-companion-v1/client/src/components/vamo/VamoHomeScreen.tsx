@@ -1,5 +1,4 @@
 import {
-  CalendarDays,
   Clock3,
   Edit3,
   MapPin,
@@ -14,10 +13,14 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   formatDeviceTime,
+  formatDuration,
+  formatTimelineRange,
   formatTimelineTime,
   type TimelineStatus,
   type TodayTimelineItem,
 } from "@/lib/todayTimeline";
+
+import VamoSuggestionCards from "./VamoSuggestionCards";
 
 interface Day {
   dayNumber: number;
@@ -55,6 +58,7 @@ interface VamoHomeScreenProps {
   onAskAboutItem: (item: TodayTimelineItem) => void;
   onChangeItem: (item: TodayTimelineItem) => void;
   onSkipItem: (item: TodayTimelineItem) => void;
+  onPromptClick: (prompt: string) => void;
 }
 
 function getSaveStatusDisplay(status: string) {
@@ -93,24 +97,10 @@ function getCurrentLocation(timelineStatus: TimelineStatus, fallbackCity: string
 function getNextItems(timelineItems: TodayTimelineItem[], timelineStatus: TimelineStatus) {
   if (timelineStatus.nextItem) {
     const nextIndex = timelineItems.findIndex((item) => item.id === timelineStatus.nextItem?.id);
-    return timelineItems.slice(Math.max(nextIndex, 0), Math.max(nextIndex, 0) + 3);
+    return timelineItems.slice(Math.max(nextIndex, 0), Math.max(nextIndex, 0) + 4);
   }
 
-  return timelineItems.slice(0, 3);
-}
-
-function getProgressPercent(timelineItems: TodayTimelineItem[], timelineStatus: TimelineStatus) {
-  if (timelineItems.length === 0) return 0;
-
-  const activeItem = timelineStatus.currentItem ?? timelineStatus.nextItem;
-
-  if (!activeItem) return 100;
-
-  const activeIndex = timelineItems.findIndex((item) => item.id === activeItem.id);
-
-  if (activeIndex < 0) return 0;
-
-  return Math.round(((activeIndex + 1) / timelineItems.length) * 100);
+  return timelineItems.slice(0, 4);
 }
 
 function GradientImagePlaceholder({
@@ -125,10 +115,12 @@ function GradientImagePlaceholder({
       className={`relative overflow-hidden rounded-3xl bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.38),transparent_26%),linear-gradient(135deg,#60a5fa,#7c3aed,#f97316)] ${className}`}
     >
       <div className="absolute inset-0 bg-black/25" />
+
       <div className="absolute bottom-3 left-3 right-3">
         <p className="text-xs font-semibold uppercase tracking-[0.22em] text-white/70">
           Vamo visual
         </p>
+
         <p className="mt-1 text-lg font-bold text-white">{label}</p>
       </div>
     </div>
@@ -149,10 +141,11 @@ export default function VamoHomeScreen({
   onAskAboutItem,
   onChangeItem,
   onSkipItem,
+  onPromptClick,
 }: VamoHomeScreenProps) {
   const activeItem = timelineStatus.currentItem ?? timelineStatus.nextItem;
   const nextItems = getNextItems(timelineItems, timelineStatus);
-  const progressPercent = getProgressPercent(timelineItems, timelineStatus);
+  const progressPercent = timelineStatus.progressPercent;
 
   return (
     <section className="min-h-screen px-4 pb-8 pt-4">
@@ -177,6 +170,7 @@ export default function VamoHomeScreen({
             <Clock3 className="h-3.5 w-3.5 text-blue-300" />
             Current time
           </p>
+
           <p className="text-2xl font-black tracking-tight text-white">
             {formatDeviceTime(now)}
           </p>
@@ -186,6 +180,7 @@ export default function VamoHomeScreen({
           <p className="mb-1 text-xs font-semibold uppercase tracking-[0.18em] text-zinc-400">
             {currentDay.city}
           </p>
+
           <p className="text-2xl font-black tracking-tight text-white">24°C</p>
           <p className="text-xs text-zinc-400">Trip mode</p>
         </div>
@@ -221,6 +216,12 @@ export default function VamoHomeScreen({
               <Badge variant="outline" className="border-white/20 bg-black/40 text-white">
                 {progressPercent}% through day
               </Badge>
+
+              {timelineStatus.minutesLeftInCurrent !== null && (
+                <Badge variant="outline" className="border-white/20 bg-black/40 text-white">
+                  {formatDuration(timelineStatus.minutesLeftInCurrent)} left
+                </Badge>
+              )}
             </div>
 
             <h2 className="text-3xl font-black leading-tight text-white">
@@ -231,6 +232,13 @@ export default function VamoHomeScreen({
               <MapPin className="h-4 w-4" />
               {getCurrentLocation(timelineStatus, currentDay.city)}
             </p>
+
+            {activeItem && (
+              <p className="mt-1 flex items-center gap-2 text-sm text-white/70">
+                <Clock3 className="h-4 w-4" />
+                {formatTimelineRange(activeItem)}
+              </p>
+            )}
 
             <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-white/20">
               <div
@@ -333,6 +341,10 @@ export default function VamoHomeScreen({
                     <MapPin className="h-3.5 w-3.5" />
                     {item.location}
                   </p>
+
+                  <p className="mt-1 text-xs text-zinc-500">
+                    {formatDuration(item.durationMinutes)}
+                  </p>
                 </div>
               </div>
             </button>
@@ -372,66 +384,11 @@ export default function VamoHomeScreen({
         ))}
       </div>
 
-      <div className="mb-4 flex items-center justify-between">
-        <h2 className="flex items-center gap-2 text-sm font-black uppercase tracking-[0.2em] text-zinc-400">
-          <Sparkles className="h-4 w-4 text-blue-300" />
-          Smart suggestions
-        </h2>
-      </div>
-
-      <div className="grid grid-cols-2 gap-3">
-        <button
-          type="button"
-          className="rounded-3xl border border-white/10 bg-white/[0.07] p-4 text-left"
-          onClick={onOpenChat}
-        >
-          <p className="text-xs font-bold uppercase tracking-[0.18em] text-blue-300">
-            Food
-          </p>
-          <p className="mt-2 text-sm font-black text-white">
-            {currentDay.food[0] ?? "Find a nearby cafe"}
-          </p>
-        </button>
-
-        <button
-          type="button"
-          className="rounded-3xl border border-white/10 bg-white/[0.07] p-4 text-left"
-          onClick={onOpenChat}
-        >
-          <p className="text-xs font-bold uppercase tracking-[0.18em] text-blue-300">
-            Pace
-          </p>
-          <p className="mt-2 text-sm font-black text-white">
-            Make today lighter
-          </p>
-        </button>
-
-        <button
-          type="button"
-          className="rounded-3xl border border-white/10 bg-white/[0.07] p-4 text-left"
-          onClick={onOpenPlanner}
-        >
-          <p className="text-xs font-bold uppercase tracking-[0.18em] text-blue-300">
-            Planner
-          </p>
-          <p className="mt-2 text-sm font-black text-white">
-            View full itinerary
-          </p>
-        </button>
-
-        <button
-          type="button"
-          className="rounded-3xl border border-white/10 bg-white/[0.07] p-4 text-left"
-          onClick={onShareComingSoon}
-        >
-          <p className="text-xs font-bold uppercase tracking-[0.18em] text-blue-300">
-            V2
-          </p>
-          <p className="mt-2 text-sm font-black text-white">
-            Share plan soon
-          </p>
-        </button>
-      </div>
+      <VamoSuggestionCards
+        currentDay={currentDay}
+        onOpenPlanner={onOpenPlanner}
+        onAskSuggestion={onPromptClick}
+      />
     </section>
   );
 }
