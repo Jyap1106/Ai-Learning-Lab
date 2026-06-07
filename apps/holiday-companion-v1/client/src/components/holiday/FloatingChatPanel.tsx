@@ -2,7 +2,7 @@ import { MessageCircle, Sparkles, X, Zap } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
-import ChatAssistant, { type ChatMessage } from "./ChatAssistant";
+import type { ChatMessage } from "./ChatAssistant";
 
 interface FloatingChatPanelProps {
   isOpen: boolean;
@@ -65,8 +65,56 @@ export default function FloatingChatPanel({
         </Button>
       </div>
 
-      <div className="max-h-[68vh] overflow-y-auto bg-black p-3">
-        <ChatAssistant messages={messages} prompts={prompts} onPromptClick={onPromptClick} />
+      <div className="max-h-[68vh] overflow-y-auto bg-black p-4">
+        <div className="space-y-3">
+          {messages.map((message) => {
+            const isUser = message.role === "user";
+
+            return (
+              <div
+                key={message.id}
+                className={`flex ${isUser ? "justify-end" : "justify-start"}`}
+              >
+                <div
+                  className={`max-w-[85%] rounded-3xl px-4 py-3 ${
+                    isUser
+                      ? "bg-blue-500 text-white"
+                      : "border border-white/10 bg-white/[0.08] text-zinc-100"
+                  }`}
+                >
+                  {message.title && (
+                    <p className="mb-1 text-xs font-black uppercase tracking-[0.16em] opacity-70">
+                      {message.title}
+                    </p>
+                  )}
+
+                  <p className="whitespace-pre-wrap text-sm leading-6">
+                    {message.content}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        <div className="mt-5 border-t border-white/10 pt-4">
+          <p className="mb-3 text-xs font-black uppercase tracking-[0.18em] text-zinc-500">
+            Quick prompts
+          </p>
+
+          <div className="flex flex-wrap gap-2">
+            {prompts.map((prompt) => (
+              <button
+                key={prompt}
+                type="button"
+                className="rounded-full border border-white/10 bg-white/[0.08] px-3 py-2 text-xs font-semibold text-zinc-200 hover:bg-white/15"
+                onClick={() => onPromptClick(prompt)}
+              >
+                {prompt}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   );
