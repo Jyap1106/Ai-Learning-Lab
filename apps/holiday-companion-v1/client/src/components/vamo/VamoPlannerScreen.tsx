@@ -13,6 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   buildTodayTimeline,
+  formatDuration,
   formatTimelineTime,
   type TodayTimelineItem,
 } from "@/lib/todayTimeline";
@@ -51,24 +52,23 @@ interface VamoPlannerScreenProps {
 
 function GradientRoutePreview({ day }: { day: Day }) {
   return (
-    <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-[radial-gradient(circle_at_15%_20%,rgba(255,255,255,0.38),transparent_22%),linear-gradient(135deg,#475569,#111827,#2563eb)] p-5">
-      <div className="absolute inset-0 bg-black/30" />
+    <div className="relative overflow-hidden rounded-[2rem] border border-[var(--vamo-border)] bg-[radial-gradient(circle_at_15%_20%,rgba(255,255,255,0.38),transparent_22%),linear-gradient(135deg,#475569,#111827,#2563eb)] p-5 shadow-[var(--vamo-shadow)]">
+      <div className="absolute inset-0 bg-[var(--vamo-hero-overlay)]" />
 
       <div className="relative z-10 min-h-36">
-        <Badge className="bg-white text-black hover:bg-white">Live view placeholder</Badge>
+        <Badge className="bg-white text-black hover:bg-white">Route preview</Badge>
 
         <div className="absolute bottom-0 left-0 right-0">
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-white/60">
-            Route preview
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-white/70">
+            Planner view
           </p>
 
           <h2 className="mt-1 text-2xl font-black text-white">
             Day {day.dayNumber} — {day.city}
           </h2>
 
-          <p className="mt-1 text-sm text-white/70">
-            {day.morning.length + day.afternoon.length + day.evening.length} stops ·
-            local map later
+          <p className="mt-1 text-sm text-white/75">
+            {day.morning.length + day.afternoon.length + day.evening.length} stops · map later
           </p>
         </div>
       </div>
@@ -98,17 +98,17 @@ export default function VamoPlannerScreen({
     <section className="min-h-screen px-4 pb-8 pt-4">
       <header className="mb-5 flex items-center justify-between">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-zinc-500">
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--vamo-muted)]">
             Planner
           </p>
-          <h1 className="mt-1 text-2xl font-black text-white">{trip.tripName}</h1>
+          <h1 className="mt-1 text-2xl font-black text-[var(--vamo-text)]">{trip.tripName}</h1>
         </div>
 
         <Button
           type="button"
           size="sm"
           variant="outline"
-          className="rounded-full border-white/10 bg-white/10 text-white hover:bg-white/20 hover:text-white"
+          className="rounded-full border-[var(--vamo-border)] bg-[var(--vamo-card)] text-[var(--vamo-text)] hover:bg-[var(--vamo-card-strong)]"
           onClick={onShareComingSoon}
         >
           <Share2 className="h-4 w-4" />
@@ -127,14 +127,12 @@ export default function VamoPlannerScreen({
                 type="button"
                 className={`min-w-20 rounded-3xl border px-4 py-3 text-center transition ${
                   isSelected
-                    ? "border-blue-400 bg-blue-500 text-black"
-                    : "border-white/10 bg-white/[0.07] text-white"
+                    ? "border-[var(--vamo-primary)] bg-[var(--vamo-primary)] text-[var(--vamo-primary-text)]"
+                    : "border-[var(--vamo-border)] bg-[var(--vamo-card)] text-[var(--vamo-text)]"
                 }`}
                 onClick={() => setSelectedDayNumber(day.dayNumber)}
               >
-                <p className="text-xs font-bold uppercase opacity-70">
-                  Day
-                </p>
+                <p className="text-xs font-bold uppercase opacity-70">Day</p>
                 <p className="text-2xl font-black">{day.dayNumber}</p>
               </button>
             );
@@ -148,32 +146,32 @@ export default function VamoPlannerScreen({
             <GradientRoutePreview day={selectedDay} />
           </div>
 
-          <div className="mb-5 rounded-[2rem] border border-white/10 bg-white/[0.07] p-4">
+          <div className="mb-5 rounded-[2rem] border border-[var(--vamo-border)] bg-[var(--vamo-card)] p-4">
             <div className="mb-3 flex flex-wrap items-center gap-2">
-              <Badge className="bg-white text-black hover:bg-white">
+              <Badge className="bg-[var(--vamo-primary)] text-[var(--vamo-primary-text)] hover:bg-[var(--vamo-primary)]">
                 {selectedDay.dayNumber === trip.currentDay ? "Today" : "Trip day"}
               </Badge>
 
               {selectedDay.edited && (
-                <Badge variant="outline" className="border-blue-300/40 text-blue-200">
+                <Badge variant="outline" className="border-[var(--vamo-border)] text-[var(--vamo-muted)]">
                   Edited locally
                 </Badge>
               )}
             </div>
 
-            <h2 className="text-2xl font-black text-white">
+            <h2 className="text-2xl font-black text-[var(--vamo-text)]">
               {selectedDay.city}
             </h2>
 
-            <p className="mt-2 text-sm leading-6 text-zinc-400">
+            <p className="mt-2 text-sm leading-6 text-[var(--vamo-muted)]">
               {selectedDay.theme}
             </p>
           </div>
 
           <div className="mb-4 flex items-center justify-between">
-            <h2 className="text-xl font-black text-white">Daily timeline</h2>
+            <h2 className="text-xl font-black text-[var(--vamo-text)]">Daily timeline</h2>
 
-            <Badge variant="outline" className="border-white/10 bg-white/10 text-white">
+            <Badge variant="outline" className="border-[var(--vamo-border)] bg-[var(--vamo-card)] text-[var(--vamo-muted)]">
               {selectedTimelineItems.length} stops
             </Badge>
           </div>
@@ -182,7 +180,7 @@ export default function VamoPlannerScreen({
             {selectedTimelineItems.map((item) => (
               <article
                 key={item.id}
-                className="rounded-3xl border border-white/10 bg-white/[0.07] p-4"
+                className="rounded-3xl border border-[var(--vamo-border)] bg-[var(--vamo-card)] p-4"
               >
                 <button
                   type="button"
@@ -190,37 +188,41 @@ export default function VamoPlannerScreen({
                   onClick={() => onViewItemDetails(item)}
                 >
                   <div className="flex gap-3">
-                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white/10">
-                      <CalendarDays className="h-5 w-5 text-blue-300" />
+                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[var(--vamo-card-strong)]">
+                      <CalendarDays className="h-5 w-5 text-[var(--vamo-primary)]" />
                     </div>
 
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center justify-between gap-3">
-                        <p className="text-xs font-bold uppercase tracking-[0.16em] text-blue-300">
+                        <p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--vamo-primary)]">
                           {formatTimelineTime(item.time)}
                         </p>
 
-                        <ChevronRight className="h-4 w-4 text-zinc-500" />
+                        <ChevronRight className="h-4 w-4 text-[var(--vamo-muted)]" />
                       </div>
 
-                      <h3 className="mt-1 text-lg font-black leading-tight text-white">
+                      <h3 className="mt-1 text-lg font-black leading-tight text-[var(--vamo-text)]">
                         {item.title}
                       </h3>
 
-                      <p className="mt-1 flex items-center gap-2 text-sm text-zinc-400">
+                      <p className="mt-1 flex items-center gap-2 text-sm text-[var(--vamo-muted)]">
                         <MapPin className="h-3.5 w-3.5" />
                         {item.location}
+                      </p>
+
+                      <p className="mt-1 text-xs text-[var(--vamo-muted)]">
+                        {formatDuration(item.durationMinutes)}
                       </p>
                     </div>
                   </div>
                 </button>
 
-                <div className="mt-3 flex flex-wrap gap-2 pl-15">
+                <div className="mt-3 flex flex-wrap gap-2 pl-14">
                   <Button
                     type="button"
                     size="sm"
                     variant="outline"
-                    className="rounded-full border-white/10 bg-white/10 text-white hover:bg-white/20 hover:text-white"
+                    className="rounded-full border-[var(--vamo-border)] bg-[var(--vamo-card-strong)] text-[var(--vamo-text)] hover:bg-[var(--vamo-card)]"
                     onClick={() => onAskAboutItem(item)}
                   >
                     <Navigation className="h-4 w-4" />
@@ -231,7 +233,7 @@ export default function VamoPlannerScreen({
                     type="button"
                     size="sm"
                     variant="outline"
-                    className="rounded-full border-white/10 bg-white/10 text-white hover:bg-white/20 hover:text-white"
+                    className="rounded-full border-[var(--vamo-border)] bg-[var(--vamo-card-strong)] text-[var(--vamo-text)] hover:bg-[var(--vamo-card)]"
                     onClick={() => onChangeItem(item)}
                   >
                     Edit
@@ -241,7 +243,7 @@ export default function VamoPlannerScreen({
                     type="button"
                     size="sm"
                     variant="outline"
-                    className="rounded-full border-white/10 bg-white/10 text-white hover:bg-white/20 hover:text-white"
+                    className="rounded-full border-[var(--vamo-border)] bg-[var(--vamo-card-strong)] text-[var(--vamo-text)] hover:bg-[var(--vamo-card)]"
                     onClick={() => onSkipItem(item)}
                   >
                     Free time
@@ -253,20 +255,20 @@ export default function VamoPlannerScreen({
 
           <button
             type="button"
-            className="mb-5 flex w-full items-center justify-center gap-2 rounded-3xl border border-dashed border-white/20 bg-white/[0.04] px-4 py-4 text-sm font-black text-white"
+            className="mb-5 flex w-full items-center justify-center gap-2 rounded-3xl border border-dashed border-[var(--vamo-border-strong)] bg-[var(--vamo-card-soft)] px-4 py-4 text-sm font-black text-[var(--vamo-text)]"
             onClick={onAddActivity}
           >
             <Plus className="h-5 w-5" />
             Add stop to itinerary
           </button>
 
-          <div className="rounded-[2rem] border border-white/10 bg-white/[0.07] p-4">
-            <p className="mb-1 flex items-center gap-2 text-sm font-bold text-white">
-              <Clock3 className="h-4 w-4 text-blue-300" />
+          <div className="rounded-[2rem] border border-[var(--vamo-border)] bg-[var(--vamo-card)] p-4">
+            <p className="mb-1 flex items-center gap-2 text-sm font-bold text-[var(--vamo-text)]">
+              <Clock3 className="h-4 w-4 text-[var(--vamo-primary)]" />
               Save status
             </p>
 
-            <p className="text-sm leading-6 text-zinc-400">
+            <p className="text-sm leading-6 text-[var(--vamo-muted)]">
               This plan is saved locally in your browser. Version history and restore
               remain available from Profile.
             </p>
