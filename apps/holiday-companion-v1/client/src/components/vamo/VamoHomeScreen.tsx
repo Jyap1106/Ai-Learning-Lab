@@ -4,7 +4,6 @@ import {
   MapPin,
   Share2,
   Sparkles,
-  Zap,
 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
@@ -73,7 +72,7 @@ function getSaveStatusDisplay(status: string) {
 }
 
 function getCompactTime(date: Date) {
-  return formatDeviceTime(date).replace(" ", "").toLowerCase();
+  return formatDeviceTime(date).replace(/\s/g, "").toLowerCase();
 }
 
 function getCurrentTitle(timelineStatus: TimelineStatus) {
@@ -116,7 +115,7 @@ function GradientImagePlaceholder({
     <div
       className={`relative overflow-hidden rounded-3xl bg-[radial-gradient(circle_at_20%_20%,rgba(255,255,255,0.38),transparent_26%),linear-gradient(135deg,#60a5fa,#7c3aed,#f97316)] ${className}`}
     >
-      <div className="absolute inset-0 bg-black/25" />
+      <div className="absolute inset-0 bg-[var(--vamo-hero-overlay)]" />
 
       <div className="absolute bottom-3 left-3 right-3">
         <p className="text-xs font-semibold uppercase tracking-[0.22em] text-white/70">
@@ -151,53 +150,46 @@ export default function VamoHomeScreen({
 
   return (
     <section className="min-h-screen px-4 pb-8 pt-4">
-      <header className="mb-4 grid grid-cols-3 items-center">
-        <div className="flex items-center gap-2">
-          <div className="flex h-9 w-9 items-center justify-center rounded-2xl bg-white text-black">
-            <Zap className="h-5 w-5" />
-          </div>
-
-          <div>
-            <p className="text-sm font-black leading-none text-white">Vamo</p>
-            <p className="mt-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-zinc-500">
-              Austria
-            </p>
-          </div>
+      <header className="mb-4 grid grid-cols-3 items-start">
+        <div>
+          <p className="text-xl font-black leading-none text-[var(--vamo-text)]">Vamo</p>
+          <p className="mt-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[var(--vamo-muted)]">
+            Trip guide
+          </p>
         </div>
 
         <div className="text-center">
-          <p className="text-xs font-black uppercase tracking-[0.18em] text-zinc-500">
-            {currentDay.city}
-          </p>
-          <p className="mt-1 text-sm font-black text-white">24°C</p>
+          <p className="text-sm font-black leading-none text-[var(--vamo-text)]">Austria</p>
+          <p className="mt-1 text-xs font-semibold text-[var(--vamo-muted)]">{currentDay.city}</p>
+          <p className="mt-1 text-sm font-black text-[var(--vamo-text)]">24°C</p>
         </div>
 
-        <p className="text-right text-sm font-black text-white">
+        <p className="text-right text-sm font-black text-[var(--vamo-text)]">
           {getCompactTime(now)}
         </p>
       </header>
 
       <div className="mb-5">
-        <p className="text-xs font-semibold uppercase tracking-[0.22em] text-zinc-500">
+        <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--vamo-muted)]">
           Today in {currentDay.city}
         </p>
 
         <div className="mt-1 flex items-end justify-between gap-3">
-          <h1 className="text-4xl font-black leading-none tracking-tight text-white">
+          <h1 className="text-4xl font-black leading-none tracking-tight text-[var(--vamo-text)]">
             Day {currentDay.dayNumber}
           </h1>
 
-          <Badge variant="outline" className="border-white/10 bg-white/10 text-zinc-300">
+          <Badge variant="outline" className="border-[var(--vamo-border)] bg-[var(--vamo-card)] text-[var(--vamo-muted)]">
             {getSaveStatusDisplay(trip.saveStatus)}
           </Badge>
         </div>
 
-        <p className="mt-2 text-sm leading-6 text-zinc-400">
+        <p className="mt-2 text-sm leading-6 text-[var(--vamo-muted)]">
           {timelineItems.length} activities planned · {currentDay.theme}
         </p>
       </div>
 
-      <div className="mb-5 overflow-hidden rounded-[2rem] border border-white/10 bg-zinc-900 shadow-2xl">
+      <div className="mb-5 overflow-hidden rounded-[2rem] border border-[var(--vamo-border)] bg-[var(--vamo-card)] shadow-[var(--vamo-shadow)]">
         <div className="relative min-h-64 p-5">
           <GradientImagePlaceholder
             label={getCurrentTitle(timelineStatus)}
@@ -206,7 +198,7 @@ export default function VamoHomeScreen({
 
           <div className="relative z-10 flex min-h-56 flex-col justify-end">
             <div className="mb-3 flex flex-wrap items-center gap-2">
-              <Badge className="bg-blue-500 text-white hover:bg-blue-500">
+              <Badge className="bg-[var(--vamo-primary)] text-[var(--vamo-primary-text)] hover:bg-[var(--vamo-primary)]">
                 Happening now
               </Badge>
 
@@ -239,7 +231,7 @@ export default function VamoHomeScreen({
 
             <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-white/20">
               <div
-                className="h-full rounded-full bg-blue-400"
+                className="h-full rounded-full bg-[var(--vamo-primary)]"
                 style={{ width: `${progressPercent}%` }}
               />
             </div>
@@ -271,7 +263,7 @@ export default function VamoHomeScreen({
       <div className="mb-7 grid grid-cols-3 gap-3">
         <button
           type="button"
-          className="rounded-3xl border border-blue-400/40 bg-blue-500 p-4 text-center text-black shadow-lg"
+          className="rounded-3xl border border-[var(--vamo-border)] bg-[var(--vamo-primary)] p-4 text-center text-[var(--vamo-primary-text)] shadow-lg"
           onClick={onOpenChat}
         >
           <Sparkles className="mx-auto mb-2 h-5 w-5" />
@@ -280,7 +272,7 @@ export default function VamoHomeScreen({
 
         <button
           type="button"
-          className="rounded-3xl border border-white/10 bg-white/10 p-4 text-center text-white"
+          className="rounded-3xl border border-[var(--vamo-border)] bg-[var(--vamo-card)] p-4 text-center text-[var(--vamo-text)]"
           onClick={onEditDay}
         >
           <Edit3 className="mx-auto mb-2 h-5 w-5" />
@@ -289,7 +281,7 @@ export default function VamoHomeScreen({
 
         <button
           type="button"
-          className="rounded-3xl border border-white/10 bg-white/10 p-4 text-center text-white"
+          className="rounded-3xl border border-[var(--vamo-border)] bg-[var(--vamo-card)] p-4 text-center text-[var(--vamo-text)]"
           onClick={onShareComingSoon}
         >
           <Share2 className="mx-auto mb-2 h-5 w-5" />
@@ -298,11 +290,11 @@ export default function VamoHomeScreen({
       </div>
 
       <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-xl font-black text-white">Next Up</h2>
+        <h2 className="text-xl font-black text-[var(--vamo-text)]">Next Up</h2>
 
         <button
           type="button"
-          className="text-sm font-semibold text-blue-300"
+          className="text-sm font-semibold text-[var(--vamo-primary)]"
           onClick={onOpenPlanner}
         >
           See all
@@ -313,7 +305,7 @@ export default function VamoHomeScreen({
         {nextItems.map((item) => (
           <article
             key={item.id}
-            className="rounded-3xl border border-white/10 bg-white/[0.07] p-4"
+            className="rounded-3xl border border-[var(--vamo-border)] bg-[var(--vamo-card)] p-4"
           >
             <button
               type="button"
@@ -321,25 +313,25 @@ export default function VamoHomeScreen({
               onClick={() => onViewItemDetails(item)}
             >
               <div className="flex items-start gap-3">
-                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white/10">
-                  <Clock3 className="h-5 w-5 text-blue-300" />
+                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[var(--vamo-card-strong)]">
+                  <Clock3 className="h-5 w-5 text-[var(--vamo-primary)]" />
                 </div>
 
                 <div className="min-w-0 flex-1">
-                  <p className="text-xs font-bold uppercase tracking-[0.16em] text-blue-300">
+                  <p className="text-xs font-bold uppercase tracking-[0.16em] text-[var(--vamo-primary)]">
                     {formatTimelineTime(item.time)}
                   </p>
 
-                  <h3 className="mt-1 text-lg font-black leading-tight text-white">
+                  <h3 className="mt-1 text-lg font-black leading-tight text-[var(--vamo-text)]">
                     {item.title}
                   </h3>
 
-                  <p className="mt-1 flex items-center gap-2 text-sm text-zinc-400">
+                  <p className="mt-1 flex items-center gap-2 text-sm text-[var(--vamo-muted)]">
                     <MapPin className="h-3.5 w-3.5" />
                     {item.location}
                   </p>
 
-                  <p className="mt-1 text-xs text-zinc-500">
+                  <p className="mt-1 text-xs text-[var(--vamo-muted)]">
                     {formatDuration(item.durationMinutes)}
                   </p>
                 </div>
@@ -351,7 +343,7 @@ export default function VamoHomeScreen({
                 type="button"
                 size="sm"
                 variant="outline"
-                className="rounded-full border-white/10 bg-white/10 text-white hover:bg-white/20 hover:text-white"
+                className="rounded-full border-[var(--vamo-border)] bg-[var(--vamo-card-strong)] text-[var(--vamo-text)] hover:bg-[var(--vamo-card)]"
                 onClick={() => onAskAboutItem(item)}
               >
                 Ask
@@ -361,7 +353,7 @@ export default function VamoHomeScreen({
                 type="button"
                 size="sm"
                 variant="outline"
-                className="rounded-full border-white/10 bg-white/10 text-white hover:bg-white/20 hover:text-white"
+                className="rounded-full border-[var(--vamo-border)] bg-[var(--vamo-card-strong)] text-[var(--vamo-text)] hover:bg-[var(--vamo-card)]"
                 onClick={() => onChangeItem(item)}
               >
                 Edit
@@ -371,7 +363,7 @@ export default function VamoHomeScreen({
                 type="button"
                 size="sm"
                 variant="outline"
-                className="rounded-full border-white/10 bg-white/10 text-white hover:bg-white/20 hover:text-white"
+                className="rounded-full border-[var(--vamo-border)] bg-[var(--vamo-card-strong)] text-[var(--vamo-text)] hover:bg-[var(--vamo-card)]"
                 onClick={() => onSkipItem(item)}
               >
                 Free
