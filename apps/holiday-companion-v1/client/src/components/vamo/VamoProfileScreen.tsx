@@ -1,21 +1,18 @@
 import {
   Bell,
-  ChevronRight,
-  Database,
   GitCompareArrows,
   History,
   Settings,
   Shield,
-  Sparkles,
-  Upload,
   UserCircle,
   Zap,
 } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { VAMO_THEME_OPTIONS } from "@/lib/vamoTheme";
+import { VAMO_THEME_OPTIONS, type VamoTheme } from "@/lib/vamoTheme";
 
+import VamoCreateImportPanel from "./VamoCreateImportPanel";
 import VamoDataRecoveryPanel from "./VamoDataRecoveryPanel";
 
 interface DaySnapshot {
@@ -53,7 +50,9 @@ interface ItineraryState {
 
 interface VamoProfileScreenProps {
   trip: ItineraryState;
+  activeTheme: VamoTheme;
   versionHistory: VersionHistoryEntry[];
+  onThemeChange: (theme: VamoTheme) => void;
   onResetTrip: () => void;
   onRestoreVersion: (versionNumber: number) => void;
   onCompareVersion: (version: VersionHistoryEntry) => void;
@@ -97,24 +96,22 @@ function SettingRow({
   return (
     <button
       type="button"
-      className="flex w-full items-center gap-3 rounded-3xl border border-white/10 bg-white/[0.07] p-4 text-left"
+      className="flex w-full items-center gap-3 rounded-3xl border border-[var(--vamo-border)] bg-[var(--vamo-card)] p-4 text-left"
       onClick={onClick}
     >
-      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-white/10 text-blue-300">
+      <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-[var(--vamo-card-strong)] text-[var(--vamo-primary)]">
         {icon}
       </div>
 
       <div className="min-w-0 flex-1">
-        <p className="font-black text-white">{title}</p>
-        <p className="mt-0.5 text-sm leading-5 text-zinc-400">{description}</p>
+        <p className="font-black text-[var(--vamo-text)]">{title}</p>
+        <p className="mt-0.5 text-sm leading-5 text-[var(--vamo-muted)]">{description}</p>
       </div>
 
-      {rightLabel ? (
-        <Badge variant="outline" className="border-white/10 bg-white/10 text-zinc-300">
+      {rightLabel && (
+        <Badge variant="outline" className="border-[var(--vamo-border)] text-[var(--vamo-muted)]">
           {rightLabel}
         </Badge>
-      ) : (
-        <ChevronRight className="h-4 w-4 text-zinc-500" />
       )}
     </button>
   );
@@ -122,7 +119,9 @@ function SettingRow({
 
 export default function VamoProfileScreen({
   trip,
+  activeTheme,
   versionHistory,
+  onThemeChange,
   onResetTrip,
   onRestoreVersion,
   onCompareVersion,
@@ -134,109 +133,109 @@ export default function VamoProfileScreen({
   return (
     <section className="min-h-screen px-4 pb-8 pt-4">
       <header className="mb-5 text-center">
-        <p className="text-xs font-semibold uppercase tracking-[0.22em] text-zinc-500">
+        <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[var(--vamo-muted)]">
           Travel profile
         </p>
 
-        <h1 className="mt-1 text-2xl font-black text-white">Vamo Settings</h1>
+        <h1 className="mt-1 text-2xl font-black text-[var(--vamo-text)]">Vamo Settings</h1>
       </header>
 
-      <div className="mb-6 rounded-[2rem] border border-white/10 bg-white/[0.07] p-5 text-center">
+      <div className="mb-6 rounded-[2rem] border border-[var(--vamo-border)] bg-[var(--vamo-card)] p-5 text-center">
         <div className="mx-auto mb-3 flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-blue-300 via-purple-400 to-orange-300 text-black">
           <UserCircle className="h-12 w-12" />
         </div>
 
-        <h2 className="text-2xl font-black text-white">Trip Owner</h2>
-        <p className="mt-1 text-sm text-zinc-400">{trip.tripName}</p>
+        <h2 className="text-2xl font-black text-[var(--vamo-text)]">Trip Owner</h2>
+        <p className="mt-1 text-sm text-[var(--vamo-muted)]">{trip.tripName}</p>
 
-        <div className="mt-5 grid grid-cols-3 divide-x divide-white/10">
+        <div className="mt-5 grid grid-cols-3 divide-x divide-[var(--vamo-border)]">
           <div>
-            <p className="text-2xl font-black text-white">1</p>
-            <p className="text-xs font-bold uppercase text-zinc-500">Trip</p>
+            <p className="text-2xl font-black text-[var(--vamo-text)]">1</p>
+            <p className="text-xs font-bold uppercase text-[var(--vamo-muted)]">Trip</p>
           </div>
 
           <div>
-            <p className="text-2xl font-black text-white">1</p>
-            <p className="text-xs font-bold uppercase text-zinc-500">Country</p>
+            <p className="text-2xl font-black text-[var(--vamo-text)]">1</p>
+            <p className="text-xs font-bold uppercase text-[var(--vamo-muted)]">Country</p>
           </div>
 
           <div>
-            <p className="text-2xl font-black text-white">{trip.days.length}</p>
-            <p className="text-xs font-bold uppercase text-zinc-500">Days</p>
+            <p className="text-2xl font-black text-[var(--vamo-text)]">{trip.days.length}</p>
+            <p className="text-xs font-bold uppercase text-[var(--vamo-muted)]">Days</p>
           </div>
         </div>
       </div>
 
       <div className="mb-6">
-        <h2 className="mb-3 text-sm font-black uppercase tracking-[0.2em] text-zinc-500">
+        <h2 className="mb-3 text-sm font-black uppercase tracking-[0.2em] text-[var(--vamo-muted)]">
           Travel archetype
         </h2>
 
         <div className="flex flex-wrap gap-2">
-          <Badge className="rounded-full bg-white/10 px-4 py-2 text-white hover:bg-white/10">
+          <Badge className="rounded-full bg-[var(--vamo-card-strong)] px-4 py-2 text-[var(--vamo-text)] hover:bg-[var(--vamo-card-strong)]">
             Relaxed pace
           </Badge>
-          <Badge className="rounded-full bg-white/10 px-4 py-2 text-white hover:bg-white/10">
+          <Badge className="rounded-full bg-[var(--vamo-card-strong)] px-4 py-2 text-[var(--vamo-text)] hover:bg-[var(--vamo-card-strong)]">
             Culture
           </Badge>
-          <Badge className="rounded-full bg-white/10 px-4 py-2 text-white hover:bg-white/10">
+          <Badge className="rounded-full bg-[var(--vamo-card-strong)] px-4 py-2 text-[var(--vamo-text)] hover:bg-[var(--vamo-card-strong)]">
             Food
           </Badge>
-          <Badge className="rounded-full bg-white/10 px-4 py-2 text-white hover:bg-white/10">
+          <Badge className="rounded-full bg-[var(--vamo-card-strong)] px-4 py-2 text-[var(--vamo-text)] hover:bg-[var(--vamo-card-strong)]">
             Scenic
           </Badge>
         </div>
       </div>
 
       <div className="mb-6">
-        <h2 className="mb-3 text-sm font-black uppercase tracking-[0.2em] text-zinc-500">
-          New project
-        </h2>
-
-        <div className="space-y-3">
-          <SettingRow
-            icon={<Database className="h-5 w-5" />}
-            title="Austria sample trip"
-            description="Current V1 trip guide loaded from local sample data."
-            rightLabel="Active"
-          />
-
-          <SettingRow
-            icon={<Upload className="h-5 w-5" />}
-            title="Upload itinerary"
-            description="Import JSON, CSV, PDF, or pasted trip plans in V2."
-            rightLabel="Soon"
-          />
-
-          <SettingRow
-            icon={<Sparkles className="h-5 w-5" />}
-            title="Guided creator"
-            description="AI-powered itinerary planning will come in a later version."
-            rightLabel="V2"
-          />
-        </div>
+        <VamoCreateImportPanel onComingSoon={onShareComingSoon} />
       </div>
 
       <div className="mb-6">
-        <h2 className="mb-3 text-sm font-black uppercase tracking-[0.2em] text-zinc-500">
+        <h2 className="mb-3 text-sm font-black uppercase tracking-[0.2em] text-[var(--vamo-muted)]">
           Appearance
         </h2>
 
         <div className="space-y-3">
-          {VAMO_THEME_OPTIONS.map((themeOption) => (
-            <SettingRow
-              key={themeOption.id}
-              icon={<Zap className="h-5 w-5" />}
-              title={themeOption.label}
-              description={themeOption.description}
-              rightLabel={themeOption.status === "active" ? "On" : "Soon"}
-            />
-          ))}
+          {VAMO_THEME_OPTIONS.map((themeOption) => {
+            const isActive = activeTheme === themeOption.id;
+
+            return (
+              <button
+                key={themeOption.id}
+                type="button"
+                className={`w-full rounded-3xl border p-4 text-left ${
+                  isActive
+                    ? "border-[var(--vamo-primary)] bg-[var(--vamo-card-strong)]"
+                    : "border-[var(--vamo-border)] bg-[var(--vamo-card)]"
+                }`}
+                onClick={() => onThemeChange(themeOption.id)}
+              >
+                <div className="mb-2 flex items-center justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[var(--vamo-card-strong)] text-[var(--vamo-primary)]">
+                      <Zap className="h-5 w-5" />
+                    </div>
+
+                    <p className="font-black text-[var(--vamo-text)]">{themeOption.label}</p>
+                  </div>
+
+                  <Badge variant="outline" className="border-[var(--vamo-border)] text-[var(--vamo-muted)]">
+                    {isActive ? "Active" : "Switch"}
+                  </Badge>
+                </div>
+
+                <p className="text-sm leading-6 text-[var(--vamo-muted)]">
+                  {themeOption.description}
+                </p>
+              </button>
+            );
+          })}
         </div>
       </div>
 
       <div className="mb-6">
-        <h2 className="mb-3 text-sm font-black uppercase tracking-[0.2em] text-zinc-500">
+        <h2 className="mb-3 text-sm font-black uppercase tracking-[0.2em] text-[var(--vamo-muted)]">
           System & privacy
         </h2>
 
@@ -258,8 +257,8 @@ export default function VamoProfileScreen({
           <SettingRow
             icon={<Settings className="h-5 w-5" />}
             title="Share itinerary"
-            description="Visible for product direction. Real sharing belongs in V2."
-            rightLabel="Soon"
+            description="Real sharing belongs in V2. Current share screen is visual preview only."
+            rightLabel="Preview"
             onClick={onShareComingSoon}
           />
         </div>
@@ -270,7 +269,7 @@ export default function VamoProfileScreen({
       </div>
 
       <div className="mb-6">
-        <h2 className="mb-3 flex items-center gap-2 text-sm font-black uppercase tracking-[0.2em] text-zinc-500">
+        <h2 className="mb-3 flex items-center gap-2 text-sm font-black uppercase tracking-[0.2em] text-[var(--vamo-muted)]">
           <History className="h-4 w-4" />
           Version history
         </h2>
@@ -284,36 +283,36 @@ export default function VamoProfileScreen({
             return (
               <div
                 key={`${version.version}-${version.summary}`}
-                className="rounded-3xl border border-white/10 bg-white/[0.07] p-4"
+                className="rounded-3xl border border-[var(--vamo-border)] bg-[var(--vamo-card)] p-4"
               >
                 <div className="mb-2 flex flex-wrap items-center gap-2">
-                  <Badge className={isCurrentVersion ? "bg-blue-500 text-black" : "bg-white/10 text-white"}>
+                  <Badge className={isCurrentVersion ? "bg-[var(--vamo-primary)] text-[var(--vamo-primary-text)]" : "bg-[var(--vamo-card-strong)] text-[var(--vamo-text)]"}>
                     v{version.version}
                   </Badge>
 
                   {version.affectedDay ? (
-                    <Badge variant="outline" className="border-white/10 text-zinc-300">
+                    <Badge variant="outline" className="border-[var(--vamo-border)] text-[var(--vamo-muted)]">
                       Day {version.affectedDay}
                     </Badge>
                   ) : (
-                    <Badge variant="outline" className="border-white/10 text-zinc-300">
+                    <Badge variant="outline" className="border-[var(--vamo-border)] text-[var(--vamo-muted)]">
                       Trip level
                     </Badge>
                   )}
 
                   {formattedTime && (
-                    <span className="text-xs text-zinc-500">{formattedTime}</span>
+                    <span className="text-xs text-[var(--vamo-muted)]">{formattedTime}</span>
                   )}
                 </div>
 
-                <p className="text-sm leading-6 text-zinc-300">{version.summary}</p>
+                <p className="text-sm leading-6 text-[var(--vamo-muted)]">{version.summary}</p>
 
                 <div className="mt-3 flex flex-wrap gap-2">
                   <Button
                     type="button"
                     size="sm"
                     variant="outline"
-                    className="rounded-full border-white/10 bg-white/10 text-white hover:bg-white/20 hover:text-white"
+                    className="rounded-full border-[var(--vamo-border)] bg-[var(--vamo-card-strong)] text-[var(--vamo-text)] hover:bg-[var(--vamo-card)]"
                     disabled={!version.snapshot}
                     onClick={() => onCompareVersion(version)}
                   >
@@ -325,7 +324,7 @@ export default function VamoProfileScreen({
                     type="button"
                     size="sm"
                     variant="outline"
-                    className="rounded-full border-white/10 bg-white/10 text-white hover:bg-white/20 hover:text-white"
+                    className="rounded-full border-[var(--vamo-border)] bg-[var(--vamo-card-strong)] text-[var(--vamo-text)] hover:bg-[var(--vamo-card)]"
                     disabled={!canRestore}
                     onClick={() => onRestoreVersion(version.version)}
                   >
