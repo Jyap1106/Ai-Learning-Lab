@@ -22,6 +22,7 @@ import { type VamoTab } from "@/components/vamo/VamoBottomNav";
 import VamoHomeScreen from "@/components/vamo/VamoHomeScreen";
 import VamoPlannerScreen from "@/components/vamo/VamoPlannerScreen";
 import VamoProfileScreen from "@/components/vamo/VamoProfileScreen";
+import VamoSharePreviewPanel from "@/components/vamo/VamoSharePreviewPanel";
 import austriaData from "@/data/austriaItineraryState.json";
 import {
   createMockAssistantResponse,
@@ -41,6 +42,11 @@ import {
   type TimelinePeriod,
   type TodayTimelineItem,
 } from "@/lib/todayTimeline";
+import {
+  getStoredVamoTheme,
+  saveStoredVamoTheme,
+  type VamoTheme,
+} from "@/lib/vamoTheme";
 
 interface VersionHistoryEntry {
   version: number;
@@ -612,8 +618,10 @@ function createRunningLateResponse(
 export default function Home() {
   const [tripData, setTripData] = useState<ItineraryState>(() => loadInitialTripState());
   const [activeTab, setActiveTab] = useState<VamoTab>("home");
+  const [vamoTheme, setVamoTheme] = useState<VamoTheme>(() => getStoredVamoTheme());
   const [now, setNow] = useState(() => new Date());
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [isSharePreviewOpen, setIsSharePreviewOpen] = useState(false);
   const [selectedActivityItem, setSelectedActivityItem] = useState<TodayTimelineItem | null>(null);
   const [activityChangeItem, setActivityChangeItem] = useState<TodayTimelineItem | null>(null);
   const [manualEditItem, setManualEditItem] = useState<TodayTimelineItem | null>(null);
@@ -629,6 +637,10 @@ export default function Home() {
       "Vamo ready",
     ),
   ]);
+
+  useEffect(() => {
+    saveStoredVamoTheme(vamoTheme);
+  }, [vamoTheme]);
 
   useEffect(() => {
     const intervalId = window.setInterval(() => {
@@ -691,16 +703,7 @@ export default function Home() {
   };
 
   const handleShareComingSoon = () => {
-    setIsChatOpen(true);
-
-    setChatMessages((previousMessages) => [
-      ...previousMessages,
-      createMessage(
-        "assistant",
-        "Sharing is planned for V2. For now, Vamo keeps your Austria itinerary saved locally in this browser.",
-        "Share coming soon",
-      ),
-    ]);
+    setIsSharePreviewOpen(true);
   };
 
   const handlePromptChipClick = (prompt: string) => {
@@ -1252,6 +1255,7 @@ export default function Home() {
     setSelectedActivityItem(null);
     setIsAddActivityOpen(false);
     setVersionToCompare(null);
+    setIsSharePreviewOpen(false);
     setActiveTab("home");
     setChatMessages([
       createMessage(
@@ -1284,7 +1288,7 @@ export default function Home() {
     Boolean(proposedChange);
 
   return (
-    <VamoAppShell activeTab={activeTab} onTabChange={setActiveTab}>
+    <VamoAppShell activeTab={activeTab} theme={vamoTheme} onTabChange={setActiveTab}>
       {!currentDay ? (
         <div className="p-4">
           <div className="rounded-3xl border border-red-500/20 bg-red-500/10 p-5 text-red-100">
@@ -1380,7 +1384,9 @@ export default function Home() {
           {!hasActiveEditor && activeTab === "profile" && (
             <VamoProfileScreen
               trip={tripData}
+              activeTheme={vamoTheme}
               versionHistory={tripData.versionHistory}
+              onThemeChange={setVamoTheme}
               onResetTrip={handleResetTrip}
               onRestoreVersion={handleRestoreVersion}
               onCompareVersion={setVersionToCompare}
@@ -1424,6 +1430,14 @@ export default function Home() {
             currentDays={tripData.days}
             onClose={() => setVersionToCompare(null)}
             onRestoreVersion={handleRestoreVersion}
+          />
+
+          <VamoSharePreviewPanel
+            isOpen={isSharePreviewOpen}
+            tripName={tripData.tripName}
+            currentDay={currentDay}
+            timelineItems={todayTimelineItems}
+            onClose={() => setIsSharePreviewOpen(false)}
           />
         </>
       )}
