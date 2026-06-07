@@ -3,7 +3,6 @@ import { useMemo, useState } from "react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatTimelineTime, type TodayTimelineItem } from "@/lib/todayTimeline";
 
 interface DaySummary {
@@ -151,94 +150,96 @@ export default function GuidedActivityChangePanel({
   }, [day, item, selectedCategory]);
 
   return (
-    <Card className="border-blue-100 bg-white shadow-lg">
-      <CardHeader className="space-y-3">
+    <section className="rounded-[2rem] border border-[var(--vamo-border)] bg-[var(--vamo-card)] text-[var(--vamo-text)] shadow-[var(--vamo-shadow)]">
+      <div className="space-y-3 border-b border-[var(--vamo-border)] p-4">
         <div className="flex items-start justify-between gap-3">
           <div>
             <div className="mb-2 flex flex-wrap items-center gap-2">
-              <Badge variant="secondary">Change activity</Badge>
+              <Badge className="bg-[var(--vamo-primary)] text-[var(--vamo-primary-text)] hover:bg-[var(--vamo-primary)]">
+                Change activity
+              </Badge>
 
-              <Badge variant="outline">
+              <Badge variant="outline" className="border-[var(--vamo-border)] text-[var(--vamo-muted)]">
                 <Clock3 className="mr-1 h-3 w-3" />
                 {formatTimelineTime(item.time)}
               </Badge>
             </div>
 
-            <CardTitle className="text-xl text-slate-950">
-              What do you want to do with this?
-            </CardTitle>
+            <h2 className="text-xl font-black text-[var(--vamo-text)]">
+              What do you want to do?
+            </h2>
 
-            <p className="mt-1 text-sm leading-6 text-slate-600">
+            <p className="mt-1 text-sm leading-6 text-[var(--vamo-muted)]">
               {item.title}
             </p>
           </div>
 
-          <Button type="button" size="sm" variant="outline" onClick={onClose}>
-            <X className="h-4 w-4" />
-            Close
-          </Button>
-        </div>
-      </CardHeader>
-
-      <CardContent className="space-y-4">
-        <div className="rounded-2xl border border-slate-100 bg-slate-50 p-4">
-          <div className="grid gap-3 text-sm sm:grid-cols-3">
-            <div>
-              <p className="font-semibold text-slate-900">Location</p>
-              <p className="mt-1 text-slate-600">{item.location}</p>
-            </div>
-
-            <div>
-              <p className="font-semibold text-slate-900">Transport</p>
-              <p className="mt-1 text-slate-600">{item.transport}</p>
-            </div>
-
-            <div>
-              <p className="font-semibold text-slate-900">Remark</p>
-              <p className="mt-1 text-slate-600">{item.remarks}</p>
-            </div>
-          </div>
-        </div>
-
-        <div className="grid gap-3 sm:grid-cols-2">
           <Button
             type="button"
+            size="sm"
             variant="outline"
-            className="h-auto justify-start rounded-2xl border-orange-200 bg-orange-50 p-4 text-left text-orange-900 hover:bg-orange-100"
-            onClick={() => onKeepFreeTime(item)}
+            className="rounded-full border-[var(--vamo-border)] bg-[var(--vamo-card-strong)] text-[var(--vamo-text)] hover:bg-[var(--vamo-card)]"
+            onClick={onClose}
           >
-            <Coffee className="h-5 w-5 shrink-0" />
-
-            <span>
-              <span className="block font-semibold">Keep this time free</span>
-              <span className="block text-xs font-normal text-orange-800">
-                Remove this activity and leave the block relaxed.
-              </span>
-            </span>
+            <X className="h-4 w-4" />
           </Button>
+        </div>
+      </div>
 
-          <div className="rounded-2xl border border-slate-100 bg-white p-4">
-            <p className="font-semibold text-slate-950">Replace with another option</p>
-            <p className="mt-1 text-sm text-slate-600">
-              Choose a type first, then pick one suggestion.
-            </p>
+      <div className="space-y-4 p-4">
+        <div className="rounded-3xl border border-[var(--vamo-border)] bg-[var(--vamo-card-strong)] p-4">
+          <div className="grid gap-3 text-sm sm:grid-cols-3">
+            <div>
+              <p className="font-black text-[var(--vamo-text)]">Location</p>
+              <p className="mt-1 text-[var(--vamo-muted)]">{item.location}</p>
+            </div>
+
+            <div>
+              <p className="font-black text-[var(--vamo-text)]">Transport</p>
+              <p className="mt-1 text-[var(--vamo-muted)]">{item.transport}</p>
+            </div>
+
+            <div>
+              <p className="font-black text-[var(--vamo-text)]">Remark</p>
+              <p className="mt-1 text-[var(--vamo-muted)]">{item.remarks}</p>
+            </div>
           </div>
         </div>
+
+        <Button
+          type="button"
+          variant="outline"
+          className="h-auto w-full justify-start rounded-3xl border-orange-400/30 bg-orange-400/10 p-4 text-left text-orange-100 hover:bg-orange-400/20"
+          onClick={() => onKeepFreeTime(item)}
+        >
+          <Coffee className="h-5 w-5 shrink-0" />
+
+          <span>
+            <span className="block font-black">Keep this time free</span>
+            <span className="block text-xs font-normal text-orange-100/80">
+              Remove this activity and leave the block relaxed.
+            </span>
+          </span>
+        </Button>
 
         <div className="grid gap-3 sm:grid-cols-3">
           {replacementCategories.map((category) => (
             <Button
               key={category.id}
               type="button"
-              variant={selectedCategory === category.id ? "default" : "outline"}
-              className="h-auto justify-start rounded-2xl p-4 text-left"
+              variant="outline"
+              className={`h-auto justify-start rounded-3xl border p-4 text-left ${
+                selectedCategory === category.id
+                  ? "border-[var(--vamo-primary)] bg-[var(--vamo-card-strong)] text-[var(--vamo-text)]"
+                  : "border-[var(--vamo-border)] bg-[var(--vamo-card)] text-[var(--vamo-text)]"
+              }`}
               onClick={() => setSelectedCategory(category.id)}
             >
               {getCategoryIcon(category.id)}
 
               <span>
-                <span className="block font-semibold">{category.label}</span>
-                <span className="block text-xs font-normal opacity-80">
+                <span className="block font-black">{category.label}</span>
+                <span className="block text-xs font-normal text-[var(--vamo-muted)]">
                   {category.description}
                 </span>
               </span>
@@ -249,10 +250,10 @@ export default function GuidedActivityChangePanel({
         {selectedCategory ? (
           <div className="space-y-3">
             <div>
-              <p className="text-sm font-semibold text-slate-950">
+              <p className="text-sm font-black text-[var(--vamo-text)]">
                 Suggested replacements
               </p>
-              <p className="text-sm text-slate-600">
+              <p className="text-sm text-[var(--vamo-muted)]">
                 Pick one. You will still review it before saving.
               </p>
             </div>
@@ -262,16 +263,20 @@ export default function GuidedActivityChangePanel({
                 <button
                   key={option.id}
                   type="button"
-                  className="rounded-2xl border border-slate-100 bg-white p-4 text-left shadow-sm transition hover:border-blue-200 hover:bg-blue-50"
+                  className="rounded-3xl border border-[var(--vamo-border)] bg-[var(--vamo-card)] p-4 text-left shadow-sm transition hover:border-[var(--vamo-primary)]"
                   onClick={() => onSelectReplacement(item, option)}
                 >
                   <div className="mb-2 flex flex-wrap items-center gap-2">
-                    <Badge variant="secondary">{option.category}</Badge>
-                    <Badge variant="outline">Review before saving</Badge>
+                    <Badge className="bg-[var(--vamo-primary)] text-[var(--vamo-primary-text)] hover:bg-[var(--vamo-primary)]">
+                      {option.category}
+                    </Badge>
+                    <Badge variant="outline" className="border-[var(--vamo-border)] text-[var(--vamo-muted)]">
+                      Review before saving
+                    </Badge>
                   </div>
 
-                  <p className="font-semibold text-slate-950">{option.label}</p>
-                  <p className="mt-1 text-sm leading-6 text-slate-600">
+                  <p className="font-black text-[var(--vamo-text)]">{option.label}</p>
+                  <p className="mt-1 text-sm leading-6 text-[var(--vamo-muted)]">
                     {option.description}
                   </p>
                 </button>
@@ -279,11 +284,11 @@ export default function GuidedActivityChangePanel({
             </div>
           </div>
         ) : (
-          <div className="rounded-2xl border border-dashed border-slate-200 bg-slate-50 p-4 text-sm text-slate-600">
+          <div className="rounded-3xl border border-dashed border-[var(--vamo-border)] bg-[var(--vamo-card-soft)] p-4 text-sm text-[var(--vamo-muted)]">
             Select Food / cafe, Lighter activity, or Nearby place to see suggestions.
           </div>
         )}
-      </CardContent>
-    </Card>
+      </div>
+    </section>
   );
 }
