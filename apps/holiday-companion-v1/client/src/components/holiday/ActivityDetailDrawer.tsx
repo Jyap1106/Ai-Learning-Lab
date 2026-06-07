@@ -67,7 +67,7 @@ function getStatusClassName(status: TodayTimelineItem["status"]) {
     case "orange":
       return "border-orange-400/30 bg-orange-400/15 text-orange-100";
     default:
-      return "border-white/10 bg-white/10 text-zinc-200";
+      return "border-[var(--vamo-border)] bg-[var(--vamo-card-strong)] text-[var(--vamo-muted)]";
   }
 }
 
@@ -91,21 +91,30 @@ export default function ActivityDetailDrawer({
 
   return (
     <section className="fixed inset-0 z-50">
-      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
+      <div className="absolute inset-0 bg-[var(--vamo-overlay)] backdrop-blur-sm" onClick={onClose} />
 
-      <div className="absolute inset-x-3 bottom-3 mx-auto max-w-2xl overflow-hidden rounded-[2rem] border border-white/10 bg-zinc-950 text-white shadow-2xl">
-        <div className="flex items-start justify-between gap-3 border-b border-white/10 bg-white/[0.04] p-4">
+      <div className="absolute inset-x-3 bottom-3 mx-auto max-w-2xl overflow-hidden rounded-[2rem] border border-[var(--vamo-border)] bg-[var(--vamo-bg)] text-[var(--vamo-text)] shadow-2xl">
+        <div className="flex items-start justify-between gap-3 border-b border-[var(--vamo-border)] bg-[var(--vamo-card)] p-4">
           <div>
             <div className="mb-2 flex flex-wrap items-center gap-2">
-              {isCurrent && <Badge className="bg-blue-500 text-white hover:bg-blue-500">Now</Badge>}
-              {isNext && <Badge className="bg-emerald-500 text-black hover:bg-emerald-500">Next</Badge>}
+              {isCurrent && (
+                <Badge className="bg-[var(--vamo-primary)] text-[var(--vamo-primary-text)] hover:bg-[var(--vamo-primary)]">
+                  Now
+                </Badge>
+              )}
 
-              <Badge variant="outline" className="border-white/10 bg-white/10 text-zinc-200">
+              {isNext && (
+                <Badge className="bg-[var(--vamo-success)] text-black hover:bg-[var(--vamo-success)]">
+                  Next
+                </Badge>
+              )}
+
+              <Badge variant="outline" className="border-[var(--vamo-border)] bg-[var(--vamo-card-strong)] text-[var(--vamo-muted)]">
                 <Clock3 className="mr-1 h-3 w-3" />
                 {formatTimelineRange(item)}
               </Badge>
 
-              <Badge variant="outline" className="border-white/10 bg-white/10 text-zinc-200">
+              <Badge variant="outline" className="border-[var(--vamo-border)] bg-[var(--vamo-card-strong)] text-[var(--vamo-muted)]">
                 {getCategoryLabel(item.category)}
               </Badge>
 
@@ -114,11 +123,11 @@ export default function ActivityDetailDrawer({
               </Badge>
             </div>
 
-            <h2 className="text-xl font-black leading-tight text-white">
+            <h2 className="text-xl font-black leading-tight text-[var(--vamo-text)]">
               {item.title}
             </h2>
 
-            <p className="mt-1 text-sm text-zinc-400">
+            <p className="mt-1 text-sm text-[var(--vamo-muted)]">
               Day {item.dayNumber} · {item.period}
             </p>
           </div>
@@ -127,37 +136,37 @@ export default function ActivityDetailDrawer({
             type="button"
             size="sm"
             variant="outline"
-            className="rounded-full border-white/10 bg-white/10 text-white hover:bg-white/20 hover:text-white"
+            className="rounded-full border-[var(--vamo-border)] bg-[var(--vamo-card-strong)] text-[var(--vamo-text)] hover:bg-[var(--vamo-card)]"
             onClick={onClose}
           >
             <X className="h-4 w-4" />
           </Button>
         </div>
 
-        <div className="max-h-[72vh] space-y-4 overflow-y-auto bg-black p-4">
+        <div className="max-h-[72vh] space-y-4 overflow-y-auto bg-[var(--vamo-bg)] p-4">
           <div className="grid gap-3 sm:grid-cols-3">
-            <div className="rounded-3xl border border-white/10 bg-white/[0.07] p-4">
-              <p className="mb-2 flex items-center gap-2 text-sm font-black text-white">
-                <MapPin className="h-4 w-4 text-blue-300" />
+            <div className="rounded-3xl border border-[var(--vamo-border)] bg-[var(--vamo-card)] p-4">
+              <p className="mb-2 flex items-center gap-2 text-sm font-black text-[var(--vamo-text)]">
+                <MapPin className="h-4 w-4 text-[var(--vamo-primary)]" />
                 Location
               </p>
-              <p className="text-sm leading-6 text-zinc-300">{item.location}</p>
+              <p className="text-sm leading-6 text-[var(--vamo-muted)]">{item.location}</p>
             </div>
 
-            <div className="rounded-3xl border border-white/10 bg-white/[0.07] p-4">
-              <p className="mb-2 flex items-center gap-2 text-sm font-black text-white">
-                <Navigation className="h-4 w-4 text-blue-300" />
+            <div className="rounded-3xl border border-[var(--vamo-border)] bg-[var(--vamo-card)] p-4">
+              <p className="mb-2 flex items-center gap-2 text-sm font-black text-[var(--vamo-text)]">
+                <Navigation className="h-4 w-4 text-[var(--vamo-primary)]" />
                 Transport
               </p>
-              <p className="text-sm leading-6 text-zinc-300">{item.transport}</p>
+              <p className="text-sm leading-6 text-[var(--vamo-muted)]">{item.transport}</p>
             </div>
 
-            <div className="rounded-3xl border border-white/10 bg-white/[0.07] p-4">
-              <p className="mb-2 flex items-center gap-2 text-sm font-black text-white">
-                <StickyNote className="h-4 w-4 text-blue-300" />
+            <div className="rounded-3xl border border-[var(--vamo-border)] bg-[var(--vamo-card)] p-4">
+              <p className="mb-2 flex items-center gap-2 text-sm font-black text-[var(--vamo-text)]">
+                <StickyNote className="h-4 w-4 text-[var(--vamo-primary)]" />
                 Remark
               </p>
-              <p className="text-sm leading-6 text-zinc-300">{item.remarks}</p>
+              <p className="text-sm leading-6 text-[var(--vamo-muted)]">{item.remarks}</p>
             </div>
           </div>
 
@@ -172,7 +181,7 @@ export default function ActivityDetailDrawer({
           <div className="grid gap-2 sm:grid-cols-2">
             <Button
               type="button"
-              className="rounded-full bg-blue-500 text-white hover:bg-blue-400"
+              className="rounded-full bg-[var(--vamo-primary)] text-[var(--vamo-primary-text)] hover:opacity-90"
               onClick={() => onAskAboutItem(item)}
             >
               <MessageCircle className="h-4 w-4" />
@@ -182,7 +191,7 @@ export default function ActivityDetailDrawer({
             <Button
               type="button"
               variant="outline"
-              className="rounded-full border-white/10 bg-white/10 text-white hover:bg-white/20 hover:text-white"
+              className="rounded-full border-[var(--vamo-border)] bg-[var(--vamo-card-strong)] text-[var(--vamo-text)] hover:bg-[var(--vamo-card)]"
               onClick={() => onReplaceItem(item)}
             >
               <Shuffle className="h-4 w-4" />
@@ -192,7 +201,7 @@ export default function ActivityDetailDrawer({
             <Button
               type="button"
               variant="outline"
-              className="rounded-full border-white/10 bg-white/10 text-white hover:bg-white/20 hover:text-white"
+              className="rounded-full border-[var(--vamo-border)] bg-[var(--vamo-card-strong)] text-[var(--vamo-text)] hover:bg-[var(--vamo-card)]"
               onClick={() => onKeepFreeTime(item)}
             >
               <Coffee className="h-4 w-4" />
@@ -202,7 +211,7 @@ export default function ActivityDetailDrawer({
             <Button
               type="button"
               variant="outline"
-              className="rounded-full border-white/10 bg-white/10 text-white hover:bg-white/20 hover:text-white"
+              className="rounded-full border-[var(--vamo-border)] bg-[var(--vamo-card-strong)] text-[var(--vamo-text)] hover:bg-[var(--vamo-card)]"
               onClick={() => onEditItem(item)}
             >
               <PencilLine className="h-4 w-4" />
@@ -212,7 +221,7 @@ export default function ActivityDetailDrawer({
             <Button
               type="button"
               variant="outline"
-              className="rounded-full border-white/10 bg-white/10 text-white hover:bg-white/20 hover:text-white"
+              className="rounded-full border-[var(--vamo-border)] bg-[var(--vamo-card-strong)] text-[var(--vamo-text)] hover:bg-[var(--vamo-card)]"
               onClick={() => onMoveItem(item)}
             >
               <ArrowRightLeft className="h-4 w-4" />
